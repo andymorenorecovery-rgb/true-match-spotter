@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
@@ -29,7 +29,6 @@ function PostAd() {
   const [plan, setPlan] = useState<"dayAd" | "weekAd">("dayAd");
   const [boost, setBoost] = useState(false);
   const [error, setError] = useState("");
-  const [agreed, setAgreed] = useState(false);
   const navigate = useNavigate();
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
@@ -48,7 +47,6 @@ function PostAd() {
     if (!f.state || !f.city.trim()) return setError("Please pick your state and city.");
     if (!f.body.trim()) return setError("Please write something in your ad.");
     if (!photos.length) return setError("Please add at least one photo.");
-    if (!agreed) return setError("Please agree to the rules before posting.");
     const now = Date.now();
     const ad: Listing = {
       id: `local-${now}`,
@@ -209,14 +207,6 @@ function PostAd() {
             )}
           </Section>
 
-          <div className="rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm">
-            <p className="font-semibold">This is a dating site — not an escort or sex site.</p>
-            <p className="mt-1 text-muted-foreground">No naked or sexual photos. No selling sex or paid "companionship". Reported ads that break the rules are removed and the poster is kicked off the site.</p>
-            <label className="mt-3 flex items-start gap-2">
-              <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 h-4 w-4 accent-primary" />
-              <span>These are my own photos and I agree to the <Link to="/terms" className="text-primary underline">rules</Link>.</span>
-            </label>
-          </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
             Post my ad (test mode — free)
