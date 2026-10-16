@@ -214,7 +214,7 @@ function PostAd() {
             <p className="mt-1 text-muted-foreground">No naked or sexual photos. No selling sex or paid "companionship". Reported ads that break the rules are removed and the poster is kicked off the site.</p>
             <label className="mt-3 flex items-start gap-2">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 h-4 w-4 accent-primary" />
-              <span>I'm 18 or older, these are my own photos, and I agree to the <Link to="/terms" className="text-primary underline">rules</Link>.</span>
+              <span>These are my own photos and I agree to the <Link to="/terms" className="text-primary underline">rules</Link>.</span>
             </label>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
