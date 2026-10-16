@@ -26,14 +26,14 @@ export type Details = {
   lookingFor?: string;
 };
 
-export const DETAIL_FIELDS: { key: keyof Details; label: string; options?: string[] }[] = [
+export const DETAIL_FIELDS: { key: keyof Details; label: string; options: string[]; multi?: boolean }[] = [
   { key: "gender", label: "Gender", options: ["Woman", "Man", "Non-binary", "Other"] },
   { key: "height", label: "Height", options: Array.from({ length: 31 }, (_, i) => `${Math.floor((56 + i) / 12)}'${(56 + i) % 12}"`) },
   { key: "hairColor", label: "Hair color", options: ["Black", "Brown", "Blonde", "Red", "Gray", "Bald", "Other"] },
   { key: "eyeColor", label: "Eye color", options: ["Brown", "Blue", "Green", "Hazel", "Gray", "Other"] },
   { key: "bodyType", label: "Body type", options: ["Slim", "Athletic", "Average", "Curvy", "Muscular", "Plus-size"] },
-  { key: "ethnicity", label: "Ethnicity" },
-  { key: "languages", label: "Languages" },
+  { key: "ethnicity", label: "Ethnicity", options: ["Hispanic / Latino", "White", "Black / African American", "Asian", "Middle Eastern", "Native American", "Pacific Islander", "Mixed", "Other"] },
+  { key: "languages", label: "Languages", multi: true, options: ["English", "Spanish", "Chinese", "Tagalog", "Vietnamese", "Arabic", "French", "Korean", "Russian", "Portuguese", "Hindi", "Other"] },
   { key: "lookingFor", label: "Looking for", options: ["Women", "Men", "Anyone"] },
 ];
 
