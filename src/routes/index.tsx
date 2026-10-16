@@ -90,7 +90,7 @@ function Home() {
           </select>
         </div>
         {results.length ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {results.slice(0, shown).map((l) => <ListingCard key={l.id} l={l} />)}
           </div>
         ) : (
