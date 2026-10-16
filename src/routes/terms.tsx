@@ -2,28 +2,57 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { InfoPage, meta } from "@/components/InfoPage";
 
 export const Route = createFileRoute("/terms")({
-  head: () => meta("Rules & terms", "Ready Too Mingle is a dating and friendship site. No nudity, no escorts, no selling sex."),
+  head: () => meta("Terms of service", "The terms for using Ready Too Mingle, a dating and friendship site."),
   component: () => (
-    <InfoPage title="Rules & terms">
-      <p><strong>Ready Too Mingle is a dating and friendship site. It is not an escort site or a sex site.</strong></p>
-      <h2>Who can post</h2>
-      <p>You must be 18 or older. Post only yourself — no fake profiles, no posting someone else's photos or number.</p>
-      <h2>What's allowed</h2>
-      <p>Ads looking for dating, friendship or someone to share an activity with.</p>
-      <h2>Not allowed — ever</h2>
+    <InfoPage title="Terms of service">
+      <p>By using Ready Too Mingle ("the Site", "we", "us"), you agree to these Terms of Service. If you do not agree, do not use the Site.</p>
+
+      <h2>1. About the Site</h2>
+      <p>Ready Too Mingle is a personal-ads site for dating, friendship and activity partners. It is not an escort service, adult site, or marketplace for sexual services. We provide a place to post ads only; we do not screen, introduce, or match members.</p>
+
+      <h2>2. Eligibility</h2>
+      <p>You must be at least 18 years old and legally able to agree to these Terms. You may only post ads about yourself, using your own photos and accurate information.</p>
+
+      <h2>3. Prohibited content and conduct</h2>
+      <p>You may not post, send, or request any of the following:</p>
       <ul className="list-disc space-y-1 pl-6">
-        <li>Naked, sexual or see-through photos.</li>
-        <li>Selling or buying sex, escort services, "companionship" for money, or hourly rates of any kind.</li>
-        <li>Sexual or explicit wording in your ad.</li>
-        <li>Anyone under 18, in photos or in ads.</li>
-        <li>Harassment, threats, hate, scams, spam or asking people for money.</li>
+        <li>Nude, sexual, or sexually suggestive photos or wording.</li>
+        <li>Any offer or request for sex, sexual services, escort services, or companionship in exchange for money, gifts, or anything of value.</li>
+        <li>Any request for money, payment apps, gift cards, loans, or financial help.</li>
+        <li>Harassment, threats, stalking, bullying, hate speech, or abusive, obscene, or threatening language.</li>
+        <li>Content involving anyone under 18.</li>
+        <li>Fake profiles, impersonation, scams, spam, or advertising.</li>
+        <li>Anything illegal under federal, state, or local law.</li>
       </ul>
-      <h2>Reports and removal</h2>
-      <p>Every ad has a Report button. If your ad is reported and breaks these rules, it is taken down and you are removed from the site. Paid ads that break the rules are not refunded. Anything involving minors or trafficking is reported to the authorities.</p>
-      <h2>Payments</h2>
-      <p>Ads and boosts are paid placement. We don't guarantee views, replies or dates.</p>
-      <p>See also our <Link to="/privacy" className="text-primary">privacy policy</Link>.</p>
-      <p className="text-xs">These rules should be reviewed by a lawyer before launch.</p>
+
+      <h2>4. Termination</h2>
+      <p>Any ad or behavior involving sex for money, solicitation, or other money-related activity will result in immediate and permanent termination of your profile. We may also remove any ad or account, at any time and without notice, if we believe it violates these Terms or puts others at risk. Fees paid for removed ads are non-refundable. We report suspected illegal activity, including anything involving minors or human trafficking, to law enforcement.</p>
+
+      <h2>5. Reporting</h2>
+      <p>Every ad has a "Report" option. We review reports and take action at our sole discretion.</p>
+
+      <h2>6. Privacy</h2>
+      <p>Your personal information is not sold, rented, or shared with anyone, except where required by law or to report illegal activity. See our <Link to="/privacy" className="text-primary">Privacy Policy</Link>.</p>
+
+      <h2>7. Meeting other members — your responsibility</h2>
+      <p>You are solely responsible for your interactions with other members, online and in person. We do not conduct background checks and do not verify the identity, age, or statements of members. Any meeting, communication, or relationship that happens outside the Site is entirely between you and the other person and has nothing to do with Ready Too Mingle. Always meet in public and use caution.</p>
+
+      <h2>8. Disclaimer of warranties</h2>
+      <p>The Site is provided "as is" and "as available", without warranties of any kind. We do not guarantee views, replies, dates, matches, or that the Site will be uninterrupted or error-free.</p>
+
+      <h2>9. Limitation of liability</h2>
+      <p>To the fullest extent permitted by law, Ready Too Mingle and its owners, employees, and partners are not liable for any injury, loss, damage, or harm of any kind — including personal injury, emotional distress, property loss, or death — arising from your use of the Site or from any contact or meeting with another member, on or off the Site. Our total liability for any claim will not exceed the amount you paid us in the 30 days before the claim.</p>
+
+      <h2>10. Release and indemnification</h2>
+      <p>You release Ready Too Mingle from any claims arising from disputes or interactions with other members. You agree to defend and hold Ready Too Mingle harmless from any claims, losses, or costs (including legal fees) caused by your ads, your conduct, or your violation of these Terms.</p>
+
+      <h2>11. Payments</h2>
+      <p>Ads and boosts are paid placement for the listed time period. All sales are final unless required otherwise by law.</p>
+
+      <h2>12. Changes</h2>
+      <p>We may update these Terms at any time. Continuing to use the Site after changes means you accept them.</p>
+
+      <p className="text-xs">These terms should be reviewed by a licensed attorney before launch.</p>
     </InfoPage>
   ),
 });
