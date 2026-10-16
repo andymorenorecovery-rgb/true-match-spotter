@@ -76,7 +76,7 @@ function Home() {
           </div>
         </form>
         <Link to="/post" className="mt-6 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground shadow-glow">
-          Post an ad — {formatPrice(PRICING.standardAd.priceCents)}
+          Post an ad — from {formatPrice(PRICING.dayAd.priceCents)}
         </Link>
       </section>
 
