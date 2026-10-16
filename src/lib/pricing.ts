@@ -8,3 +8,6 @@ export const PRICING = {
 
 export const formatPrice = (cents: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: PRICING.currency, maximumFractionDigits: 0 }).format(cents / 100);
+
+/** Checkout price IDs for each product (same in test and live). */
+export const PRICE_IDS = { dayAd: "day_ad_once", weekAd: "week_ad_once", boost: "boost_once" } as const;

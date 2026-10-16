@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Star } from "lucide-react";
-import { boostLocalAd, isOwnAd } from "@/lib/local-ads";
-import { PRICING, formatPrice } from "@/lib/pricing";
+import { isOwnAd } from "@/lib/local-ads";
+import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, getPhotos, isFeatured, type Listing } from "@/lib/listings";
+import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export function PhotoGallery({ l }: { l: Listing }) {
   const photos = getPhotos(l);
@@ -84,14 +85,15 @@ export function ListingInfo({ l }: { l: Listing }) {
       {isOwnAd(l.id) && (
         <div className="mt-4 rounded-2xl border border-boost p-4 text-center">
           <button
-            onClick={() => { boostLocalAd(l.id, PRICING.boost.durationHours); setBoosted(true); }}
+            onClick={() => setBoosted(true)}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-boost py-3 font-semibold text-background shadow-boost"
           >
             <Star className="h-4 w-4 fill-current" /> Boost to the top — {formatPrice(PRICING.boost.priceCents)}
           </button>
           <p className="mt-2 text-xs text-muted-foreground">
-            {boosted ? "Boosted! Your ad is back on top for the next 24 hours." : `This is your ad. Boosting puts it first with a green glow for ${PRICING.boost.durationHours} hours. Test mode — no charge.`}
+            {`This is your ad. Boosting puts it first with a green glow for ${PRICING.boost.durationHours} hours.`}
           </p>
+          <CheckoutDialog request={boosted ? { adId: l.id, kind: "boost", priceIds: [PRICE_IDS.boost] } : null} onClose={() => setBoosted(false)} />
         </div>
       )}
     </div>

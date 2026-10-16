@@ -15,3 +15,4 @@
 - Listing ordering (featured rotation, expiry filtering) lives in `src/lib/listings.ts` as pure functions with tests. Why: core money logic must be testable and portable.
 - Shared header/footer live in `src/routes/__root.tsx`; each page is its own route file. Why: real URLs for SEO.
 - Keep dependencies portable (no host-only services without a documented alternative). Why: owner plans to self-host.
+- Payments: checkout server functions live in `src/utils/payments.functions.ts`; ads/boosts are applied only after the server confirms the checkout was paid. Why: never trust the browser for money.

@@ -1,10 +1,11 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
-import { resizeImage, saveLocalAd } from "@/lib/local-ads";
-import { PRICING, formatPrice } from "@/lib/pricing";
+import { resizeImage, savePendingAd } from "@/lib/local-ads";
+import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
+import { CheckoutDialog, type CheckoutRequest } from "@/components/CheckoutDialog";
 
 export const Route = createFileRoute("/post")({
   head: () => ({
@@ -29,7 +30,7 @@ function PostAd() {
   const [plan, setPlan] = useState<"dayAd" | "weekAd">("dayAd");
   const [boost, setBoost] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [checkout, setCheckout] = useState<CheckoutRequest | null>(null);
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
 
@@ -64,12 +65,17 @@ function PostAd() {
         : {}),
     };
     try {
-      saveLocalAd(ad);
+      savePendingAd(ad);
     } catch {
-      return setError("Those photos are too big to save in test mode. Try fewer photos.");
+      return setError("Those photos are too big to save. Try fewer photos.");
     }
-    navigate({ to: "/" });
+    setCheckout({
+      adId: ad.id,
+      kind: "post",
+      priceIds: [PRICE_IDS[plan], ...(plan === "dayAd" && boost ? [PRICE_IDS.boost] : [])],
+    });
   };
+  const total = PRICING[plan].priceCents + (plan === "dayAd" && boost ? PRICING.boost.priceCents : 0);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -209,10 +215,11 @@ function PostAd() {
 
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
-            Post my ad (test mode — free)
+            Pay {formatPrice(total)} and post my ad
           </button>
-          <p className="text-center text-xs text-muted-foreground">Test mode: your ad only shows on this device. No payment is taken.</p>
+          <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>
         </form>
+        <CheckoutDialog request={checkout} onClose={() => setCheckout(null)} />
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Preview</p>
