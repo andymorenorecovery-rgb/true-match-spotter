@@ -26,13 +26,16 @@ describe("rankListings", () => {
     const r = rankListings([base("a", { expiresAt: d(-1) }), base("b", { status: "draft" }), base("c")], now);
     expect(r.map((l) => l.id)).toEqual(["c"]);
   });
-  it("puts active featured ads first and drops expired boosts back to regular", () => {
-    const r = rankListings([base("a", { postedAt: d(0) }), base("b", { featuredUntil: d(1) }), base("c", { featuredUntil: d(-1), postedAt: d(-5) })], now, 0);
+  it("puts active boosted ads first and drops expired boosts back to regular", () => {
+    const r = rankListings([base("a", { postedAt: d(0) }), base("b", { featuredUntil: d(1) }), base("c", { featuredUntil: d(-1), postedAt: d(-5) })], now);
     expect(r.map((l) => l.id)).toEqual(["b", "a", "c"]);
   });
-  it("rotates which featured ad is on top", () => {
-    const list = [base("a", { featuredUntil: d(1) }), base("b", { featuredUntil: d(1) })];
-    expect(rankListings(list, now, 0)[0]?.id).toBe("a");
-    expect(rankListings(list, now, 1)[0]?.id).toBe("b");
+  it("keeps boosted ads on top even when a newer unboosted ad exists", () => {
+    const r = rankListings([base("new", { postedAt: d(0) }), base("boost", { featuredUntil: d(1), postedAt: d(-3) })], now);
+    expect(r.map((l) => l.id)).toEqual(["boost", "new"]);
+  });
+  it("orders multiple boosted ads ahead of every regular ad", () => {
+    const r = rankListings([base("a"), base("b1", { featuredUntil: d(1), postedAt: d(-1) }), base("b2", { featuredUntil: d(1), postedAt: d(-2) })], now);
+    expect(r.map((l) => l.id)).toEqual(["b1", "b2", "a"]);
   });
 });
