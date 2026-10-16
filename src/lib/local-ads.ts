@@ -19,6 +19,18 @@ export function saveLocalAd(ad: Listing) {
   window.dispatchEvent(new Event(EVENT));
 }
 
+/** Test mode: ads saved on this device are the visitor's own. */
+export const isOwnAd = (id: string) => id.startsWith("local-");
+
+/** Puts the ad back on top for another boost period (starts now). */
+export function boostLocalAd(id: string, hours: number) {
+  const all = loadLocalAds().map((a) =>
+    a.id === id ? { ...a, featuredUntil: new Date(Date.now() + hours * 3600000).toISOString() } : a,
+  );
+  localStorage.setItem(KEY, JSON.stringify(all));
+  window.dispatchEvent(new Event(EVENT));
+}
+
 export function clearLocalAds() {
   localStorage.removeItem(KEY);
   window.dispatchEvent(new Event(EVENT));

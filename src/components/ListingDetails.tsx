@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar, MapPin, Phone, Star } from "lucide-react";
+import { boostLocalAd, isOwnAd } from "@/lib/local-ads";
+import { PRICING, formatPrice } from "@/lib/pricing";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, getPhotos, isFeatured, type Listing } from "@/lib/listings";
 
 export function PhotoGallery({ l }: { l: Listing }) {
@@ -32,6 +34,7 @@ export function PhotoGallery({ l }: { l: Listing }) {
 }
 
 export function ListingInfo({ l }: { l: Listing }) {
+  const [boosted, setBoosted] = useState(false);
   const rows = [{ label: "Age", value: String(l.age) }, ...DETAIL_FIELDS.map((f) => ({ label: f.label, value: l.details[f.key] }))].filter((r) => r.value);
   return (
     <div>
@@ -60,6 +63,19 @@ export function ListingInfo({ l }: { l: Listing }) {
         </a>
       ) : (
         <p className="mt-8 rounded-full bg-secondary py-3 text-center text-sm text-muted-foreground">This person chose not to share a number</p>
+      )}
+      {isOwnAd(l.id) && (
+        <div className="mt-4 rounded-2xl border border-boost p-4 text-center">
+          <button
+            onClick={() => { boostLocalAd(l.id, PRICING.boost.durationHours); setBoosted(true); }}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-boost py-3 font-semibold text-background shadow-boost"
+          >
+            <Star className="h-4 w-4 fill-current" /> Boost to the top — {formatPrice(PRICING.boost.priceCents)}
+          </button>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {boosted ? "Boosted! Your ad is back on top for the next 24 hours." : `This is your ad. Boosting puts it first with a green glow for ${PRICING.boost.durationHours} hours. Test mode — no charge.`}
+          </p>
+        </div>
       )}
     </div>
   );
