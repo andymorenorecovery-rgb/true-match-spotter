@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Star } from "lucide-react";
-import { CATEGORIES, isFeatured, type Listing } from "@/lib/listings";
+import { CATEGORIES, formatLocation, isFeatured, type Listing } from "@/lib/listings";
 
 export function ListingCard({ l }: { l: Listing }) {
   const featured = isFeatured(l);
@@ -21,8 +21,8 @@ export function ListingCard({ l }: { l: Listing }) {
       <div className="p-4">
         <p className="text-xs uppercase tracking-wide text-primary">{CATEGORIES.find((c) => c.id === l.category)?.label}</p>
         <h3 className="mt-1 text-lg font-semibold leading-snug">{l.title}</h3>
-        <p className="mt-1 text-sm text-muted-foreground">{l.name}, {l.age}</p>
-        <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3 w-3" />{l.area}, {l.city}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{l.name}, {l.age}{l.details.height ? ` · ${l.details.height}` : ""}{l.details.hairColor ? ` · ${l.details.hairColor} hair` : ""}</p>
+        <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3 w-3" />{formatLocation(l)}</p>
       </div>
     </Link>
   );

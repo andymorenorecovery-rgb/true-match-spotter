@@ -5,7 +5,7 @@ import { PRICING } from "@/lib/pricing";
 const now = Date.parse("2026-10-16T00:00:00Z");
 const d = (days: number) => new Date(now + days * 86400000).toISOString();
 const base = (id: string, extra: Partial<Listing> = {}): Listing => ({
-  id, title: id, name: id, age: 30, city: "LA", area: "x", category: "dating", body: "", img: "",
+  id, title: id, name: id, age: 30, city: "LA", area: "x", category: "dating", body: "", img: "", state: "CA", details: {},
   status: "published", postedAt: d(-1), expiresAt: d(10), ...extra,
 });
 
