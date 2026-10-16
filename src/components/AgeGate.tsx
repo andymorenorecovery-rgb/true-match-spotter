@@ -41,6 +41,8 @@ export function AgeGate() {
       /* storage unavailable — the gate will simply ask again next visit */
     }
     setState("ok");
+    // Always land on the front page after confirming.
+    navigate({ to: "/" });
   }
 
   return (
