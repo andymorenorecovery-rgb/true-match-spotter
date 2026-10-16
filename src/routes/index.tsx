@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { ListingCard } from "@/components/ListingCard";
 import { CATEGORIES, SAMPLE_LISTINGS, rankListings, type Category } from "@/lib/listings";
 import { PRICING, formatPrice } from "@/lib/pricing";
+import { US_CITIES, US_STATES } from "@/data/us-locations";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,23 +24,28 @@ const PAGE = 8;
 
 function Home() {
   const [q, setQ] = useState("");
+  const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [cat, setCat] = useState<Category | "">("");
   const [sort, setSort] = useState<"featured" | "newest">("featured");
   const [shown, setShown] = useState(PAGE);
 
-  const cities = useMemo(() => [...new Set(SAMPLE_LISTINGS.map((l) => l.city))].sort(), []);
+  const cities = useMemo(() => {
+    if (state) return [...(US_CITIES[state] ?? [])];
+    return [...new Set(SAMPLE_LISTINGS.map((l) => l.city))].sort();
+  }, [state]);
   const results = useMemo(() => {
     let r = rankListings(SAMPLE_LISTINGS);
     if (sort === "newest") r = [...r].sort((a, b) => b.postedAt.localeCompare(a.postedAt));
     const term = q.trim().toLowerCase();
     return r.filter(
       (l) =>
+        (!state || l.state === state) &&
         (!city || l.city === city) &&
         (!cat || l.category === cat) &&
         (!term || `${l.title} ${l.body} ${l.area}`.toLowerCase().includes(term)),
     );
-  }, [q, city, cat, sort]);
+  }, [q, state, city, cat, sort]);
 
   return (
     <div>
@@ -51,6 +57,15 @@ function Home() {
           Local personal ads for dating, friendship and finding someone to share your hobbies with.
         </p>
         <form onSubmit={(e) => e.preventDefault()} className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl border bg-card p-2 sm:flex-row">
+          <select
+            value={state}
+            onChange={(e) => { setState(e.target.value); setCity(""); setShown(PAGE); }}
+            aria-label="State"
+            className="rounded-xl bg-secondary px-4 py-3 text-sm outline-none"
+          >
+            <option value="">All states</option>
+            {US_STATES.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
+          </select>
           <select value={city} onChange={(e) => { setCity(e.target.value); setShown(PAGE); }} aria-label="City" className="rounded-xl bg-secondary px-4 py-3 text-sm outline-none">
             <option value="">All cities</option>
             {cities.map((c) => <option key={c}>{c}</option>)}
