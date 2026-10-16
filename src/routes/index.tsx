@@ -5,6 +5,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { CATEGORIES, SAMPLE_LISTINGS, isFeatured, rankListings, type Category } from "@/lib/listings";
 import { PRICING, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
+import { useLocalAds } from "@/lib/local-ads";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,12 +32,13 @@ function Home() {
   const [shown, setShown] = useState(PAGE);
   const [seeking, setSeeking] = useState<"" | "Woman" | "Man">("");
 
+  const localAds = useLocalAds();
   const cities = useMemo(() => {
     if (state) return [...(US_CITIES[state] ?? [])];
     return [...new Set(SAMPLE_LISTINGS.map((l) => l.city))].sort();
   }, [state]);
   const results = useMemo(() => {
-    let r = rankListings(SAMPLE_LISTINGS);
+    let r = rankListings([...localAds, ...SAMPLE_LISTINGS]);
     // Boosted ads stay on top whichever sort is picked; only the rest reshuffles.
     if (sort === "newest") {
       const boosted = r.filter((l) => isFeatured(l));
@@ -52,7 +54,7 @@ function Home() {
         (!seeking || l.details?.gender === seeking) &&
         (!term || `${l.title} ${l.body} ${l.area}`.toLowerCase().includes(term)),
     );
-  }, [q, state, city, cat, sort, seeking]);
+  }, [q, state, city, cat, sort, seeking, localAds]);
 
   return (
     <div>

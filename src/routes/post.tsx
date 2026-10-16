@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
-import { MapPin, Phone } from "lucide-react";
-import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details } from "@/lib/listings";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, type FormEvent, type ReactNode } from "react";
+import { ImagePlus, MapPin, Phone, X } from "lucide-react";
+import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
+import { resizeImage, saveLocalAd } from "@/lib/local-ads";
 import { PRICING, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
 
@@ -24,8 +25,48 @@ const input = "w-full rounded-xl border bg-background px-4 py-3 text-sm outline-
 function PostAd() {
   const [f, setF] = useState({ title: "", name: "", age: "", category: "dating" as Category, city: "", state: "", area: "", body: "", phone: "", showPhone: false });
   const [details, setDetails] = useState<Details>({});
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [plan, setPlan] = useState<"dayAd" | "weekAd">("dayAd");
+  const [boost, setBoost] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
+
+  const addPhotos = async (files: FileList | null) => {
+    if (!files) return;
+    const urls = await Promise.all([...files].slice(0, 6 - photos.length).map((file) => resizeImage(file)));
+    setPhotos((p) => [...p, ...urls].slice(0, 6));
+  };
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    const age = Number(f.age);
+    if (!f.title.trim() || !f.name.trim()) return setError("Please add a headline and your first name.");
+    if (!age || age < 18 || age > 99) return setError("You must be 18 or older to post.");
+    if (!f.state || !f.city.trim()) return setError("Please pick your state and city.");
+    if (!f.body.trim()) return setError("Please write something in your ad.");
+    if (!photos.length) return setError("Please add at least one photo.");
+    const now = Date.now();
+    const ad: Listing = {
+      id: `local-${now}`,
+      title: f.title.trim(), name: f.name.trim(), age,
+      city: f.city.trim(), state: f.state, area: f.area.trim(),
+      category: f.category, body: f.body.trim(),
+      img: photos[0]!, photos: photos.slice(1), details,
+      ...(f.showPhone && f.phone ? { phone: f.phone } : {}),
+      status: "published",
+      postedAt: new Date(now).toISOString(),
+      expiresAt: new Date(now + PRICING[plan].durationHours * 3600000).toISOString(),
+      ...(boost ? { featuredUntil: new Date(now + PRICING.boost.durationHours * 3600000).toISOString() } : {}),
+    };
+    try {
+      saveLocalAd(ad);
+    } catch {
+      return setError("Those photos are too big to save in test mode. Try fewer photos.");
+    }
+    navigate({ to: "/" });
+  };
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -33,7 +74,7 @@ function PostAd() {
       <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours or {formatPrice(PRICING.weekAd.priceCents)} for a week. Fill in as much or as little as you like.</p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
+        <form onSubmit={submit} className="space-y-8">
           <Section title="About you">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Headline" wide><input className={input} maxLength={80} value={f.title} onChange={(e) => set("title", e.target.value)} placeholder="e.g. Coffee lover looking for a hiking buddy" /></Field>
@@ -47,6 +88,24 @@ function PostAd() {
                 </div>
               </Field>
             </div>
+          </Section>
+
+          <Section title="Photos">
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+              {photos.map((p, i) => (
+                <div key={i} className="relative aspect-[3/4] overflow-hidden rounded-lg">
+                  <img src={p} alt="" className="h-full w-full object-cover" />
+                  <button type="button" aria-label="Remove photo" onClick={() => setPhotos((ps) => ps.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-overlay/70 p-1"><X className="h-3 w-3" /></button>
+                </div>
+              ))}
+              {photos.length < 6 && (
+                <label className="flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed text-xs text-muted-foreground">
+                  <ImagePlus className="h-5 w-5" /> Add
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }} />
+                </label>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">Up to 6 photos. The first one is your main photo.</p>
           </Section>
 
           <Section title="Your details">
@@ -107,9 +166,25 @@ function PostAd() {
             </label>
           </Section>
 
-          <button disabled className="w-full rounded-full bg-secondary py-4 font-semibold text-muted-foreground">
-            Publishing opens once accounts and payments are set up
+          <Section title="How long?">
+            <div className="flex flex-wrap gap-2">
+              {(["dayAd", "weekAd"] as const).map((p) => (
+                <button type="button" key={p} onClick={() => setPlan(p)} className={`rounded-full px-4 py-2 text-sm ${plan === p ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
+                  {p === "dayAd" ? "24 hours" : "1 week"} — {formatPrice(PRICING[p].priceCents)}
+                </button>
+              ))}
+            </div>
+            <label className="mt-4 flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={boost} onChange={(e) => setBoost(e.target.checked)} className="h-4 w-4 accent-primary" />
+              Boost to the top with a green glow (+{formatPrice(PRICING.boost.priceCents)})
+            </label>
+          </Section>
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
+            Post my ad (test mode — free)
           </button>
+          <p className="text-center text-xs text-muted-foreground">Test mode: your ad only shows on this device. No payment is taken.</p>
         </form>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
