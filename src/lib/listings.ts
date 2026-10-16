@@ -2,6 +2,9 @@ import p1 from "@/assets/p1.jpg";
 import p2 from "@/assets/p2.jpg";
 import p3 from "@/assets/p3.jpg";
 import p4 from "@/assets/p4.jpg";
+import p1b from "@/assets/p1b.jpg";
+import p1c from "@/assets/p1c.jpg";
+import p4b from "@/assets/p4b.jpg";
 
 export type Category = "dating" | "friendship" | "activity-partners";
 export const CATEGORIES: { id: Category; label: string }[] = [
@@ -43,6 +46,8 @@ export type Listing = {
   category: Category;
   body: string;
   img: string;
+  /** Extra photos after the main one. */
+  photos?: string[];
   details: Details;
   /** Shown only when the poster chose to share it. */
   phone?: string;
@@ -60,10 +65,10 @@ export const formatLocation = (l: Pick<Listing, "area" | "city" | "state">) =>
 
 // Sample ads shown until accounts and posting are connected.
 export const SAMPLE_LISTINGS: Listing[] = [
-  { id: "1", title: "Rooftop sunsets & vinyl nights", name: "Sofia", age: 28, city: "Los Angeles", state: "CA", area: "Silver Lake", category: "dating", body: "Looking for someone to split dessert with and argue about the best record of the 70s. Terrible puns encouraged.", img: p1, details: { gender: "Woman", height: `5'6"`, hairColor: "Brown", eyeColor: "Brown", bodyType: "Slim", languages: "English, Spanish", lookingFor: "Men" }, phone: "(213) 555-0142", status: "published", postedAt: iso(-1), expiresAt: iso(29), featuredUntil: iso(5) },
+  { id: "1", title: "Rooftop sunsets & vinyl nights", name: "Sofia", age: 28, city: "Los Angeles", state: "CA", area: "Silver Lake", category: "dating", body: "Looking for someone to split dessert with and argue about the best record of the 70s. Terrible puns encouraged.", img: p1, photos: [p1b, p1c], details: { gender: "Woman", height: `5'6"`, hairColor: "Brown", eyeColor: "Brown", bodyType: "Slim", languages: "English, Spanish", lookingFor: "Men" }, phone: "(213) 555-0142", status: "published", postedAt: iso(-1), expiresAt: iso(29), featuredUntil: iso(5) },
   { id: "2", title: "Weekend cycling buddy wanted", name: "Daniel", age: 32, city: "Los Angeles", state: "CA", area: "Santa Monica", category: "activity-partners", body: "Easy 40-mile coastal rides on Saturdays, coffee after. All paces welcome.", img: p2, details: { gender: "Man", height: `6'0"`, hairColor: "Black", eyeColor: "Brown", bodyType: "Athletic", lookingFor: "Anyone" }, status: "published", postedAt: iso(-2), expiresAt: iso(28) },
   { id: "3", title: "Trail walks and dog parks", name: "Hannah", age: 35, city: "San Diego", state: "CA", area: "North Park", category: "friendship", body: "New in town with a very friendly retriever. Would love hiking friends.", img: p3, details: { gender: "Woman", height: `5'8"`, hairColor: "Blonde", eyeColor: "Blue", bodyType: "Athletic", lookingFor: "Anyone" }, status: "published", postedAt: iso(-3), expiresAt: iso(27), featuredUntil: iso(2) },
-  { id: "4", title: "Dumpling hunter seeks partner in crime", name: "Marcus", age: 29, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", body: "Let's find the best street food in the city, one plate at a time.", img: p4, details: { gender: "Man", height: `5'11"`, hairColor: "Black", eyeColor: "Hazel", bodyType: "Average", lookingFor: "Women" }, status: "published", postedAt: iso(-4), expiresAt: iso(26) },
+  { id: "4", title: "Dumpling hunter seeks partner in crime", name: "Marcus", age: 29, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", photos: [p4b], body: "Let's find the best street food in the city, one plate at a time.", img: p4, details: { gender: "Man", height: `5'11"`, hairColor: "Black", eyeColor: "Hazel", bodyType: "Average", lookingFor: "Women" }, status: "published", postedAt: iso(-4), expiresAt: iso(26) },
   { id: "5", title: "Old ad", name: "Test", age: 40, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", body: "Expired.", img: p2, details: {}, status: "published", postedAt: iso(-40), expiresAt: iso(-10) },
 ];
 
@@ -84,3 +89,5 @@ export function rankListings(list: Listing[], now = Date.now(), seed = Math.floo
     .sort((a, b) => b.postedAt.localeCompare(a.postedAt));
   return [...rotated, ...regular];
 }
+
+export const getPhotos = (l: Pick<Listing, "img" | "photos">) => [l.img, ...(l.photos ?? [])];
