@@ -57,6 +57,8 @@ export type Listing = {
   postedAt: string;
   expiresAt: string;
   featuredUntil?: string;
+  /** Which paid plan posted the ad: day ads get a purple frame. */
+  plan?: "day" | "week";
 };
 
 const DAY = 86400000;
@@ -72,7 +74,7 @@ export const SAMPLE_LISTINGS: Listing[] = [
   { id: "3", title: "Trail walks and dog parks", name: "Hannah", age: 35, city: "San Diego", state: "CA", area: "North Park", category: "friendship", body: "New in town with a very friendly retriever. Would love hiking friends.", img: p3, details: { gender: "Woman", height: `5'8"`, hairColor: "Blonde", eyeColor: "Blue", bodyType: "Athletic", lookingFor: "Anyone" }, status: "published", postedAt: iso(-3), expiresAt: iso(27), featuredUntil: iso(2) },
   { id: "4", title: "Dumpling hunter seeks partner in crime", name: "Marcus", age: 29, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", photos: [p4b], body: "Let's find the best street food in the city, one plate at a time.", img: p4, details: { gender: "Man", height: `5'11"`, hairColor: "Black", eyeColor: "Hazel", bodyType: "Average", lookingFor: "Women" }, status: "published", postedAt: iso(-4), expiresAt: iso(26) },
   { id: "6", title: "Gallery hopping & long walks", name: "Amara", age: 31, city: "Chicago", state: "IL", area: "Wicker Park", category: "friendship", body: "New to the neighborhood and looking for a walking-and-coffee buddy. I know all the good thrift stores.", img: p5, details: { gender: "Woman", height: `5'7"`, hairColor: "Black", eyeColor: "Brown", bodyType: "Average", languages: "English", lookingFor: "Anyone" }, status: "published", postedAt: iso(-5), expiresAt: iso(25), featuredUntil: iso(1) },
-  { id: "7", title: "Sunrise hikes, then pancakes", name: "Jake", age: 27, city: "Denver", state: "CO", area: "Highlands", category: "activity-partners", body: "Looking for a regular hiking partner for the foothills. Beginners welcome, I bring the trail snacks.", img: p6, details: { gender: "Man", height: `6'1"`, hairColor: "Brown", eyeColor: "Green", bodyType: "Athletic", lookingFor: "Anyone" }, status: "published", postedAt: iso(-6), expiresAt: iso(24) },
+  { id: "7", title: "Sunrise hikes, then pancakes", name: "Jake", age: 27, city: "Denver", state: "CO", area: "Highlands", category: "activity-partners", body: "Looking for a regular hiking partner for the foothills. Beginners welcome, I bring the trail snacks.", img: p6, details: { gender: "Man", height: `6'1"`, hairColor: "Brown", eyeColor: "Green", bodyType: "Athletic", lookingFor: "Anyone" }, status: "published", postedAt: iso(-6), expiresAt: iso(24), plan: "day" },
   { id: "5", title: "Old ad", name: "Test", age: 40, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", body: "Expired.", img: p2, details: {}, status: "published", postedAt: iso(-40), expiresAt: iso(-10) },
 ];
 
@@ -82,11 +84,16 @@ export const isFeatured = (l: Listing, now = Date.now()) =>
 export const isPubliclyVisible = (l: Listing, now = Date.now()) =>
   l.status === "published" && new Date(l.expiresAt).getTime() > now;
 
-/** Boosted ads are always on top, first; everyone else follows, newest first. */
+/** Green = boosted right now; purple = a 24-hour ad that isn't boosted. */
+export const glowOf = (l: Listing, now = Date.now()): "boost" | "day" | null =>
+  isFeatured(l, now) ? "boost" : l.plan === "day" ? "day" : null;
+
+/** Boosted ads are always on top, most recently boosted first (newer boosts push older ones down); everyone else follows, newest first. */
 export function rankListings(list: Listing[], now = Date.now()) {
   const visible = list.filter((l) => isPubliclyVisible(l, now));
   const byNewest = (a: Listing, b: Listing) => b.postedAt.localeCompare(a.postedAt);
-  const boosted = visible.filter((l) => isFeatured(l, now)).sort(byNewest);
+  const byLatestBoost = (a: Listing, b: Listing) => b.featuredUntil!.localeCompare(a.featuredUntil!);
+  const boosted = visible.filter((l) => isFeatured(l, now)).sort(byLatestBoost);
   const regular = visible.filter((l) => !isFeatured(l, now)).sort(byNewest);
   return [...boosted, ...regular];
 }

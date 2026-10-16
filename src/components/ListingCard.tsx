@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Images, MapPin, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
-import { CATEGORIES, formatLocation, getPhotos, isFeatured, type Listing } from "@/lib/listings";
+import { CATEGORIES, formatLocation, getPhotos, glowOf, isFeatured, type Listing } from "@/lib/listings";
 
 export function ListingCard({ l }: { l: Listing }) {
   const [open, setOpen] = useState(false);
@@ -13,7 +13,7 @@ export function ListingCard({ l }: { l: Listing }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className={`group block w-full overflow-hidden rounded-xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-boost shadow-boost" : ""}`}
+        className={`group block w-full overflow-hidden rounded-xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-boost shadow-boost" : glowOf(l) === "day" ? "border-day-glow shadow-day" : ""}`}
       >
         <div className="relative aspect-[3/4] overflow-hidden">
           <img src={l.img} alt={l.title} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
