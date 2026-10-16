@@ -54,11 +54,11 @@ function PostAd() {
       city: f.city.trim(), state: f.state, area: f.area.trim(),
       category: f.category, body: f.body.trim(),
       img: photos[0]!, photos: photos.slice(1), details,
-      phone: f.showPhone && f.phone ? f.phone : undefined,
+      ...(f.showPhone && f.phone ? { phone: f.phone } : {}),
       status: "published",
       postedAt: new Date(now).toISOString(),
       expiresAt: new Date(now + PRICING[plan].durationHours * 3600000).toISOString(),
-      featuredUntil: boost ? new Date(now + PRICING.boost.durationHours * 3600000).toISOString() : undefined,
+      ...(boost ? { featuredUntil: new Date(now + PRICING.boost.durationHours * 3600000).toISOString() } : {}),
     };
     try {
       saveLocalAd(ad);
