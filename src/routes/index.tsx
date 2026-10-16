@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { ListingCard } from "@/components/ListingCard";
-import { CATEGORIES, SAMPLE_LISTINGS, rankListings, type Category } from "@/lib/listings";
+import { CATEGORIES, SAMPLE_LISTINGS, isFeatured, rankListings, type Category } from "@/lib/listings";
 import { PRICING, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
 
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const PAGE = 8;
+const PAGE = 9;
 
 function Home() {
   const [q, setQ] = useState("");
@@ -36,7 +36,12 @@ function Home() {
   }, [state]);
   const results = useMemo(() => {
     let r = rankListings(SAMPLE_LISTINGS);
-    if (sort === "newest") r = [...r].sort((a, b) => b.postedAt.localeCompare(a.postedAt));
+    // Boosted ads stay on top whichever sort is picked; only the rest reshuffles.
+    if (sort === "newest") {
+      const boosted = r.filter((l) => isFeatured(l));
+      const rest = r.filter((l) => !isFeatured(l)).sort((a, b) => b.postedAt.localeCompare(a.postedAt));
+      r = [...boosted, ...rest];
+    }
     const term = q.trim().toLowerCase();
     return r.filter(
       (l) =>
@@ -85,12 +90,12 @@ function Home() {
           <Chip active={!cat} onClick={() => setCat("")}>All</Chip>
           {CATEGORIES.map((c) => <Chip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>{c.label}</Chip>)}
           <select value={sort} onChange={(e) => setSort(e.target.value as "featured" | "newest")} aria-label="Sort" className="ml-auto rounded-full border bg-card px-4 py-2 text-sm">
-            <option value="featured">Featured first</option>
+            <option value="featured">Boosted first</option>
             <option value="newest">Newest</option>
           </select>
         </div>
         {results.length ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {results.slice(0, shown).map((l) => <ListingCard key={l.id} l={l} />)}
           </div>
         ) : (
