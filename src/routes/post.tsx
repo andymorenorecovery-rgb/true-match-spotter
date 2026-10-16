@@ -113,7 +113,7 @@ function PostAd() {
 
           <Section title="Your details">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {DETAIL_FIELDS.map((d) => (
+              {DETAIL_FIELDS.filter((d) => !d.multi).map((d) => (
                 <Field key={d.key} label={d.label}>
                   {d.options ? (
                     <select className={input} value={details[d.key] ?? ""} onChange={(e) => setDetails((p) => ({ ...p, [d.key]: e.target.value || undefined }))}>
@@ -126,6 +126,23 @@ function PostAd() {
                 </Field>
               ))}
             </div>
+            {DETAIL_FIELDS.filter((d) => d.multi).map((d) => {
+              const picked = details[d.key]?.split(", ").filter(Boolean) ?? [];
+              const toggle = (o: string) => {
+                const next = picked.includes(o) ? picked.filter((x) => x !== o) : [...picked, o];
+                setDetails((p) => ({ ...p, [d.key]: next.length ? next.join(", ") : undefined }));
+              };
+              return (
+                <div key={d.key} className="mt-4">
+                  <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{d.label} (tap all that apply)</span>
+                  <div className="flex flex-wrap gap-2">
+                    {d.options.map((o) => (
+                      <button type="button" key={o} onClick={() => toggle(o)} className={`rounded-full px-4 py-2 text-sm ${picked.includes(o) ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>{o}</button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </Section>
 
           <Section title="Location">
