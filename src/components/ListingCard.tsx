@@ -26,7 +26,7 @@ export function ListingCard({ l }: { l: Listing }) {
         </div>
         <div className="p-2.5">
           <p className="text-[10px] uppercase tracking-wide text-primary">{CATEGORIES.find((c) => c.id === l.category)?.label}</p>
-          <h3 className="mt-0.5 truncate text-sm font-semibold leading-snug">{l.title}</h3>
+          <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug">{l.title}</h3>
           <p className="mt-0.5 truncate text-xs text-muted-foreground">{l.name}, {l.age}{l.details.height ? ` · ${l.details.height}` : ""}{l.details.hairColor ? ` · ${l.details.hairColor} hair` : ""}</p>
           <p className="mt-1 flex items-center gap-1 truncate text-[11px] text-muted-foreground"><MapPin className="h-2.5 w-2.5 shrink-0" />{formatLocation(l)}</p>
         </div>
