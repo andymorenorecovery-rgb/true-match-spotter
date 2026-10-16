@@ -57,6 +57,15 @@ function Home() {
           Local personal ads for dating, friendship and finding someone to share your hobbies with.
         </p>
         <form onSubmit={(e) => e.preventDefault()} className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl border bg-card p-2 sm:flex-row">
+          <select
+            value={state}
+            onChange={(e) => { setState(e.target.value); setCity(""); setShown(PAGE); }}
+            aria-label="State"
+            className="rounded-xl bg-secondary px-4 py-3 text-sm outline-none"
+          >
+            <option value="">All states</option>
+            {US_STATES.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
+          </select>
           <select value={city} onChange={(e) => { setCity(e.target.value); setShown(PAGE); }} aria-label="City" className="rounded-xl bg-secondary px-4 py-3 text-sm outline-none">
             <option value="">All cities</option>
             {cities.map((c) => <option key={c}>{c}</option>)}
