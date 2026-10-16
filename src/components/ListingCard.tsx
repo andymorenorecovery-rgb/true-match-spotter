@@ -13,13 +13,13 @@ export function ListingCard({ l }: { l: Listing }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className={`group block w-full overflow-hidden rounded-2xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-primary shadow-glow" : ""}`}
+        className={`group block w-full overflow-hidden rounded-2xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-boost shadow-boost" : ""}`}
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           <img src={l.img} alt={l.title} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
           {featured && (
-            <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-gradient-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-              <Star className="h-3 w-3 fill-current" /> Featured
+            <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-boost px-3 py-1 text-xs font-semibold text-background">
+              <Star className="h-3 w-3 fill-current" /> Boosted
             </span>
           )}
           {count > 1 && <span className="absolute bottom-3 right-3 flex items-center gap-1 rounded-full bg-overlay/70 px-2 py-1 text-xs"><Images className="h-3 w-3" />{count}</span>}
