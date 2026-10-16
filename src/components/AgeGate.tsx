@@ -11,6 +11,7 @@ type GateState = "checking" | "open" | "denied" | "ok";
  * Nothing behind it is interactive while it is up.
  */
 export function AgeGate() {
+  const navigate = useNavigate();
   const [state, setState] = useState<GateState>("checking");
   const [checked, setChecked] = useState(false);
 
