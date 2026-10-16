@@ -6,7 +6,7 @@ import { boostLocalAd, claimSession, publishPendingAd } from "@/lib/local-ads";
 import { PRICING } from "@/lib/pricing";
 
 export const Route = createFileRoute("/checkout/return")({
-  validateSearch: (s: Record<string, unknown>): { session_id?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { session_id?: string | undefined } => ({
     session_id: typeof s['session_id'] === "string" ? s['session_id'] : undefined,
   }),
   head: () => ({

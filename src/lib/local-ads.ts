@@ -88,7 +88,7 @@ export function publishPendingAd(id: string): boolean {
   if (!ad) return false;
   const shift = Date.now() - new Date(ad.postedAt).getTime();
   const move = (iso?: string) => (iso ? new Date(new Date(iso).getTime() + shift).toISOString() : undefined);
-  saveLocalAd({ ...ad, postedAt: new Date().toISOString(), expiresAt: move(ad.expiresAt)!, ...(ad.featuredUntil ? { featuredUntil: move(ad.featuredUntil) } : {}) });
+  saveLocalAd({ ...ad, postedAt: new Date().toISOString(), expiresAt: move(ad.expiresAt)!, ...(ad.featuredUntil ? { featuredUntil: move(ad.featuredUntil)! } : {}) });
   delete all[id];
   localStorage.setItem(PENDING, JSON.stringify(all));
   return true;
