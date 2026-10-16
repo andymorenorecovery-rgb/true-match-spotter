@@ -5,9 +5,9 @@ import { CATEGORIES, DETAIL_FIELDS, SAMPLE_LISTINGS, formatLocation, isFeatured,
 function DetailsGrid({ l }: { l: Pick<Listing, "age" | "details"> }) {
   const rows = [{ label: "Age", value: String(l.age) }, ...DETAIL_FIELDS.map((f) => ({ label: f.label, value: l.details[f.key] }))].filter((r) => r.value);
   return (
-    <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border bg-card sm:grid-cols-3">
+    <dl className="mt-6 flex flex-wrap overflow-hidden rounded-2xl border bg-card">
       {rows.map((r) => (
-        <div key={r.label} className="px-4 py-3 shadow-[0_0_0_0.5px_var(--color-border)]">
+        <div key={r.label} className="grow basis-1/2 px-4 py-3 shadow-[0_0_0_0.5px_var(--color-border)] sm:basis-1/3">
           <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">{r.label}</dt>
           <dd className="mt-0.5 font-medium">{r.value}</dd>
         </div>
