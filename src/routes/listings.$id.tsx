@@ -1,20 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Calendar, MapPin, Phone, Star } from "lucide-react";
-import { CATEGORIES, DETAIL_FIELDS, SAMPLE_LISTINGS, formatLocation, isFeatured, isPubliclyVisible, type Listing } from "@/lib/listings";
-
-function DetailsGrid({ l }: { l: Pick<Listing, "age" | "details"> }) {
-  const rows = [{ label: "Age", value: String(l.age) }, ...DETAIL_FIELDS.map((f) => ({ label: f.label, value: l.details[f.key] }))].filter((r) => r.value);
-  return (
-    <dl className="mt-6 flex flex-wrap overflow-hidden rounded-2xl border bg-card">
-      {rows.map((r) => (
-        <div key={r.label} className="grow basis-1/2 px-4 py-3 shadow-[0_0_0_0.5px_var(--color-border)] sm:basis-1/3">
-          <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">{r.label}</dt>
-          <dd className="mt-0.5 font-medium">{r.value}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
+import { ArrowLeft } from "lucide-react";
+import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
+import { SAMPLE_LISTINGS, isPubliclyVisible } from "@/lib/listings";
 
 export const Route = createFileRoute("/listings/$id")({
   loader: ({ params }) => {
@@ -50,26 +37,8 @@ function ListingPage() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="h-4 w-4" /> All ads</Link>
       <div className="grid gap-8 md:grid-cols-2">
-        <img src={l.img} alt={l.title} className="aspect-[3/4] w-full rounded-3xl object-cover" />
-        <div>
-          {isFeatured(l) && <span className="mb-3 inline-flex items-center gap-1 rounded-full bg-gradient-primary px-3 py-1 text-xs font-semibold text-primary-foreground"><Star className="h-3 w-3 fill-current" /> Featured · paid placement</span>}
-          <p className="text-xs uppercase tracking-wide text-primary">{CATEGORIES.find((c) => c.id === l.category)?.label}</p>
-          <h1 className="mt-1 text-3xl font-bold">{l.title}</h1>
-          <p className="mt-2 text-muted-foreground">{l.name}, {l.age}</p>
-          <div className="mt-4 space-y-1 text-sm text-muted-foreground">
-            <p className="flex items-center gap-2"><MapPin className="h-4 w-4" />{formatLocation(l)}</p>
-            <p className="flex items-center gap-2"><Calendar className="h-4 w-4" />Posted {new Date(l.postedAt).toLocaleDateString()}</p>
-          </div>
-          <DetailsGrid l={l} />
-          <p className="mt-6 leading-relaxed">{l.body}</p>
-          {l.phone ? (
-            <a href={`tel:${l.phone.replace(/[^\d+]/g, "")}`} className="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-primary py-3 font-semibold text-primary-foreground shadow-glow">
-              <Phone className="h-4 w-4" /> {l.phone}
-            </a>
-          ) : (
-            <p className="mt-8 rounded-full bg-secondary py-3 text-center text-sm text-muted-foreground">This person chose not to share a number</p>
-          )}
-        </div>
+        <PhotoGallery l={l} />
+        <ListingInfo l={l} />
       </div>
     </div>
   );
