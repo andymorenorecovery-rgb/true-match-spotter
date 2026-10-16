@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 
 const KEY = "rtm-age-ok";
@@ -11,6 +11,7 @@ type GateState = "checking" | "open" | "denied" | "ok";
  * Nothing behind it is interactive while it is up.
  */
 export function AgeGate() {
+  const navigate = useNavigate();
   const [state, setState] = useState<GateState>("checking");
   const [checked, setChecked] = useState(false);
 
@@ -40,6 +41,8 @@ export function AgeGate() {
       /* storage unavailable — the gate will simply ask again next visit */
     }
     setState("ok");
+    // Always land on the front page after confirming.
+    navigate({ to: "/" });
   }
 
   return (
