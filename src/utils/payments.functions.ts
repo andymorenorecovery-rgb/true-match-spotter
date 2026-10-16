@@ -48,9 +48,9 @@ export const getCheckoutResult = createServerFn({ method: "POST" })
       const s = await stripe.checkout.sessions.retrieve(data.sessionId);
       return {
         paid: s.payment_status !== "unpaid" && s.status === "complete",
-        adId: s.metadata?.adId ?? "",
-        kind: s.metadata?.kind ?? "",
-        items: (s.metadata?.items ?? "").split(",").filter(Boolean),
+        adId: s.metadata?.['adId'] ?? "",
+        kind: s.metadata?.['kind'] ?? "",
+        items: (s.metadata?.['items'] ?? "").split(",").filter(Boolean),
       };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };

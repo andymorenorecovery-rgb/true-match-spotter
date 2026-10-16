@@ -7,7 +7,7 @@ import { PRICING } from "@/lib/pricing";
 
 export const Route = createFileRoute("/checkout/return")({
   validateSearch: (s: Record<string, unknown>): { session_id?: string } => ({
-    session_id: typeof s.session_id === "string" ? s.session_id : undefined,
+    session_id: typeof s['session_id'] === "string" ? s['session_id'] : undefined,
   }),
   head: () => ({
     meta: [
