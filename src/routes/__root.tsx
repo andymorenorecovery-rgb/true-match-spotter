@@ -78,10 +78,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Companion Compass — Dating for grown-ups" },
-      { name: "description", content: "Meet real people nearby. Swipe, match and chat on Companion Compass." },
-      { property: "og:title", content: "Companion Compass — Dating for grown-ups" },
-      { property: "og:description", content: "Meet real people nearby. Swipe, match and chat on Companion Compass." },
+      { title: "Ready Too Mingle — Local personal ads" },
+      { name: "description", content: "Local personal ads for dating, friendship and activity partners." },
+      { property: "og:title", content: "Ready Too Mingle — Local personal ads" },
+      { property: "og:description", content: "Local personal ads for dating, friendship and activity partners." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -124,8 +124,35 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="flex min-h-screen flex-col">
+        <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+            <Link to="/" className="text-xl font-bold sm:text-2xl" style={{ fontFamily: "var(--font-display)" }}>
+              Ready Too <span className="text-gradient italic">Mingle</span>
+            </Link>
+            <nav className="flex items-center gap-4 text-sm">
+              <Link to="/pricing" className="hidden text-muted-foreground hover:text-foreground sm:inline">Pricing</Link>
+              <Link to="/faq" className="hidden text-muted-foreground hover:text-foreground sm:inline">FAQ</Link>
+              <Link to="/post" className="rounded-full bg-gradient-primary px-4 py-2 font-semibold text-primary-foreground">Post an ad</Link>
+            </nav>
+          </div>
+        </header>
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <footer className="border-t">
+          <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 px-4 py-8 text-sm text-muted-foreground">
+            <p>© {new Date().getFullYear()} Ready Too Mingle · 18+ only</p>
+            <div className="flex gap-4">
+              <Link to="/pricing">Pricing</Link>
+              <Link to="/faq">FAQ</Link>
+              <Link to="/contact">Contact</Link>
+              <Link to="/privacy">Privacy</Link>
+              <Link to="/terms">Terms</Link>
+            </div>
+          </div>
+        </footer>
+      </div>
     </QueryClientProvider>
   );
 }
