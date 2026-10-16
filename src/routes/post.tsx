@@ -53,7 +53,7 @@ function PostAd() {
       title: f.title.trim(), name: f.name.trim(), age,
       city: f.city.trim(), state: f.state, area: f.area.trim(),
       category: f.category, body: f.body.trim(),
-      img: photos[0], photos: photos.slice(1), details,
+      img: photos[0]!, photos: photos.slice(1), details,
       phone: f.showPhone && f.phone ? f.phone : undefined,
       status: "published",
       postedAt: new Date(now).toISOString(),
