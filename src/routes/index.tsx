@@ -71,8 +71,14 @@ function Home() {
             <option value="">All states</option>
             {US_STATES.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
           </select>
-          <select value={city} onChange={(e) => { setCity(e.target.value); setShown(PAGE); }} aria-label="City" className="rounded-xl bg-secondary px-4 py-3 text-sm outline-none">
-            <option value="">All cities</option>
+          <select
+            value={city}
+            onChange={(e) => { setCity(e.target.value); setShown(PAGE); }}
+            aria-label="City"
+            disabled={!state}
+            className="rounded-xl bg-secondary px-4 py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <option value="">{state ? "All cities" : "Pick a state first"}</option>
             {cities.map((c) => <option key={c}>{c}</option>)}
           </select>
           <div className="flex flex-1 items-center gap-2 px-3">
