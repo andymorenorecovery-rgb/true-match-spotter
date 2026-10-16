@@ -106,7 +106,7 @@ export function AgeGate() {
             </span>
           </label>
 
-          <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          <p className="mt-4 text-xs leading-relaxed text-foreground/70">
             Lying about your age breaks our terms: your ads come down, your account is removed with
             no refund, and where the law allows we will report it and press charges.
           </p>
