@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: "Playfair Display", Georgia, serif;
   --font-sans: "Manrope", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -39,31 +39,31 @@
 
 :root {
   --radius: 1rem;
-  --background: oklch(0.15 0.015 10);
-  --foreground: oklch(0.97 0.01 20);
-  --card: oklch(0.2 0.02 10);
-  --card-foreground: oklch(0.97 0.01 20);
-  --popover: oklch(0.2 0.02 10);
-  --popover-foreground: oklch(0.97 0.01 20);
-  --primary: oklch(0.65 0.22 12);
-  --primary-glow: oklch(0.75 0.17 40);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.26 0.02 10);
-  --secondary-foreground: oklch(0.97 0.01 20);
-  --muted: oklch(0.24 0.015 10);
-  --muted-foreground: oklch(0.7 0.02 20);
-  --accent: oklch(0.3 0.04 12);
-  --accent-foreground: oklch(0.97 0.01 20);
-  --like: oklch(0.78 0.16 155);
-  --destructive: oklch(0.62 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.65 0.22 12);
-  --overlay: oklch(0.1 0.01 10);
-  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
-  --gradient-card: linear-gradient(to top, oklch(0.1 0.01 10 / 0.95), oklch(0.1 0.01 10 / 0) 55%);
-  --shadow-glow: 0 20px 50px -15px color-mix(in oklab, var(--primary) 55%, transparent);
+  --background: hsl(260 20% 6%);
+  --foreground: hsl(40 20% 90%);
+  --card: hsl(260 18% 10%);
+  --card-foreground: hsl(40 20% 90%);
+  --popover: hsl(260 18% 10%);
+  --popover-foreground: hsl(40 20% 90%);
+  --primary: hsl(43 90% 55%);
+  --primary-glow: hsl(43 80% 70%);
+  --primary-foreground: hsl(260 20% 6%);
+  --secondary: hsl(270 30% 18%);
+  --secondary-foreground: hsl(40 20% 90%);
+  --muted: hsl(260 15% 15%);
+  --muted-foreground: hsl(260 10% 55%);
+  --accent: hsl(280 40% 30%);
+  --accent-foreground: hsl(40 20% 95%);
+  --like: hsl(150 55% 50%);
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(40 20% 95%);
+  --border: hsl(260 15% 18%);
+  --input: hsl(260 15% 18%);
+  --ring: hsl(43 90% 55%);
+  --overlay: hsl(260 20% 4%);
+  --gradient-primary: linear-gradient(135deg, hsl(43 90% 55%), hsl(43 80% 70%));
+  --gradient-card: linear-gradient(to top, hsl(260 20% 4% / 0.95), hsl(260 20% 4% / 0) 55%);
+  --shadow-glow: 0 20px 50px -15px color-mix(in oklab, hsl(43 90% 55%) 55%, transparent);
 }
 
 @layer base {
