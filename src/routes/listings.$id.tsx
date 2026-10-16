@@ -43,7 +43,7 @@ function ListingPage() {
           <h1 className="mt-1 text-3xl font-bold">{l.title}</h1>
           <p className="mt-2 text-muted-foreground">{l.name}, {l.age}</p>
           <div className="mt-4 space-y-1 text-sm text-muted-foreground">
-            <p className="flex items-center gap-2"><MapPin className="h-4 w-4" />{l.area}, {l.city}</p>
+            <p className="flex items-center gap-2"><MapPin className="h-4 w-4" />{formatLocation(l)}</p>
             <p className="flex items-center gap-2"><Calendar className="h-4 w-4" />Posted {new Date(l.postedAt).toLocaleDateString()}</p>
           </div>
           <p className="mt-6 leading-relaxed">{l.body}</p>
