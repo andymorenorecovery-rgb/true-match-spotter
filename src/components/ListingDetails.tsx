@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Calendar, MapPin, Phone, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Star } from "lucide-react";
 import { boostLocalAd, isOwnAd } from "@/lib/local-ads";
 import { PRICING, formatPrice } from "@/lib/pricing";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, getPhotos, isFeatured, type Listing } from "@/lib/listings";
@@ -35,6 +35,8 @@ export function PhotoGallery({ l }: { l: Listing }) {
 
 export function ListingInfo({ l }: { l: Listing }) {
   const [boosted, setBoosted] = useState(false);
+  const [reporting, setReporting] = useState(false);
+  const [reported, setReported] = useState(false);
   const rows = [{ label: "Age", value: String(l.age) }, ...DETAIL_FIELDS.map((f) => ({ label: f.label, value: l.details[f.key] }))].filter((r) => r.value);
   return (
     <div>
@@ -63,6 +65,21 @@ export function ListingInfo({ l }: { l: Listing }) {
         </a>
       ) : (
         <p className="mt-8 rounded-full bg-secondary py-3 text-center text-sm text-muted-foreground">This person chose not to share a number</p>
+      )}
+      {!isOwnAd(l.id) && (
+        <div className="mt-4 text-center text-sm">
+          {reported ? (
+            <p className="text-muted-foreground">Thanks — this ad was reported and will be reviewed.</p>
+          ) : reporting ? (
+            <div className="flex flex-wrap justify-center gap-2">
+              {["Nudity or sexual photos", "Selling sex / escort", "Under 18", "Fake or scam", "Harassment"].map((r) => (
+                <button key={r} onClick={() => setReported(true)} className="rounded-full bg-secondary px-3 py-1.5 text-xs">{r}</button>
+              ))}
+            </div>
+          ) : (
+            <button onClick={() => setReporting(true)} className="inline-flex items-center gap-1 text-muted-foreground underline"><Flag className="h-3.5 w-3.5" /> Report this ad</button>
+          )}
+        </div>
       )}
       {isOwnAd(l.id) && (
         <div className="mt-4 rounded-2xl border border-boost p-4 text-center">
