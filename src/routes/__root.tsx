@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AgeGate } from "../components/AgeGate";
+import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
 
 function NotFoundComponent() {
   return (
