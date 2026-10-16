@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Star } from "lucide-react";
 import { boostLocalAd, isOwnAd } from "@/lib/local-ads";
 import { PRICING, formatPrice } from "@/lib/pricing";
-import { CATEGORIES, DETAIL_FIELDS, formatLocation, getPhotos, isFeatured, type Listing } from "@/lib/listings";
+import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 
 export function PhotoGallery({ l }: { l: Listing }) {
   const photos = getPhotos(l);

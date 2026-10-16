@@ -127,6 +127,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col">
+        <PaymentTestModeBanner />
         <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
             <Link to="/" className="text-xl font-bold sm:text-2xl" style={{ fontFamily: "var(--font-display)" }}>

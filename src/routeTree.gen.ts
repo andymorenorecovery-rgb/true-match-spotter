@@ -16,6 +16,7 @@ import { Route as PostRouteImport } from './routes/post'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as ListingsIdRouteImport } from './routes/listings.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
+  id: '/checkout/return',
+  path: '/checkout/return',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ListingsIdRoute = ListingsIdRouteImport.update({
   id: '/listings/$id',
   path: '/listings/$id',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/listings/$id': typeof ListingsIdRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/listings/$id': typeof ListingsIdRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/listings/$id': typeof ListingsIdRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/terms'
+    | '/checkout/return'
     | '/listings/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/terms'
+    | '/checkout/return'
     | '/listings/$id'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/terms'
+    | '/checkout/return'
     | '/listings/$id'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  CheckoutReturnRoute: typeof CheckoutReturnRoute
   ListingsIdRoute: typeof ListingsIdRoute
 }
 
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/return': {
+      id: '/checkout/return'
+      path: '/checkout/return'
+      fullPath: '/checkout/return'
+      preLoaderRoute: typeof CheckoutReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/listings/$id': {
       id: '/listings/$id'
       path: '/listings/$id'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  CheckoutReturnRoute: CheckoutReturnRoute,
   ListingsIdRoute: ListingsIdRoute,
 }
 export const routeTree = rootRouteImport

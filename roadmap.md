@@ -7,3 +7,5 @@
 - [ ] Phase 5: $120 7-day Featured boost with fair rotation
 - [ ] Phase 6: Admin, moderation, messaging, reporting/blocking
 - [ ] Phase 7: Tests, docs, backups, independent-hosting migration guide
+- [x] Checkout for $20 / $120 ads and $10 boost (test mode)
+- [ ] Ask owner: what should happen on purchase/refund (no subscriptions in this app)
