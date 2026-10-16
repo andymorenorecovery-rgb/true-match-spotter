@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, MapPin, Phone, Star } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, SAMPLE_LISTINGS, formatLocation, isFeatured, isPubliclyVisible, type Listing } from "@/lib/listings";
 
-export function DetailsGrid({ l }: { l: Pick<Listing, "age" | "details"> }) {
+function DetailsGrid({ l }: { l: Pick<Listing, "age" | "details"> }) {
   const rows = [{ label: "Age", value: String(l.age) }, ...DETAIL_FIELDS.map((f) => ({ label: f.label, value: l.details[f.key] }))].filter((r) => r.value);
   return (
     <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-3">
