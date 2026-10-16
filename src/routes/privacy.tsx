@@ -2,16 +2,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { InfoPage, meta } from "@/components/InfoPage";
 
 export const Route = createFileRoute("/privacy")({
-  head: () => meta("Privacy policy", "How Ready Too Mingle handles your data."),
+  head: () => meta("Privacy policy", "How Ready Too Mingle keeps your information private and safe."),
   component: () => (
     <InfoPage title="Privacy policy">
-      <p><strong>Placeholder — needs legal review before launch.</strong></p>
-      <h2>What we collect</h2>
-      <p>Account details, ad content and photos, messages, and payment records. We never store card numbers.</p>
-      <h2>What's public</h2>
-      <p>Only your ad, first name, age, and the city and area you choose.</p>
+      <p>Your privacy matters. Here's what we keep and what other people can see.</p>
+      <h2>What other people see</h2>
+      <p>Only what you put in your ad: your first name, age, photos, details you chose to fill in, and your city and area. Never your last name, email or street address.</p>
+      <h2>Your phone number</h2>
+      <p>Your number stays hidden unless you tick "Show my number on my ad". You can turn it off any time.</p>
+      <h2>What we keep</h2>
+      <p>Your account email, your ads and photos, payment records, and reports made about ads. We never see or store your full card number — payments are handled by our payment provider.</p>
+      <h2>We never sell your information</h2>
+      <p>We don't sell or rent your details to anyone. We only share information when the law requires it, or to report illegal activity such as anything involving minors or trafficking.</p>
+      <h2>Staying safe</h2>
+      <p>Meet in public places, tell a friend where you're going, and never send money to someone you met on the site.</p>
       <h2>Deleting your data</h2>
-      <p>You can delete your account at any time. Retention periods will be listed here.</p>
+      <p>You can delete your ads and account at any time, and your information will be removed.</p>
+      <p className="text-xs">This policy should be reviewed by a lawyer before launch.</p>
     </InfoPage>
   ),
 });
