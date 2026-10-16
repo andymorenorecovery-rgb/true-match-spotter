@@ -29,6 +29,7 @@ function Home() {
   const [cat, setCat] = useState<Category | "">("");
   const [sort, setSort] = useState<"featured" | "newest">("featured");
   const [shown, setShown] = useState(PAGE);
+  const [seeking, setSeeking] = useState<"" | "Woman" | "Man">("");
 
   const cities = useMemo(() => {
     if (state) return [...(US_CITIES[state] ?? [])];
@@ -48,9 +49,10 @@ function Home() {
         (!state || l.state === state) &&
         (!city || l.city === city) &&
         (!cat || l.category === cat) &&
+        (!seeking || l.details?.gender === seeking) &&
         (!term || `${l.title} ${l.body} ${l.area}`.toLowerCase().includes(term)),
     );
-  }, [q, state, city, cat, sort]);
+  }, [q, state, city, cat, sort, seeking]);
 
   return (
     <div>
@@ -92,6 +94,12 @@ function Home() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-20">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-sm text-muted-foreground">Show me:</span>
+          <Chip active={!seeking} onClick={() => { setSeeking(""); setShown(PAGE); }}>Everyone</Chip>
+          <Chip active={seeking === "Woman"} onClick={() => { setSeeking("Woman"); setShown(PAGE); }}>Women</Chip>
+          <Chip active={seeking === "Man"} onClick={() => { setSeeking("Man"); setShown(PAGE); }}>Men</Chip>
+        </div>
         <div className="mb-6 flex flex-wrap items-center gap-2">
           <Chip active={!cat} onClick={() => setCat("")}>All</Chip>
           {CATEGORIES.map((c) => <Chip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>{c.label}</Chip>)}
