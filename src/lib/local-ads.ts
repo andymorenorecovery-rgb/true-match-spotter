@@ -64,3 +64,32 @@ export function resizeImage(file: File, max = 800): Promise<string> {
     img.src = URL.createObjectURL(file);
   });
 }
+
+// Ads waiting for payment. They only go live after the server confirms checkout was paid.
+const PENDING = "rtm-pending-ads";
+const USED = "rtm-used-sessions";
+
+export function savePendingAd(ad: Listing) {
+  const all = { ...JSON.parse(localStorage.getItem(PENDING) ?? "{}"), [ad.id]: ad };
+  localStorage.setItem(PENDING, JSON.stringify(all));
+}
+
+/** Marks a paid checkout as used; returns false if it was already applied. */
+export function claimSession(sessionId: string): boolean {
+  const used: string[] = JSON.parse(localStorage.getItem(USED) ?? "[]");
+  if (used.includes(sessionId)) return false;
+  localStorage.setItem(USED, JSON.stringify([...used, sessionId]));
+  return true;
+}
+
+export function publishPendingAd(id: string): boolean {
+  const all = JSON.parse(localStorage.getItem(PENDING) ?? "{}");
+  const ad = all[id] as Listing | undefined;
+  if (!ad) return false;
+  const shift = Date.now() - new Date(ad.postedAt).getTime();
+  const move = (iso?: string) => (iso ? new Date(new Date(iso).getTime() + shift).toISOString() : undefined);
+  saveLocalAd({ ...ad, postedAt: new Date().toISOString(), expiresAt: move(ad.expiresAt)!, ...(ad.featuredUntil ? { featuredUntil: move(ad.featuredUntil) } : {}) });
+  delete all[id];
+  localStorage.setItem(PENDING, JSON.stringify(all));
+  return true;
+}
