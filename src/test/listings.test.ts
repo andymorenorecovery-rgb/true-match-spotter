@@ -28,7 +28,7 @@ describe("rankListings", () => {
   });
   it("rotates which featured ad is on top", () => {
     const list = [base("a", { featuredUntil: d(1) }), base("b", { featuredUntil: d(1) })];
-    expect(rankListings(list, now, 0)[0].id).toBe("a");
-    expect(rankListings(list, now, 1)[0].id).toBe("b");
+    expect(rankListings(list, now, 0)[0]?.id).toBe("a");
+    expect(rankListings(list, now, 1)[0]?.id).toBe("b");
   });
 });
