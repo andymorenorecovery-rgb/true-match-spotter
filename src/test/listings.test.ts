@@ -10,11 +10,15 @@ const base = (id: string, extra: Partial<Listing> = {}): Listing => ({
 });
 
 describe("pricing", () => {
-  it("standard ad costs $20", () => expect(PRICING.standardAd.priceCents).toBe(2000));
-  it("featured boost costs $120 for 7 days", () => {
-    expect(PRICING.featuredBoost.priceCents).toBe(12000);
-    expect(PRICING.featuredBoost.durationDays).toBe(7);
+  it("posting for 24 hours costs $20", () => {
+    expect(PRICING.dayAd.priceCents).toBe(2000);
+    expect(PRICING.dayAd.durationHours).toBe(24);
   });
+  it("posting for a week costs $120", () => {
+    expect(PRICING.weekAd.priceCents).toBe(12000);
+    expect(PRICING.weekAd.durationHours).toBe(168);
+  });
+  it("boosting to the top costs $20", () => expect(PRICING.boost.priceCents).toBe(2000));
 });
 
 describe("rankListings", () => {

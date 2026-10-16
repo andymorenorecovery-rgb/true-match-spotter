@@ -36,7 +36,7 @@ export function ListingInfo({ l }: { l: Listing }) {
   return (
     <div>
       <div className="flex flex-wrap gap-2">
-        {isFeatured(l) && <span className="inline-flex items-center gap-1 rounded-full bg-gradient-primary px-3 py-1 text-xs font-semibold text-primary-foreground"><Star className="h-3 w-3 fill-current" /> Featured</span>}
+        {isFeatured(l) && <span className="inline-flex items-center gap-1 rounded-full bg-boost px-3 py-1 text-xs font-semibold text-background"><Star className="h-3 w-3 fill-current" /> Boosted</span>}
         <span className="rounded-full bg-secondary px-3 py-1 text-xs">{CATEGORIES.find((c) => c.id === l.category)?.label}</span>
       </div>
       <h2 className="mt-3 text-3xl font-bold">{l.title}</h2>

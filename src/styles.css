@@ -22,6 +22,7 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-glow: var(--primary-glow);
+  --color-boost: var(--boost);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -47,6 +48,7 @@
   --popover-foreground: hsl(40 20% 90%);
   --primary: hsl(43 90% 55%);
   --primary-glow: hsl(43 80% 70%);
+  --boost: hsl(120 70% 72%);
   --primary-foreground: hsl(260 20% 6%);
   --secondary: hsl(270 30% 18%);
   --secondary-foreground: hsl(40 20% 90%);
@@ -79,6 +81,7 @@
 @utility bg-gradient-primary { background-image: var(--gradient-primary); }
 @utility bg-gradient-card { background-image: var(--gradient-card); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
+@utility shadow-boost { box-shadow: 0 0 0 2px var(--boost), 0 0 28px 4px color-mix(in oklab, var(--boost) 60%, transparent); }
 @utility text-gradient {
   background-image: var(--gradient-primary);
   -webkit-background-clip: text;

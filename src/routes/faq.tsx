@@ -7,9 +7,9 @@ export const Route = createFileRoute("/faq")({
   component: () => (
     <InfoPage title="Frequently asked questions">
       <h2>How much does an ad cost?</h2>
-      <p>{formatPrice(PRICING.standardAd.priceCents)} for one ad, listed for {PRICING.standardAd.durationDays} days.</p>
-      <h2>What is a Featured boost?</h2>
-      <p>{formatPrice(PRICING.featuredBoost.priceCents)} puts an active ad near the top of local listings for {PRICING.featuredBoost.durationDays} days, rotating fairly with other featured ads. It's paid placement, not extra ads.</p>
+      <p>{formatPrice(PRICING.dayAd.priceCents)} lists your ad for 24 hours, or {formatPrice(PRICING.weekAd.priceCents)} for a full week.</p>
+      <h2>What is a boost?</h2>
+      <p>{formatPrice(PRICING.boost.priceCents)} moves an active ad to the top of local listings for {PRICING.boost.durationHours} hours with a light-green glow, rotating fairly with other boosted ads. It's paid placement, not a promise of replies.</p>
       <h2>What can I post?</h2>
       <p>Ads looking for dating, friendship or activity partners. Ads offering paid services or adult content are not allowed.</p>
       <h2>Is my location shown?</h2>
