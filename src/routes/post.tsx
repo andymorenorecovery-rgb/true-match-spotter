@@ -3,6 +3,7 @@ import { useState, type ReactNode } from "react";
 import { MapPin, Phone } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details } from "@/lib/listings";
 import { PRICING, formatPrice } from "@/lib/pricing";
+import { US_CITIES, US_STATES } from "@/data/us-locations";
 
 export const Route = createFileRoute("/post")({
   head: () => ({
@@ -67,11 +68,30 @@ function PostAd() {
 
           <Section title="Location">
             <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="City"><input className={input} value={f.city} onChange={(e) => set("city", e.target.value)} placeholder="Los Angeles" /></Field>
-              <Field label="State"><input className={input} maxLength={2} value={f.state} onChange={(e) => set("state", e.target.value.toUpperCase())} placeholder="CA" /></Field>
+              <Field label="State">
+                <select className={input} value={f.state} onChange={(e) => { set("state", e.target.value); set("city", ""); }}>
+                  <option value="">Select a state</option>
+                  {US_STATES.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
+                </select>
+              </Field>
+              <Field label="City">
+                <input
+                  className={input}
+                  list="us-cities"
+                  value={f.city}
+                  onChange={(e) => set("city", e.target.value)}
+                  placeholder={f.state ? "Type or choose your city" : "Pick a state first"}
+                  disabled={!f.state}
+                />
+                {f.state && (
+                  <datalist id="us-cities">
+                    {US_CITIES[f.state]?.map((c) => <option key={c} value={c} />)}
+                  </datalist>
+                )}
+              </Field>
               <Field label="Area / neighborhood"><input className={input} value={f.area} onChange={(e) => set("area", e.target.value)} placeholder="Downtown" /></Field>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">Never enter your street address.</p>
+            <p className="mt-2 text-xs text-muted-foreground">Every US state and city is supported — small towns too; just type the name. Never enter your street address.</p>
           </Section>
 
           <Section title="Your ad">
