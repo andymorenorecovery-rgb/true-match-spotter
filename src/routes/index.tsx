@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Flame, Heart, MessageCircle, X, MapPin, Send, Star, ArrowLeft } from "lucide-react";
+import { Flame, Heart, MessageCircle, X, MapPin, Send, Star, ArrowLeft, Compass } from "lucide-react";
 import p1 from "@/assets/p1.jpg";
 import p2 from "@/assets/p2.jpg";
 import p3 from "@/assets/p3.jpg";
@@ -9,9 +9,9 @@ import p4 from "@/assets/p4.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Adult Spotter — Swipe, match & chat" },
+      { title: "Companion Compass — Swipe, match & chat" },
       { name: "description", content: "Discover people near you, match when it's mutual and start chatting." },
-      { property: "og:title", content: "Adult Spotter — Swipe, match & chat" },
+      { property: "og:title", content: "Companion Compass — Swipe, match & chat" },
       { property: "og:description", content: "Discover people near you, match when it's mutual and start chatting." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -54,8 +54,11 @@ function App() {
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col px-4 pb-24 pt-6">
       <header className="mb-5 flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Adult <span className="text-gradient italic">Spotter</span>
+        <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          <Compass className="h-6 w-6 shrink-0 text-primary" />
+          <span>
+            Companion <span className="text-gradient italic">Compass</span>
+          </span>
         </h1>
         <span className="rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">18+</span>
       </header>
