@@ -58,7 +58,10 @@ function PostAd() {
       status: "published",
       postedAt: new Date(now).toISOString(),
       expiresAt: new Date(now + PRICING[plan].durationHours * 3600000).toISOString(),
-      ...(boost ? { featuredUntil: new Date(now + PRICING.boost.durationHours * 3600000).toISOString() } : {}),
+      plan: plan === "dayAd" ? "day" : "week",
+      ...(plan === "weekAd" || boost
+        ? { featuredUntil: new Date(now + (plan === "weekAd" ? PRICING.weekAd.includedBoostHours : PRICING.boost.durationHours) * 3600000).toISOString() }
+        : {}),
     };
     try {
       saveLocalAd(ad);
@@ -174,10 +177,17 @@ function PostAd() {
                 </button>
               ))}
             </div>
-            <label className="mt-4 flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={boost} onChange={(e) => setBoost(e.target.checked)} className="h-4 w-4 accent-primary" />
-              Boost to the top with a green glow (+{formatPrice(PRICING.boost.priceCents)})
-            </label>
+            <p className="mt-3 text-xs text-muted-foreground">
+              {plan === "dayAd"
+                ? "24-hour ads get a purple frame."
+                : `Week ads get the green glow and a spot at the top for the first ${PRICING.weekAd.includedBoostHours} hours.`}
+            </p>
+            {plan === "dayAd" && (
+              <label className="mt-3 flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={boost} onChange={(e) => setBoost(e.target.checked)} className="h-4 w-4 accent-primary" />
+                Also boost to the top with a green glow (+{formatPrice(PRICING.boost.priceCents)} for {PRICING.boost.durationHours} hours)
+              </label>
+            )}
           </Section>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
