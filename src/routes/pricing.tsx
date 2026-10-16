@@ -23,9 +23,9 @@ function Pricing() {
       <h1 className="text-center text-4xl font-bold">Simple pricing</h1>
       <p className="mt-3 text-center text-muted-foreground">Pay only when you post. No subscriptions.</p>
       <div className="mt-10 grid gap-6 md:grid-cols-3">
-        <Plan name="24-hour ad" price={formatPrice(d.priceCents)} per={`for ${d.durationHours} hours`} items={["Appears in local listings", "All your details and photos", "Optional phone number"]} />
-        <Plan name="Week ad" price={formatPrice(w.priceCents)} per="for 7 days" items={["Listed for a full week", "All your details and photos", "Optional phone number"]} />
-        <Plan boost name="Boost to top" price={formatPrice(b.priceCents)} per={`for ${b.durationHours} hours`} items={["Moves your ad to the top", "Light-green glow around your ad", "Fair rotation with other boosted ads", "Add to any active ad"]} />
+        <Plan name="24-hour ad" price={formatPrice(d.priceCents)} per={`for ${d.durationHours} hours`} items={["Appears in local listings", "Purple frame around your ad", "All your details and photos", "Optional phone number"]} />
+        <Plan name="Week ad" price={formatPrice(w.priceCents)} per="for 7 days" items={["Listed for a full week", `Green glow and top spot for the first ${w.includedBoostHours} hours`, "All your details and photos", "Optional phone number"]} />
+        <Plan boost name="Boost to top" price={formatPrice(b.priceCents)} per={`for ${b.durationHours} hours`} items={["Moves your ad to the top", "Light-green glow around your ad", "Newest boost goes first — later boosts push yours down", "Boost again any time"]} />
       </div>
       <p className="mt-6 text-center text-xs text-muted-foreground">Boosts are paid placement. We don't promise a set number of views or replies.</p>
       <div className="mt-8 text-center"><Link to="/post" className="rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground">Post an ad</Link></div>

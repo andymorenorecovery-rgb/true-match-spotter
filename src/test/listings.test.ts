@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { rankListings, type Listing } from "@/lib/listings";
+import { glowOf, rankListings, type Listing } from "@/lib/listings";
 import { PRICING } from "@/lib/pricing";
 
 const now = Date.parse("2026-10-16T00:00:00Z");
@@ -18,7 +18,11 @@ describe("pricing", () => {
     expect(PRICING.weekAd.priceCents).toBe(12000);
     expect(PRICING.weekAd.durationHours).toBe(168);
   });
-  it("boosting to the top costs $20", () => expect(PRICING.boost.priceCents).toBe(2000));
+  it("re-boosting to the top costs $10 for 24 hours", () => {
+    expect(PRICING.boost.priceCents).toBe(1000);
+    expect(PRICING.boost.durationHours).toBe(24);
+  });
+  it("a week ad includes a 24-hour boost", () => expect(PRICING.weekAd.includedBoostHours).toBe(24));
 });
 
 describe("rankListings", () => {
@@ -34,8 +38,13 @@ describe("rankListings", () => {
     const r = rankListings([base("new", { postedAt: d(0) }), base("boost", { featuredUntil: d(1), postedAt: d(-3) })], now);
     expect(r.map((l) => l.id)).toEqual(["boost", "new"]);
   });
-  it("orders multiple boosted ads ahead of every regular ad", () => {
-    const r = rankListings([base("a"), base("b1", { featuredUntil: d(1), postedAt: d(-1) }), base("b2", { featuredUntil: d(1), postedAt: d(-2) })], now);
-    expect(r.map((l) => l.id)).toEqual(["b1", "b2", "a"]);
+  it("the most recent boost goes first, pushing earlier boosts down", () => {
+    const r = rankListings([base("a"), base("early", { featuredUntil: d(0.5) }), base("late", { featuredUntil: d(0.9) })], now);
+    expect(r.map((l) => l.id)).toEqual(["late", "early", "a"]);
+  });
+  it("24-hour ads get purple, boosted ads get green", () => {
+    expect(glowOf(base("x", { plan: "day" }), now)).toBe("day");
+    expect(glowOf(base("y", { plan: "day", featuredUntil: d(1) }), now)).toBe("boost");
+    expect(glowOf(base("z", { plan: "week" }), now)).toBe(null);
   });
 });
