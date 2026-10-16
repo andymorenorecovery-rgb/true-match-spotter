@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent, type ReactNode } from "react";
+function formatPhone(v: string) {
+  const d = v.replace(/\D/g, "").replace(/^1/, "").slice(0, 10);
+  if (d.length < 4) return d;
+  if (d.length < 7) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { resizeImage, savePendingAd } from "@/lib/local-ads";
@@ -185,7 +191,7 @@ function PostAd() {
           </Section>
 
           <Section title="Contact">
-            <Field label="Phone number"><input className={input} type="tel" value={f.phone} onChange={(e) => set("phone", e.target.value)} placeholder="(213) 555-0123" /></Field>
+            <Field label="Phone number"><input className={input} type="tel" value={f.phone} inputMode="tel" autoComplete="tel" maxLength={14} onChange={(e) => set("phone", formatPhone(e.target.value))} placeholder="(213) 555-0123" /></Field>
             <label className="mt-3 flex items-center gap-2 text-sm">
               <input type="checkbox" checked={f.showPhone} onChange={(e) => set("showPhone", e.target.checked)} className="h-4 w-4 accent-primary" />
               Show my number on my ad
