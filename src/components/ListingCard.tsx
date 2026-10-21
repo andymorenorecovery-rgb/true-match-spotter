@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Images, MapPin, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
-import { CATEGORIES, formatLocation, getPhotos, glowOf, isFeatured, type Listing } from "@/lib/listings";
+import { CATEGORIES, getPhotos, glowOf, isFeatured, type Listing } from "@/lib/listings";
 
 export function ListingCard({ l }: { l: Listing }) {
   const [open, setOpen] = useState(false);
