@@ -9,6 +9,8 @@ function formatPhone(v: string) {
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { resizeImage, savePendingAd } from "@/lib/local-ads";
+import { saveAdVideo, VIDEO_SECONDS } from "@/lib/ad-videos";
+import { VideoRecorder } from "@/components/VideoRecorder";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
 import { CheckoutDialog, type CheckoutRequest } from "@/components/CheckoutDialog";
@@ -33,6 +35,7 @@ function PostAd() {
   const [f, setF] = useState({ title: "", name: "", age: "", category: "dating" as Category, city: "", state: "", area: "", body: "", phone: "", showPhone: false });
   const [details, setDetails] = useState<Details>({});
   const [photos, setPhotos] = useState<string[]>([]);
+  const [video, setVideo] = useState<Blob | null>(null);
   const [plan, setPlan] = useState<"dayAd" | "weekAd">("dayAd");
   const [boost, setBoost] = useState(false);
   const [error, setError] = useState("");
@@ -46,7 +49,7 @@ function PostAd() {
     setPhotos((p) => [...p, ...urls].slice(0, 6));
   };
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     const age = Number(f.age);
     if (!f.title.trim() || !f.name.trim()) return setError("Please add a headline and your first name.");
@@ -54,6 +57,7 @@ function PostAd() {
     if (!f.state || !f.city.trim()) return setError("Please pick your state and city.");
     if (!f.body.trim()) return setError("Please write something in your ad.");
     if (!photos.length) return setError("Please add at least one photo.");
+    if (!video) return setError(`Please record your ${VIDEO_SECONDS}-second video selfie so people know you're real.`);
     const now = Date.now();
     const ad: Listing = {
       id: `local-${now}`,
@@ -70,6 +74,11 @@ function PostAd() {
         ? { featuredUntil: new Date(now + (plan === "weekAd" ? PRICING.weekAd.includedBoostHours : PRICING.boost.durationHours) * 3600000).toISOString() }
         : {}),
     };
+    try {
+      await saveAdVideo(ad.id, video);
+    } catch {
+      return setError("We couldn't save your video. Please try recording again.");
+    }
     try {
       savePendingAd(ad);
     } catch {
@@ -121,6 +130,11 @@ function PostAd() {
               )}
             </div>
             <p className="mt-2 text-xs text-muted-foreground">Up to 6 photos. The first one is your main photo.</p>
+          </Section>
+
+          <Section title="Video selfie (required)">
+            <p className="mb-4 text-sm text-muted-foreground">Record a quick {VIDEO_SECONDS}-second video of yourself with your camera so people know you're real. It shows on your profile with your photos.</p>
+            <VideoRecorder value={video} onChange={setVideo} />
           </Section>
 
           <Section title="Your details">
