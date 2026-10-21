@@ -27,8 +27,15 @@ export function ListingCard({ l }: { l: Listing }) {
         <div className="p-2.5">
           <p className="text-[10px] uppercase tracking-wide text-primary">{CATEGORIES.find((c) => c.id === l.category)?.label}</p>
           <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug">{l.title}</h3>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">{l.name}, {l.age}{l.details.height ? ` · ${l.details.height}` : ""}{l.details.hairColor ? ` · ${l.details.hairColor} hair` : ""}</p>
-          <p className="mt-1 flex items-center gap-1 truncate text-[11px] text-muted-foreground"><MapPin className="h-2.5 w-2.5 shrink-0" />{formatLocation(l)}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{l.name}, {l.age}{l.details.height ? ` · ${l.details.height}` : ""}</p>
+          {l.details.hairColor && <p className="text-xs text-muted-foreground">{l.details.hairColor} hair</p>}
+          <div className="mt-1 flex items-start gap-1 text-[11px] leading-tight text-muted-foreground">
+            <MapPin className="mt-0.5 h-2.5 w-2.5 shrink-0" />
+            <span className="min-w-0 break-words">
+              {l.area && <span className="block">{l.area}</span>}
+              <span className="block">{l.city}{l.state ? `, ${l.state}` : ""}</span>
+            </span>
+          </div>
         </div>
       </button>
 
