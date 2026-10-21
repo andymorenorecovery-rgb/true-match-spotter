@@ -18,13 +18,24 @@ export function VideoRecorder({ value, onChange }: { value: Blob | null; onChang
     return () => URL.revokeObjectURL(u);
   }, [value]);
   useEffect(() => () => stream.current?.getTracks().forEach((t) => t.stop()), []);
-  // Attach the camera once the live <video> is on screen (phones need muted + playsInline + autoplay).
-  useEffect(() => {
-    const v = live.current;
-    if (state === "idle" || !v || !stream.current) return;
-    if (v.srcObject !== stream.current) v.srcObject = stream.current;
-    v.play().catch(() => {});
-  }, [state]);
+  // iPhone Safari only shows a live camera if the <video> is truly muted and inline
+  // (React's `muted` prop doesn't set the HTML attribute), so set them by hand.
+  const attach = (v: HTMLVideoElement | null) => {
+    (live as React.MutableRefObject<HTMLVideoElement | null>).current = v;
+    const s = stream.current;
+    if (!v || !s) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+    v.setAttribute("webkit-playsinline", "");
+    v.setAttribute("autoplay", "");
+    if (v.srcObject !== s) v.srcObject = s;
+    const play = () => v.play().catch(() => {});
+    v.onloadedmetadata = play;
+    play();
+  };
+  useEffect(() => { if (state !== "idle") attach(live.current); }, [state]);
 
   const startCamera = async () => {
     setErr("");
