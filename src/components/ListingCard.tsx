@@ -19,7 +19,7 @@ export function ListingCard({ l }: { l: Listing }) {
           <img src={l.img} alt={l.title} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
           {featured && (
             <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-boost px-2 py-0.5 text-[10px] font-semibold text-background">
-              <Star className="h-2.5 w-2.5 fill-current" /> Boosted
+              <Star className="h-2.5 w-2.5 fill-primary text-primary" /> Boosted
             </span>
           )}
           {count > 1 && <span className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-overlay/70 px-1.5 py-0.5 text-[10px]"><Images className="h-2.5 w-2.5" />{count}</span>}
