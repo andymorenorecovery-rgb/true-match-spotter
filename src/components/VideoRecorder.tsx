@@ -82,7 +82,7 @@ export function VideoRecorder({ value, onChange }: { value: Blob | null; onChang
     <div>
       <div className="relative mx-auto aspect-[3/4] w-full max-w-[240px] overflow-hidden rounded-2xl bg-muted">
         {state !== "idle" ? (
-          <video ref={live} muted playsInline className="h-full w-full -scale-x-100 object-cover" />
+          <video ref={live} muted autoPlay playsInline className="h-full w-full -scale-x-100 object-cover" />
         ) : url ? (
           <video src={url} controls playsInline className="h-full w-full object-cover" />
         ) : (
