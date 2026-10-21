@@ -60,7 +60,7 @@ export function ListingInfo({ l }: { l: Listing }) {
   return (
     <div>
       <div className="flex flex-wrap gap-2">
-        {isFeatured(l) && <span className="inline-flex items-center gap-1 rounded-full bg-boost px-3 py-1 text-xs font-semibold text-background"><Star className="h-3 w-3 fill-current" /> Boosted</span>}
+        {isFeatured(l) && <span className="inline-flex items-center gap-1 rounded-full bg-boost px-3 py-1 text-xs font-semibold text-background"><Star className="h-3 w-3 fill-primary text-primary" /> Boosted</span>}
         <span className="rounded-full bg-secondary px-3 py-1 text-xs">{CATEGORIES.find((c) => c.id === l.category)?.label}</span>
       </div>
       <h2 className="mt-3 text-3xl font-bold">{l.title}</h2>
@@ -106,7 +106,7 @@ export function ListingInfo({ l }: { l: Listing }) {
             onClick={() => setBoosted(true)}
             className="flex w-full items-center justify-center gap-2 rounded-full bg-boost py-3 font-semibold text-background shadow-boost"
           >
-            <Star className="h-4 w-4 fill-current" /> Boost to the top — {formatPrice(PRICING.boost.priceCents)}
+            <Star className="h-4 w-4 fill-primary text-primary" /> Boost to the top — {formatPrice(PRICING.boost.priceCents)}
           </button>
           <p className="mt-2 text-xs text-muted-foreground">
             {`This is your ad. Boosting puts it first with a green glow for ${PRICING.boost.durationHours} hours.`}
