@@ -1,31 +1,48 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Star } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Play, Star } from "lucide-react";
 import { isOwnAd } from "@/lib/local-ads";
+import { useAdVideo } from "@/lib/ad-videos";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, getPhotos, isFeatured, type Listing } from "@/lib/listings";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export function PhotoGallery({ l }: { l: Listing }) {
-  const photos = getPhotos(l);
+  const videoUrl = useAdVideo(l.id);
+  const media: { kind: "photo" | "video"; src: string }[] = [
+    ...getPhotos(l).map((src) => ({ kind: "photo" as const, src })),
+    ...(videoUrl ? [{ kind: "video" as const, src: videoUrl }] : []),
+  ];
   const [i, setI] = useState(0);
-  const go = (d: number) => setI((x) => (x + d + photos.length) % photos.length);
+  const cur = media[Math.min(i, media.length - 1)]!;
+  const go = (d: number) => setI((x) => (x + d + media.length) % media.length);
   return (
     <div>
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
-        <img src={photos[i]} alt={`${l.name} photo ${i + 1}`} className="h-full w-full object-cover" />
-        {photos.length > 1 && (
+        {cur.kind === "video" ? (
+          <video key={cur.src} src={cur.src} controls autoPlay playsInline className="h-full w-full object-cover" />
+        ) : (
+          <img src={cur.src} alt={`${l.name} photo ${i + 1}`} className="h-full w-full object-cover" />
+        )}
+        {videoUrl && (
+          <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"><BadgeCheck className="h-3.5 w-3.5" /> Video verified</span>
+        )}
+        {media.length > 1 && (
           <>
-            <button aria-label="Previous photo" onClick={() => go(-1)} className="absolute left-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-overlay/70 text-foreground backdrop-blur"><ChevronLeft /></button>
-            <button aria-label="Next photo" onClick={() => go(1)} className="absolute right-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-overlay/70 text-foreground backdrop-blur"><ChevronRight /></button>
-            <span className="absolute bottom-3 right-3 rounded-full bg-overlay/70 px-3 py-1 text-xs">{i + 1} / {photos.length}</span>
+            <button aria-label="Previous" onClick={() => go(-1)} className="absolute left-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-overlay/70 text-foreground backdrop-blur"><ChevronLeft /></button>
+            <button aria-label="Next" onClick={() => go(1)} className="absolute right-3 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-overlay/70 text-foreground backdrop-blur"><ChevronRight /></button>
+            <span className="absolute bottom-3 right-3 rounded-full bg-overlay/70 px-3 py-1 text-xs">{i + 1} / {media.length}</span>
           </>
         )}
       </div>
-      {photos.length > 1 && (
+      {media.length > 1 && (
         <div className="mt-3 grid grid-cols-4 gap-2">
-          {photos.map((p, n) => (
-            <button key={n} onClick={() => setI(n)} aria-label={`Show photo ${n + 1}`} className={`aspect-square overflow-hidden rounded-xl border-2 ${n === i ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"}`}>
-              <img src={p} alt="" className="h-full w-full object-cover" />
+          {media.map((m, n) => (
+            <button key={n} onClick={() => setI(n)} aria-label={m.kind === "video" ? "Play video" : `Show photo ${n + 1}`} className={`relative aspect-square overflow-hidden rounded-xl border-2 bg-muted ${n === i ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"}`}>
+              {m.kind === "video" ? (
+                <span className="grid h-full w-full place-items-center"><Play className="h-6 w-6 text-primary" /></span>
+              ) : (
+                <img src={m.src} alt="" className="h-full w-full object-cover" />
+              )}
             </button>
           ))}
         </div>
