@@ -18,17 +18,40 @@ export function VideoRecorder({ value, onChange }: { value: Blob | null; onChang
     return () => URL.revokeObjectURL(u);
   }, [value]);
   useEffect(() => () => stream.current?.getTracks().forEach((t) => t.stop()), []);
+  // Attach the camera once the live <video> is on screen (phones need muted + playsInline + autoplay).
+  useEffect(() => {
+    const v = live.current;
+    if (state === "idle" || !v || !stream.current) return;
+    if (v.srcObject !== stream.current) v.srcObject = stream.current;
+    v.play().catch(() => {});
+  }, [state]);
 
   const startCamera = async () => {
     setErr("");
-    try {
-      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 480, height: 640 }, audio: true });
-      stream.current = s;
-      setState("ready");
-      requestAnimationFrame(() => { if (live.current) { live.current.srcObject = s; live.current.play().catch(() => {}); } });
-    } catch {
-      setErr("We couldn't open your camera. Please allow camera and microphone access and try again.");
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      return setErr("This browser can't record video. Please open the site in Safari (iPhone) or Chrome (Android).");
     }
+    const tries: MediaStreamConstraints[] = [
+      { video: { facingMode: "user", width: { ideal: 480 }, height: { ideal: 640 } }, audio: true },
+      { video: { facingMode: "user" }, audio: true },
+      { video: true, audio: true },
+      { video: true },
+    ];
+    let lastErr: unknown;
+    for (const c of tries) {
+      try {
+        stream.current = await navigator.mediaDevices.getUserMedia(c);
+        setState("ready");
+        return;
+      } catch (e) {
+        lastErr = e;
+        if ((e as DOMException)?.name === "NotAllowedError") break;
+      }
+    }
+    const name = (lastErr as DOMException)?.name;
+    setErr(name === "NotAllowedError"
+      ? "Camera access was blocked. Go to your phone's browser settings, allow Camera and Microphone for this site, then tap Open camera again."
+      : "We couldn't open your camera. Close other apps using the camera and try again.");
   };
 
   const record = () => {
