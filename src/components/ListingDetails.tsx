@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BadgeCheck, ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Play, Star } from "lucide-react";
 import { isOwnAd } from "@/lib/local-ads";
+import { SimpleVideo } from "@/components/SimpleVideo";
 import { useAdVideo } from "@/lib/ad-videos";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, getPhotos, isFeatured, type Listing } from "@/lib/listings";
@@ -19,7 +20,7 @@ export function PhotoGallery({ l }: { l: Listing }) {
     <div>
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
         {cur.kind === "video" ? (
-          <video key={cur.src} src={cur.src} controls autoPlay playsInline className="h-full w-full object-cover" />
+          <SimpleVideo key={cur.src} src={cur.src} autoPlay />
         ) : (
           <img src={cur.src} alt={`${l.name} photo ${i + 1}`} className="h-full w-full object-cover" />
         )}
