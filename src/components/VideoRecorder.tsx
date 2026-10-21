@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { RotateCcw, Video } from "lucide-react";
 import { VIDEO_SECONDS } from "@/lib/ad-videos";
+import { SimpleVideo } from "@/components/SimpleVideo";
 
 /** Live camera only — no file upload — so the person must film themselves. */
 export function VideoRecorder({ value, onChange }: { value: Blob | null; onChange: (b: Blob | null) => void }) {
@@ -93,9 +94,9 @@ export function VideoRecorder({ value, onChange }: { value: Blob | null; onChang
     <div>
       <div className="relative mx-auto aspect-[3/4] w-full max-w-[240px] overflow-hidden rounded-2xl bg-muted">
         {state !== "idle" ? (
-          <video ref={live} muted autoPlay playsInline className="h-full w-full -scale-x-100 object-cover" />
+          <video ref={attach} muted autoPlay playsInline disablePictureInPicture className="h-full w-full -scale-x-100 object-cover" />
         ) : url ? (
-          <video src={url} controls playsInline className="h-full w-full object-cover" />
+          <SimpleVideo src={url} />
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center text-xs text-muted-foreground">
             <Video className="h-8 w-8" /> Your {VIDEO_SECONDS}-second video shows people you're real.
