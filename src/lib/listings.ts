@@ -62,12 +62,9 @@ export type Listing = {
   plan?: "day" | "week";
 };
 
-const DAY = 86400000;
 /** Demo ads are pinned in time on purpose. Reading the real clock here made the
  * server-rendered page disagree with the browser, so the delivered front page
  * came out empty and React threw a hydration error. */
-const SAMPLE_BASE = Date.parse("2026-09-01T00:00:00Z");
-const iso = (offsetDays: number) => new Date(SAMPLE_BASE + offsetDays * DAY).toISOString();
 const FOREVER = "2030-01-01T00:00:00.000Z";
 const EXPIRED = "2000-01-01T00:00:00.000Z";
 const BOOST_LATEST = "2029-12-05T00:00:00.000Z";
