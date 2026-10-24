@@ -2,7 +2,14 @@ import { loadStripe, type Stripe } from "@stripe/stripe-js";
 
 type StripeEnv = "sandbox" | "live";
 
-const clientToken = import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'] as string | undefined;
+/** Browser publishable key. A self-hosted build may use either name. */
+export function paymentsClientToken(): string | undefined {
+  return (import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'] ?? import.meta.env['VITE_STRIPE_PUBLISHABLE_KEY']) as
+    | string
+    | undefined;
+}
+
+const clientToken = paymentsClientToken();
 
 function paymentsEnvironment(): StripeEnv {
   if (clientToken?.startsWith("pk_test_")) return "sandbox";

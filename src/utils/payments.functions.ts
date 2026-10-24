@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import type Stripe from "stripe";
-import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
+import { type StripeEnv, checkoutExtras, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
 
 const ID = /^[a-zA-Z0-9_-]+$/;
 const ALLOWED_PRICES = new Set(["day_ad_once", "week_ad_once", "boost_once"]);
@@ -27,7 +27,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         return_url: data.returnUrl,
         payment_intent_data: { description: names.join(" + ") },
         metadata: { adId: data.adId, kind: data.kind, items: data.priceIds.join(","), managed_payments: "true" },
-        managed_payments: { enabled: true },
+        ...checkoutExtras(data.environment),
       } as Stripe.Checkout.SessionCreateParams);
       return { clientSecret: session.client_secret ?? "" };
     } catch (error) {

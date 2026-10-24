@@ -1,4 +1,6 @@
-const clientToken = import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'] as string | undefined;
+import { paymentsClientToken } from "@/lib/stripe";
+
+const clientToken = paymentsClientToken();
 
 export function PaymentTestModeBanner() {
   if (!clientToken) {
