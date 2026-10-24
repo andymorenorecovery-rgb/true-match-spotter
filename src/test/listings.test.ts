@@ -54,3 +54,15 @@ describe("rankListings", () => {
     expect(glowOf(base("z", { plan: "week" }), now)).toBe(null);
   });
 });
+
+describe("sample ads", () => {
+  it("stay on the front page whatever the clock says", () => {
+    const ids = (now: number) => rankListings(SAMPLE_LISTINGS, now).map((l) => l.id);
+    const today = ids(Date.parse("2026-10-24T00:00:00Z"));
+    const later = ids(Date.parse("2028-05-01T00:00:00Z"));
+    expect(today.length).toBe(7);
+    expect(today.slice(0, 3)).toEqual(["1", "3", "6"]);
+    expect(today).not.toContain("5");
+    expect(later).toEqual(today);
+  });
+});
