@@ -12,5 +12,7 @@
 - [ ] Owner added "Ready Too Mingle" to the LLC registration — verify every legal/money surface shows "Ready Too Mingle LLC" and marketing keeps the brand name
 - [x] DreamHost: build + run on VPS (port 8000, proxy added, Stripe keys in)
 - [x] DreamHost: GoDaddy A @ and www point to 69.163.185.245
-- [ ] DreamHost: HTTPS on the proxy — port 443 refuses; no cert issued yet (Stripe return URL and HSTS both need it)
-- [ ] DreamHost: auto-start the site after a server reboot (needs the secret key in a root-only env file, not a crontab line)
+- [x] DreamHost: HTTPS working on the proxy (Google Trust Services cert, valid to Jan 2027)
+- [x] Update workflow: scripts/deploy.sh (pull + rebuild + restart), scripts/start-site.sh (start only, used by @reboot)
+- [ ] DreamHost one-time: both Stripe keys into ~/.site-env (600), then register @reboot start-site.sh
+
