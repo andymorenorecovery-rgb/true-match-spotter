@@ -12,7 +12,8 @@
 - [ ] Owner added "Ready Too Mingle" to the LLC registration — verify every legal/money surface shows "Ready Too Mingle LLC" and marketing keeps the brand name
 - [x] DreamHost: build + run on VPS (port 8000, proxy added, Stripe keys in)
 - [x] DreamHost: GoDaddy A @ and www point to 69.163.185.245
-- [x] DreamHost: HTTPS working on the proxy (Google Trust Services cert, valid to Jan 2027)
+- [x] DreamHost: HTTPS working on the proxy (Let's Encrypt cert for readytoomingle.com, valid to Jan 2027)
+- [ ] DreamHost: run `bash ~/site/scripts/deploy.sh` so the new icon files (favicon.ico, apple-touch-icon.png, icon-512.png) reach the server — all three 404 there now
 - [x] Update workflow: scripts/deploy.sh (pull + rebuild + restart), scripts/start-site.sh (start only, used by @reboot)
 - [ ] DreamHost one-time: both Stripe keys into ~/.site-env (600), then register @reboot start-site.sh
 
