@@ -25,12 +25,24 @@ if [ -z "${STRIPE_SECRET_KEY:-}" ]; then
   exit 1
 fi
 
-if pgrep -f ".output/server/index.mjs" > /dev/null; then
+if pgrep -f "index.mjs" > /dev/null; then
   echo "already running"
   exit 0
 fi
 
 cd "$(dirname "$0")/.."
-PORT="$PORT" nohup node .output/server/index.mjs > "$HOME/site.log" 2>&1 &
-sleep 4
-echo "replied: $(curl -s -o /dev/null -w '%{http_code}' "http://localhost:$PORT")"
+SITE_DIR="$(pwd)"
+PORT="$PORT" nohup node "$SITE_DIR/.output/server/index.mjs" > "$HOME/site.log" 2>&1 &
+sleep 5
+
+PAGE=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:$PORT/")
+PHOTO=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:$PORT/favicon.png")
+echo "page: $PAGE   photos: $PHOTO"
+if [ "$PAGE" = "200" ] && [ "$PHOTO" = "200" ]; then
+  echo "replied: 200 — site and photos OK"
+else
+  echo "PROBLEM — send a screenshot of everything below:"
+  ls -la "$SITE_DIR/.output/public" | head -5
+  tail -n 25 "$HOME/site.log"
+  exit 1
+fi
