@@ -15,8 +15,8 @@ export type EnvRecord = Record<string, string | undefined>;
 /** The owner's own Stripe secret key. Only present on a build hosted outside Lovable. */
 export function directSecretKey(env: StripeEnv, e: EnvRecord = process.env): string | undefined {
   return env === 'sandbox'
-    ? e.STRIPE_SANDBOX_SECRET_KEY ?? e.STRIPE_SECRET_KEY
-    : e.STRIPE_LIVE_SECRET_KEY ?? e.STRIPE_SECRET_KEY;
+    ? e['STRIPE_SANDBOX_SECRET_KEY'] ?? e['STRIPE_SECRET_KEY']
+    : e['STRIPE_LIVE_SECRET_KEY'] ?? e['STRIPE_SECRET_KEY'];
 }
 
 /** True when this build talks to Stripe itself instead of through Lovable's gateway. */
