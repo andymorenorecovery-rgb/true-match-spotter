@@ -10,7 +10,7 @@ export const Route = createFileRoute("/terms")({
       <p>This Site is operated by {BUSINESS_NAME} ("the Site", "we", "us"). By using the Site you agree to these Terms of Service. If you do not agree, do not use the Site.</p>
 
       <h2>1. About the Site</h2>
-      <p>Ready Too Mingle, operated by {BUSINESS_NAME}, is a personal-ads site for dating, friendship and activity partners. It is not an escort service, adult site, or marketplace for sexual services. We provide a place to post ads only; we do not screen, introduce, or match members.</p>
+      <p>Ready Too Mingle, operated by {BUSINESS_NAME}, is a personal-ads site for dating, friendship, casual encounters between consenting adults, and activity partners. It is not an escort service, adult site, or marketplace for sexual services. We provide a place to post ads only; we do not screen, introduce, or match members.</p>
 
 
       <h2>2. Eligibility</h2>
@@ -71,7 +71,7 @@ export const Route = createFileRoute("/terms")({
       <p>Everyone who posts an ad is an advertiser and agrees that:</p>
       <ul>
         <li>You are at least 18, the person shown in the photos and video selfie, and all information in your ad is true.</li>
-        <li>Your ad is for dating, friendship, or activity partners only — never sex for money, escort, or paid-companionship services.</li>
+        <li>Your ad is for dating, friendship, casual encounters, or activity partners only, and everyone involved must be 18 or older — never sex for money, escort, or paid-companionship services.</li>
         <li>You are solely responsible for your ad's content and for complying with all applicable laws.</li>
         <li>{BUSINESS_NAME} may edit, reject, or remove any ad at any time, without refund, if it breaks these Terms.</li>
         <li>Paid ads and boosts buy placement time only. They do not guarantee views, replies, contacts, or dates, and ranking may change as other members boost.</li>

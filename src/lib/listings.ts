@@ -8,10 +8,11 @@ import p4b from "@/assets/p4b.jpg";
 import p5 from "@/assets/p5.jpg";
 import p6 from "@/assets/p6.jpg";
 
-export type Category = "dating" | "friendship" | "activity-partners";
+export type Category = "dating" | "friendship" | "hookups" | "activity-partners";
 export const CATEGORIES: { id: Category; label: string }[] = [
   { id: "dating", label: "Dating" },
   { id: "friendship", label: "Friendship" },
+  { id: "hookups", label: "Hookups" },
   { id: "activity-partners", label: "Activity partners" },
 ];
 
@@ -75,6 +76,7 @@ export const SAMPLE_LISTINGS: Listing[] = [
   { id: "4", title: "Dumpling hunter seeks partner in crime", name: "Marcus", age: 29, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", photos: [p4b], body: "Let's find the best street food in the city, one plate at a time.", img: p4, details: { gender: "Man", height: `5'11"`, hairColor: "Black", eyeColor: "Hazel", bodyType: "Average", lookingFor: "Women" }, status: "published", postedAt: iso(-4), expiresAt: iso(26) },
   { id: "6", title: "Gallery hopping & long walks", name: "Amara", age: 31, city: "Chicago", state: "IL", area: "Wicker Park", category: "friendship", body: "New to the neighborhood and looking for a walking-and-coffee buddy. I know all the good thrift stores.", img: p5, details: { gender: "Woman", height: `5'7"`, hairColor: "Black", eyeColor: "Brown", bodyType: "Average", languages: "English", lookingFor: "Anyone" }, status: "published", postedAt: iso(-5), expiresAt: iso(25), featuredUntil: iso(1) },
   { id: "7", title: "Sunrise hikes, then pancakes", name: "Jake", age: 27, city: "Denver", state: "CO", area: "Highlands", category: "activity-partners", body: "Looking for a regular hiking partner for the foothills. Beginners welcome, I bring the trail snacks.", img: p6, details: { gender: "Man", height: `6'1"`, hairColor: "Brown", eyeColor: "Green", bodyType: "Athletic", lookingFor: "Anyone" }, status: "published", postedAt: iso(-6), expiresAt: iso(24), plan: "day" },
+  { id: "8", title: "Not looking for anything serious", name: "Nina", age: 26, city: "Los Angeles", state: "CA", area: "Koreatown", category: "hookups", body: "Fun nights, good conversation, no pressure. Let's see if we click and take it from there.", img: p4b, details: { gender: "Woman", height: `5'5"`, hairColor: "Black", eyeColor: "Brown", bodyType: "Slim", languages: "English", lookingFor: "Men" }, status: "published", postedAt: iso(-2), expiresAt: iso(28) },
   { id: "5", title: "Old ad", name: "Test", age: 40, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", body: "Expired.", img: p2, details: {}, status: "published", postedAt: iso(-40), expiresAt: iso(-10) },
 ];
 

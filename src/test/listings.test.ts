@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { glowOf, rankListings, type Listing } from "@/lib/listings";
+import { CATEGORIES, glowOf, rankListings, type Listing } from "@/lib/listings";
 import { PRICING } from "@/lib/pricing";
 
 const now = Date.parse("2026-10-16T00:00:00Z");
@@ -23,6 +23,12 @@ describe("pricing", () => {
     expect(PRICING.boost.durationHours).toBe(24);
   });
   it("a week ad includes a 24-hour boost", () => expect(PRICING.weekAd.includedBoostHours).toBe(24));
+});
+
+describe("categories", () => {
+  it("allows dating, friendship, hookups and activity partners, in that order", () => {
+    expect(CATEGORIES.map((c) => c.id)).toEqual(["dating", "friendship", "hookups", "activity-partners"]);
+  });
 });
 
 describe("rankListings", () => {
