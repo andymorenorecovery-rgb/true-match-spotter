@@ -9,3 +9,4 @@
 - [ ] Phase 7: Tests, docs, backups, independent-hosting migration guide
 - [x] Checkout for $20 / $120 ads and $10 boost (test mode)
 - [ ] Ask owner: what should happen on purchase/refund (no subscriptions in this app)
+- [ ] Owner added "Ready Too Mingle" to the LLC registration — verify every legal/money surface shows "Ready Too Mingle LLC" and marketing keeps the brand name
