@@ -11,9 +11,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Ready Too Mingle — Local personal ads" },
-      { name: "description", content: "Browse local personal ads for dating, friendship and activity partners, or post your own." },
+      { name: "description", content: "Browse local personal ads for dating, friendship, casual encounters and activity partners, or post your own." },
       { property: "og:title", content: "Ready Too Mingle — Local personal ads" },
-      { property: "og:description", content: "Browse local personal ads for dating, friendship and activity partners, or post your own." },
+      { property: "og:description", content: "Browse local personal ads for dating, friendship, casual encounters and activity partners, or post your own." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -63,7 +63,7 @@ function Home() {
           Meet people <span className="text-gradient italic">near you</span>
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-          Local personal ads for dating, friendship and finding someone to share your hobbies with.
+          Local personal ads for dating, friendship, casual meet-ups and finding someone to share your hobbies with.
         </p>
         <form onSubmit={(e) => e.preventDefault()} className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl border bg-card p-2 sm:flex-row">
           <select
