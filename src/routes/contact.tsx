@@ -5,8 +5,9 @@ export const Route = createFileRoute("/contact")({
   head: () => meta("Contact", "Get in touch with the Ready Too Mingle team."),
   component: () => (
     <InfoPage title="Contact us">
-      <p>Questions, reports or billing help? Email us at <span className="text-primary">support@readytoomingle.com</span> (placeholder — replace with your real address).</p>
-      <p>To report an ad, use the report option on the ad once accounts are live.</p>
+      <p>Questions, reports or billing help? Email us at <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>
+      <p>To report an ad, use the report option on the ad, or email us and we'll take a look.</p>
+
     </InfoPage>
   ),
 });

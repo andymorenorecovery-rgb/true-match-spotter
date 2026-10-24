@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { InfoPage, meta } from "@/components/InfoPage";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/lib/contact";
+
 
 export const Route = createFileRoute("/privacy")({
   head: () => meta("Privacy policy", "How Ready Too Mingle keeps your information private and safe."),
@@ -18,6 +20,9 @@ export const Route = createFileRoute("/privacy")({
       <p>Meet in public places, tell a friend where you're going, and never send money to someone you met on the site.</p>
       <h2>Deleting your data</h2>
       <p>You can delete your ads and account at any time, and your information will be removed.</p>
+      <h2>Questions about your data</h2>
+      <p>To ask what we hold about you, or to request deletion, email <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>
+
       <p className="text-xs">This policy should be reviewed by a lawyer before launch.</p>
     </InfoPage>
   ),

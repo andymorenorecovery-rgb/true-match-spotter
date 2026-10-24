@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { InfoPage, meta } from "@/components/InfoPage";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/lib/contact";
+
 
 export const Route = createFileRoute("/terms")({
   head: () => meta("Terms of service", "The terms for using Ready Too Mingle, a dating and friendship site."),
@@ -52,7 +54,11 @@ export const Route = createFileRoute("/terms")({
       <h2>12. Changes</h2>
       <p>We may update these Terms at any time. Continuing to use the Site after changes means you accept them.</p>
 
+      <h2>13. Contact</h2>
+      <p>Notices, reports and questions about these Terms should be sent to Ready Too Mingle LLC at <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>
+
       <p className="text-xs">These terms should be reviewed by a licensed attorney before launch.</p>
+
     </InfoPage>
   ),
 });
