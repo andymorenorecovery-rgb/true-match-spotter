@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "../lib/contact";
+
 import { AgeGate } from "../components/AgeGate";
 import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
 
@@ -145,8 +147,12 @@ function RootComponent() {
         </main>
         <footer className="border-t">
           <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 px-4 py-8 text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} Ready Too Mingle LLC · 18+ only</p>
+            <div className="space-y-1">
+              <p>© {new Date().getFullYear()} Ready Too Mingle LLC · 18+ only</p>
+              <p><a href={CONTACT_MAILTO} className="hover:text-foreground">{CONTACT_EMAIL}</a></p>
+            </div>
             <div className="flex gap-4">
+
               <Link to="/pricing">Pricing</Link>
               <Link to="/faq">FAQ</Link>
               <Link to="/contact">Contact</Link>
