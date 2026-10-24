@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CATEGORIES, glowOf, rankListings, type Listing } from "@/lib/listings";
+import { CATEGORIES, SAMPLE_LISTINGS, glowOf, rankListings, type Listing } from "@/lib/listings";
 import { PRICING } from "@/lib/pricing";
 
 const now = Date.parse("2026-10-16T00:00:00Z");
