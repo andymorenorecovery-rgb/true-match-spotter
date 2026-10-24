@@ -69,7 +69,7 @@ const DAY = 86400000;
 const SAMPLE_BASE = Date.parse("2026-09-01T00:00:00Z");
 const iso = (offsetDays: number) => new Date(SAMPLE_BASE + offsetDays * DAY).toISOString();
 const FOREVER = "2030-01-01T00:00:00.000Z";
-const EXPIRED = "2026-01-01T00:00:00.000Z";
+const EXPIRED = "2000-01-01T00:00:00.000Z";
 const BOOST_LATEST = "2029-12-05T00:00:00.000Z";
 const BOOST_MIDDLE = "2029-12-02T00:00:00.000Z";
 const BOOST_OLDEST = "2029-12-01T00:00:00.000Z";
