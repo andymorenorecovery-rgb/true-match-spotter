@@ -60,9 +60,19 @@ describe("sample ads", () => {
     const ids = (now: number) => rankListings(SAMPLE_LISTINGS, now).map((l) => l.id);
     const today = ids(Date.parse("2026-10-24T00:00:00Z"));
     const later = ids(Date.parse("2028-05-01T00:00:00Z"));
-    expect(today.length).toBe(7);
+    expect(today.length).toBe(6);
     expect(today.slice(0, 3)).toEqual(["1", "3", "6"]);
     expect(today).not.toContain("5");
     expect(later).toEqual(today);
+  });
+});
+
+describe("Women filter", () => {
+  it("never reuses a man's photo on a woman's profile", async () => {
+    const { SAMPLE_LISTINGS } = await import("@/lib/listings");
+    const menPhotos = new Set(SAMPLE_LISTINGS.filter((l) => l.details?.gender === "Man").flatMap((l) => [l.img, ...(l.photos ?? [])]));
+    for (const w of SAMPLE_LISTINGS.filter((l) => l.details?.gender === "Woman")) {
+      for (const p of [w.img, ...(w.photos ?? [])]) expect(menPhotos.has(p)).toBe(false);
+    }
   });
 });
