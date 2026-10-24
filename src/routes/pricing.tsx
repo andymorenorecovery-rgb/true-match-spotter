@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { PRICING, formatPrice } from "@/lib/pricing";
+import { BUSINESS_NAME } from "@/lib/contact";
+
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -27,7 +29,7 @@ function Pricing() {
         <Plan name="Week ad" price={formatPrice(w.priceCents)} per="for 7 days" items={["Listed for a full week", `Green glow and top spot for the first ${w.includedBoostHours} hours`, "All your details and photos", "Optional phone number"]} />
         <Plan boost name="Boost to top" price={formatPrice(b.priceCents)} per={`for ${b.durationHours} hours`} items={["Moves your ad to the top", "Light-green glow around your ad", "Newest boost goes first — later boosts push yours down", "Boost again any time"]} />
       </div>
-      <p className="mt-6 text-center text-xs text-muted-foreground">Boosts are paid placement. We don't promise a set number of views or replies.</p>
+      <p className="mt-6 text-center text-xs text-muted-foreground">Boosts are paid placement. We don't promise a set number of views or replies. Ads are sold by {BUSINESS_NAME}.</p>
       <div className="mt-8 text-center"><Link to="/post" className="rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground">Post an ad</Link></div>
     </div>
   );
