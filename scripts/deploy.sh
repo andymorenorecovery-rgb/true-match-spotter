@@ -72,8 +72,9 @@ if ! bash "$REPO/scripts/start-site.sh"; then
 fi
 
 echo "== making sure auto-start + watchdog are on =="
-CRON_LINE_BOOT="@reboot bash $REPO/scripts/start-site.sh >> $HOME/watchdog.log 2>&1"
-CRON_LINE_WATCH="*/5 * * * * bash $REPO/scripts/start-site.sh >> $HOME/watchdog.log 2>&1"
+cp "$REPO/scripts/start-site.sh" "$HOME/start-site.sh"
+CRON_LINE_BOOT="@reboot bash $HOME/start-site.sh >> $HOME/watchdog.log 2>&1"
+CRON_LINE_WATCH="*/5 * * * * bash $HOME/start-site.sh >> $HOME/watchdog.log 2>&1"
 ( crontab -l 2>/dev/null | grep -v "start-site.sh" ; echo "$CRON_LINE_BOOT" ; echo "$CRON_LINE_WATCH" ) | crontab -
 echo "watchdog on — checks the site every 5 minutes and restarts it if needed"
 echo "DONE"

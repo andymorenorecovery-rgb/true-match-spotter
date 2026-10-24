@@ -13,7 +13,7 @@ export NVM_DIR="$HOME/.nvm"
 ENV_FILE="$HOME/.site-env"
 PORT="${PORT:-8000}"
 LIVE="$HOME/live"
-REPO="$(cd "$(dirname "$0")/.." && pwd)"
+REPO="$HOME/site"
 LOG="$HOME/site.log"
 
 healthy() {
