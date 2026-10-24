@@ -18,6 +18,8 @@ export const Route = createFileRoute("/privacy")({
       <p>We don't sell or rent your details to anyone. We only share information when the law requires it, or to report illegal activity such as anything involving minors or trafficking.</p>
       <h2>Staying safe</h2>
       <p>Meet in public places, tell a friend where you're going, and never send money to someone you met on the site.</p>
+      <h2>Report human trafficking</h2>
+      <p>If you think someone is being trafficked or exploited, call <a href="tel:911" className="text-primary underline underline-offset-4">911</a> in an emergency, or contact the National Human Trafficking Hotline 24/7 at <a href="tel:18883737888" className="text-primary underline underline-offset-4">1-888-373-7888</a>, text 233733, or <a href="https://humantraffickinghotline.org" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">humantraffickinghotline.org</a>. Anything involving minors can be reported at <a href="https://report.cybertip.org" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">report.cybertip.org</a>. We share account information with law enforcement when trafficking or exploitation is suspected.</p>
       <h2>Deleting your data</h2>
       <p>You can delete your ads and account at any time, and your information will be removed.</p>
       <h2>Questions about your data</h2>

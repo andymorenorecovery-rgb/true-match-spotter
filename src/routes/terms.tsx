@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { InfoPage, meta } from "@/components/InfoPage";
-import { BUSINESS_NAME, CONTACT_EMAIL, CONTACT_MAILTO } from "@/lib/contact";
+import { BRAND_NAME, BUSINESS_NAME, CONTACT_EMAIL, CONTACT_MAILTO } from "@/lib/contact";
 
 
 export const Route = createFileRoute("/terms")({
@@ -53,10 +53,35 @@ export const Route = createFileRoute("/terms")({
       <h2>11. Payments</h2>
       <p>Ads and boosts are paid placement for the listed time period. All sales are final unless required otherwise by law.</p>
 
-      <h2>12. Changes</h2>
+      <h2>12. Reporting human trafficking</h2>
+      <p>{BUSINESS_NAME} has zero tolerance for human trafficking, sexual exploitation, or any content involving minors. Any account connected to it is removed immediately and reported to law enforcement, and we cooperate fully with investigations. If you suspect someone is being trafficked or is in danger:</p>
+      <ul>
+        <li><strong>Emergency:</strong> call <a href="tel:911" className="text-primary underline underline-offset-4">911</a>.</li>
+        <li><strong>National Human Trafficking Hotline</strong> (24/7, confidential): call <a href="tel:18883737888" className="text-primary underline underline-offset-4">1-888-373-7888</a>, text 233733, or visit <a href="https://humantraffickinghotline.org" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">humantraffickinghotline.org</a>.</li>
+        <li><strong>Minors:</strong> report to the NCMEC CyberTipline at <a href="https://report.cybertip.org" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">report.cybertip.org</a> or 1-800-843-5678.</li>
+        <li><strong>FBI tips:</strong> <a href="https://tips.fbi.gov" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">tips.fbi.gov</a>.</li>
+        <li>Also use the "Report" button on the ad and email us at <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.</li>
+      </ul>
+
+      <h2>13. Trademarks and intellectual property</h2>
+      <p>"{BRAND_NAME}", its logo, site design, text, graphics, and software are the property of {BUSINESS_NAME} and are protected by trademark, copyright, and other intellectual property laws. You may not copy, reproduce, scrape, modify, or use them without our written permission.</p>
+      <p>You keep ownership of the photos, video, and text you post. By posting, you grant {BUSINESS_NAME} a non-exclusive, royalty-free license to host, display, and format that content on the Site for as long as your ad is live. You confirm you own or have the right to post everything in your ad. If you believe content on the Site infringes your copyright or trademark, email <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a> with a description of the work, where it appears, and your contact details, and we will review and remove infringing content.</p>
+
+      <h2>14. Advertiser agreement</h2>
+      <p>Everyone who posts an ad is an advertiser and agrees that:</p>
+      <ul>
+        <li>You are at least 18, the person shown in the photos and video selfie, and all information in your ad is true.</li>
+        <li>Your ad is for dating, friendship, or activity partners only — never sex for money, escort, or paid-companionship services.</li>
+        <li>You are solely responsible for your ad's content and for complying with all applicable laws.</li>
+        <li>{BUSINESS_NAME} may edit, reject, or remove any ad at any time, without refund, if it breaks these Terms.</li>
+        <li>Paid ads and boosts buy placement time only. They do not guarantee views, replies, contacts, or dates, and ranking may change as other members boost.</li>
+        <li>You will not post on behalf of another person or a business without their consent.</li>
+      </ul>
+
+      <h2>15. Changes</h2>
       <p>We may update these Terms at any time. Continuing to use the Site after changes means you accept them.</p>
 
-      <h2>13. Contact</h2>
+      <h2>16. Contact</h2>
       <p>Notices, reports and questions about these Terms should be sent to {BUSINESS_NAME} at <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>
 
       <p className="text-xs">These terms should be reviewed by a licensed attorney before launch.</p>
