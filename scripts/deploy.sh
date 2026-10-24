@@ -21,6 +21,9 @@ echo "== building =="
 NITRO_PRESET=node-server "$BUN" run build
 
 echo "== restarting =="
-pkill -f ".output/server/index.mjs" 2>/dev/null || true
+# Stop every old copy, and wait until it is really gone, so the new one gets the port.
+pkill -f "index.mjs" 2>/dev/null || true
+for i in $(seq 1 15); do pgrep -f "index.mjs" > /dev/null || break; sleep 1; done
+pkill -9 -f "index.mjs" 2>/dev/null || true
 sleep 1
 bash "$(dirname "$0")/start-site.sh"
