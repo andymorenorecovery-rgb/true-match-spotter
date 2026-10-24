@@ -1,16 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { InfoPage, meta } from "@/components/InfoPage";
-import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/lib/contact";
+import { BUSINESS_NAME, CONTACT_EMAIL, CONTACT_MAILTO } from "@/lib/contact";
 
 
 export const Route = createFileRoute("/terms")({
   head: () => meta("Terms of service", "The terms for using Ready Too Mingle, a dating and friendship site."),
   component: () => (
     <InfoPage title="Terms of service">
-      <p>By using Ready Too Mingle ("the Site", "we", "us"), you agree to these Terms of Service. If you do not agree, do not use the Site.</p>
+      <p>This Site is operated by {BUSINESS_NAME} ("the Site", "we", "us"). By using the Site you agree to these Terms of Service. If you do not agree, do not use the Site.</p>
 
       <h2>1. About the Site</h2>
-      <p>Ready Too Mingle is a personal-ads site for dating, friendship and activity partners. It is not an escort service, adult site, or marketplace for sexual services. We provide a place to post ads only; we do not screen, introduce, or match members.</p>
+      <p>Ready Too Mingle, operated by {BUSINESS_NAME}, is a personal-ads site for dating, friendship and activity partners. It is not an escort service, adult site, or marketplace for sexual services. We provide a place to post ads only; we do not screen, introduce, or match members.</p>
+
 
       <h2>2. Eligibility</h2>
       <p>You must be at least 18 years old and legally able to agree to these Terms. You may only post ads about yourself, using your own photos and accurate information.</p>
@@ -37,16 +38,17 @@ export const Route = createFileRoute("/terms")({
       <p>Your personal information is not sold, rented, or shared with anyone, except where required by law or to report illegal activity. See our <Link to="/privacy" className="text-primary">Privacy Policy</Link>.</p>
 
       <h2>7. Meeting other members — your responsibility</h2>
-      <p>You are solely responsible for your interactions with other members, online and in person. We do not conduct background checks and do not verify the identity, age, or statements of members. Any meeting, communication, or relationship that happens outside the Site is entirely between you and the other person and has nothing to do with Ready Too Mingle. Always meet in public and use caution.</p>
+      <p>You are solely responsible for your interactions with other members, online and in person. We do not conduct background checks and do not verify the identity, age, or statements of members. Any meeting, communication, or relationship that happens outside the Site is entirely between you and the other person and has nothing to do with {BUSINESS_NAME}. Always meet in public and use caution.</p>
 
       <h2>8. Disclaimer of warranties</h2>
       <p>The Site is provided "as is" and "as available", without warranties of any kind. We do not guarantee views, replies, dates, matches, or that the Site will be uninterrupted or error-free.</p>
 
       <h2>9. Limitation of liability</h2>
-      <p>To the fullest extent permitted by law, Ready Too Mingle and its owners, employees, and partners are not liable for any injury, loss, damage, or harm of any kind — including personal injury, emotional distress, property loss, or death — arising from your use of the Site or from any contact or meeting with another member, on or off the Site. Our total liability for any claim will not exceed the amount you paid us in the 30 days before the claim.</p>
+      <p>To the fullest extent permitted by law, {BUSINESS_NAME} and its owners, employees, and partners are not liable for any injury, loss, damage, or harm of any kind — including personal injury, emotional distress, property loss, or death — arising from your use of the Site or from any contact or meeting with another member, on or off the Site. Our total liability for any claim will not exceed the amount you paid us in the 30 days before the claim.</p>
 
       <h2>10. Release and indemnification</h2>
-      <p>You release Ready Too Mingle from any claims arising from disputes or interactions with other members. You agree to defend and hold Ready Too Mingle harmless from any claims, losses, or costs (including legal fees) caused by your ads, your conduct, or your violation of these Terms.</p>
+      <p>You release {BUSINESS_NAME} from any claims arising from disputes or interactions with other members. You agree to defend and hold {BUSINESS_NAME} harmless from any claims, losses, or costs (including legal fees) caused by your ads, your conduct, or your violation of these Terms.</p>
+
 
       <h2>11. Payments</h2>
       <p>Ads and boosts are paid placement for the listed time period. All sales are final unless required otherwise by law.</p>
@@ -55,7 +57,7 @@ export const Route = createFileRoute("/terms")({
       <p>We may update these Terms at any time. Continuing to use the Site after changes means you accept them.</p>
 
       <h2>13. Contact</h2>
-      <p>Notices, reports and questions about these Terms should be sent to Ready Too Mingle LLC at <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>
+      <p>Notices, reports and questions about these Terms should be sent to {BUSINESS_NAME} at <a href={CONTACT_MAILTO} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>
 
       <p className="text-xs">These terms should be reviewed by a licensed attorney before launch.</p>
 

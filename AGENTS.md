@@ -16,3 +16,5 @@
 - Shared header/footer live in `src/routes/__root.tsx`; each page is its own route file. Why: real URLs for SEO.
 - Keep dependencies portable (no host-only services without a documented alternative). Why: owner plans to self-host.
 - Payments: checkout server functions live in `src/utils/payments.functions.ts`; ads/boosts are applied only after the server confirms the checkout was paid. Why: never trust the browser for money.
+- Business identity (brand name, registered LLC name, contact email) lives in `src/lib/contact.ts`; legal, footer, age-gate and payment surfaces use the LLC name while marketing copy uses the brand name. Why: the company is a registered LLC and these facts must be changeable in one place.
+

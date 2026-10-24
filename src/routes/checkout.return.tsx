@@ -4,6 +4,8 @@ import { getStripeEnvironment } from "@/lib/stripe";
 import { getCheckoutResult } from "@/utils/payments.functions";
 import { boostLocalAd, claimSession, publishPendingAd } from "@/lib/local-ads";
 import { PRICING } from "@/lib/pricing";
+import { BUSINESS_NAME } from "@/lib/contact";
+
 
 export const Route = createFileRoute("/checkout/return")({
   validateSearch: (s: Record<string, unknown>): { session_id?: string | undefined } => ({
@@ -55,8 +57,12 @@ function CheckoutReturn() {
       <h1 className="text-3xl font-bold">{text[0]}</h1>
       <p className="mt-3 text-muted-foreground">{text[1]}</p>
       {state !== "loading" && (
+        <p className="mt-6 text-xs text-muted-foreground">Payment processed for {BUSINESS_NAME}</p>
+      )}
+      {state !== "loading" && (
         <Link to="/" className="mt-8 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground">See the listings</Link>
       )}
+
     </div>
   );
 }

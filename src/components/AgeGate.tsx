@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
+import { BUSINESS_NAME } from "@/lib/contact";
+
 
 const KEY = "rtm-age-ok";
 
@@ -87,9 +89,10 @@ export function AgeGate() {
             Adults only
           </h2>
           <p className="mx-auto mt-3 max-w-sm text-center text-sm leading-relaxed text-muted-foreground">
-            Ready Too Mingle is a dating, friendship and activity-partner site for people{" "}
+            {BUSINESS_NAME} runs a dating, friendship and activity-partner site for people{" "}
             <span className="font-semibold text-foreground">18 years and older</span>. Please
             confirm below to continue.
+
           </p>
 
           <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-2xl border bg-background/60 p-4 transition-colors hover:border-primary/40">
