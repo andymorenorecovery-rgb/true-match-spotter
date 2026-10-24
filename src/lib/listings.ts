@@ -1,12 +1,7 @@
 import p1 from "@/assets/p1.jpg";
 import p2 from "@/assets/p2.jpg";
-import p3 from "@/assets/p3.jpg";
-import p4 from "@/assets/p4.jpg";
 import p1b from "@/assets/p1b.jpg";
 import p1c from "@/assets/p1c.jpg";
-import p4b from "@/assets/p4b.jpg";
-import p5 from "@/assets/p5.jpg";
-import p6 from "@/assets/p6.jpg";
 
 export type Category = "dating" | "friendship" | "hookups" | "activity-partners";
 export const CATEGORIES: { id: Category; label: string }[] = [
@@ -68,8 +63,6 @@ export type Listing = {
 const FOREVER = "2030-01-01T00:00:00.000Z";
 const EXPIRED = "2000-01-01T00:00:00.000Z";
 const BOOST_LATEST = "2029-12-05T00:00:00.000Z";
-const BOOST_MIDDLE = "2029-12-02T00:00:00.000Z";
-const BOOST_OLDEST = "2029-12-01T00:00:00.000Z";
 
 export const formatLocation = (l: Pick<Listing, "area" | "city" | "state">) =>
   [l.area, [l.city, l.state].filter(Boolean).join(", ")].filter(Boolean).join(" · ");
