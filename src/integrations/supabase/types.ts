@@ -14,7 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      notifications: {
+        Row: {
+          ad_id: string | null
+          created_at: string
+          dedupe_key: string
+          id: string
+          kind: string
+          message: string
+          read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ad_id?: string | null
+          created_at?: string
+          dedupe_key: string
+          id?: string
+          kind: string
+          message: string
+          read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ad_id?: string | null
+          created_at?: string
+          dedupe_key?: string
+          id?: string
+          kind?: string
+          message?: string
+          read_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          free_week_credits: number
+          id: string
+          referral_code: string
+          referral_rewarded: boolean
+          referred_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          free_week_credits?: number
+          id: string
+          referral_code?: string
+          referral_rewarded?: boolean
+          referred_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          free_week_credits?: number
+          id?: string
+          referral_code?: string
+          referral_rewarded?: boolean
+          referred_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      used_checkouts: {
+        Row: {
+          created_at: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_ads: {
+        Row: {
+          ad_id: string
+          boost_until: string | null
+          created_at: string
+          expires_at: string
+          plan: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          ad_id: string
+          boost_until?: string | null
+          created_at?: string
+          expires_at: string
+          plan: string
+          title?: string
+          user_id: string
+        }
+        Update: {
+          ad_id?: string
+          boost_until?: string | null
+          created_at?: string
+          expires_at?: string
+          plan?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
