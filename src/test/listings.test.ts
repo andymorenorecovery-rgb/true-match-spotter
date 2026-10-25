@@ -26,8 +26,8 @@ describe("pricing", () => {
 });
 
 describe("categories", () => {
-  it("allows hookups and dating, in that order", () => {
-    expect(CATEGORIES.map((c) => c.id)).toEqual(["hookups", "dating"]);
+  it("allows hookups, dating and eye candy, in that order", () => {
+    expect(CATEGORIES.map((c) => c.id)).toEqual(["hookups", "dating", "eye-candy"]);
   });
 });
 
