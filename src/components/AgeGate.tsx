@@ -89,7 +89,7 @@ export function AgeGate() {
             Adults only
           </h2>
           <p className="mx-auto mt-3 max-w-sm text-center text-sm leading-relaxed text-muted-foreground">
-            {BUSINESS_NAME} runs a dating, casual-encounter and activity-partner site for people{" "}
+            {BUSINESS_NAME} runs a dating and casual-encounter site for people{" "}
             <span className="font-semibold text-foreground">18 years and older</span>. Please
             confirm below to continue.
 
