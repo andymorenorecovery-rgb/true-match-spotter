@@ -9,6 +9,12 @@ set -uo pipefail
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+# Cron has an empty PATH: find node even if nvm has no default set.
+if ! command -v node >/dev/null 2>&1; then
+  NODE_DIR=$(ls -d "$NVM_DIR"/versions/node/v22* 2>/dev/null | sort -V | tail -1)
+  [ -n "$NODE_DIR" ] && export PATH="$NODE_DIR/bin:$PATH"
+fi
+export PATH="$HOME/.bun/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
 
 ENV_FILE="$HOME/.site-env"
 PORT="${PORT:-8000}"
