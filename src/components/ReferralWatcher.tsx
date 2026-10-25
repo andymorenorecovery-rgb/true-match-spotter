@@ -5,15 +5,16 @@ import { saveInviteCode, takeInviteCode } from "@/hooks/useAuth";
 import { claimReferral } from "@/utils/account.functions";
 import { isReferralCode } from "@/lib/rewards";
 
+// Old confirmation links point at /account, whose sign-in check would drop the
+// link's error before anyone sees it. Runs on load, before routing.
+if (typeof window !== "undefined" && /error_code=|error=/.test(window.location.hash) && window.location.pathname !== "/auth") {
+  window.location.replace("/auth" + window.location.hash);
+}
+
 /** Remembers ?ref= invite links and links the account to the inviter once signed in. */
 export function ReferralWatcher() {
   const qc = useQueryClient();
   useEffect(() => {
-    // Old confirmation links point at /account; send link errors to the sign-in page, which explains them.
-    if (/error_code=|error=/.test(window.location.hash) && window.location.pathname !== "/auth") {
-      window.location.replace("/auth" + window.location.hash);
-      return;
-    }
     const ref = new URLSearchParams(window.location.search).get("ref")?.toLowerCase();
     if (ref && isReferralCode(ref)) saveInviteCode(ref);
     const claim = () => {
