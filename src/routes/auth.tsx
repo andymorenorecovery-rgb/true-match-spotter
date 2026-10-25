@@ -46,9 +46,16 @@ function AuthPage() {
       const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: publicOrigin() + "/account" } });
       if (error) setMsg(error.message);
       else if (!data.session) setMsg("Check your email and tap the link to confirm your account.");
-    } else {
+    } else if (mode === "in") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) setMsg(error.message);
+      if (error) {
+        if (/not confirmed/i.test(error.message)) setMsg("Please confirm your email first — tap the link we emailed you.");
+        else if (/invalid login/i.test(error.message)) setMsg("That email and password don't match. Tap \"Forgot password?\" to reset it.");
+        else setMsg(error.message);
+      }
+    } else {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: publicOrigin() + "/reset-password" });
+      setMsg(error ? error.message : "If that email has an account, we sent a link to reset your password. Check your inbox and spam.");
     }
     setBusy(false);
   };
