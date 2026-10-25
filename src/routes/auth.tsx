@@ -34,6 +34,19 @@ function AuthPage() {
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Email confirmation links land here. If the link was already used or expired
+  // (e.g. tapped twice, or opened in a different app), explain it instead of failing silently.
+  useEffect(() => {
+    const h = new URLSearchParams(window.location.hash.slice(1));
+    const q = new URLSearchParams(window.location.search);
+    const err = h.get("error_code") ?? q.get("error_code") ?? h.get("error") ?? q.get("error");
+    if (err) {
+      setMode("in");
+      setMsg("That email link was already used or has expired — your email is most likely already confirmed. Sign in below with your email and password, or tap \"Forgot password?\".");
+      history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
+
   useEffect(() => {
     if (user) navigate({ to: next ?? "/account" });
   }, [user, next, navigate]);
@@ -43,7 +56,7 @@ function AuthPage() {
     setBusy(true);
     setMsg("");
     if (mode === "up") {
-      const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: publicOrigin() + "/account" } });
+      const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: publicOrigin() + "/auth" } });
       if (error) setMsg(error.message);
       else if (!data.session) setMsg("Check your email and tap the link to confirm your account.");
     } else if (mode === "in") {
