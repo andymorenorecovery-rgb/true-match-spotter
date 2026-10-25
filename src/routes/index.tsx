@@ -60,7 +60,7 @@ function Home() {
     <div>
       <section className="mx-auto max-w-6xl px-4 pb-10 pt-14 text-center">
         <h1 className="text-4xl font-bold leading-tight sm:text-6xl">
-          Meet people <span className="text-gradient italic">near you</span>
+          Meet people <span className="text-shine italic">near you</span>
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
           Local personal ads for hookups, dating and finding someone to share the same interests with. Find your eye candy.

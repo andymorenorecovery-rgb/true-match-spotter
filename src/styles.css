@@ -92,7 +92,7 @@
   color: transparent;
 }
 
-/* Shine sweep for the header "Mingle" — left to right every 6s */
+/* Shine sweep for the header "Mingle" and the hero "near you" — left to right every 3s */
 @keyframes shine-sweep {
   0% { background-position: 100% center, 0% center; }
   22% { background-position: 0% center, 0% center; }
@@ -109,7 +109,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: shine-sweep 6s ease-in-out infinite;
+  animation: shine-sweep 3s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
