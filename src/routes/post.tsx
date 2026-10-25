@@ -262,7 +262,7 @@ function PostAd() {
           {error && <p className="text-sm text-destructive">{error}</p>}
           {user === null ? (
             <Link to="/auth" search={{ next: "/post" }} className="block w-full rounded-full bg-gradient-primary py-4 text-center font-semibold text-primary-foreground shadow-glow">
-              Sign in to post your ad
+              Create an account or sign in to post your ad
             </Link>
           ) : (
             <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
