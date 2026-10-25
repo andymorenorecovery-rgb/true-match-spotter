@@ -135,14 +135,17 @@ function RootComponent() {
         <PaymentTestModeBanner />
         <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:py-4">
-            <Link to="/" className="min-w-0 whitespace-nowrap text-lg font-bold sm:text-2xl" style={{ fontFamily: "var(--font-display)" }}>
+            <Link to="/" className="whitespace-nowrap text-base font-bold max-[359px]:text-sm sm:text-2xl" style={{ fontFamily: "var(--font-display)" }}>
               Ready Too <span className="text-shine italic">Mingle</span>
             </Link>
-            <nav className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
+            <nav className="flex shrink-0 items-center gap-1.5 text-sm max-[359px]:gap-1 sm:gap-4">
               <Link to="/pricing" className="hidden text-muted-foreground hover:text-foreground sm:inline">Pricing</Link>
               <Link to="/faq" className="hidden text-muted-foreground hover:text-foreground sm:inline">FAQ</Link>
               <NotificationBell />
-              <Link to="/post" className="whitespace-nowrap rounded-full bg-gradient-primary px-3 py-1.5 font-semibold text-primary-foreground sm:px-4 sm:py-2">Post an ad</Link>
+              <Link to="/post" className="whitespace-nowrap rounded-full bg-gradient-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground sm:px-4 sm:py-2 sm:text-sm">
+                <span className="hidden min-[390px]:inline">Post an ad</span>
+                <span className="min-[390px]:hidden">Post</span>
+              </Link>
             </nav>
           </div>
         </header>
