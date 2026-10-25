@@ -14,15 +14,20 @@ describe("pricing", () => {
     expect(PRICING.dayAd.priceCents).toBe(2000);
     expect(PRICING.dayAd.durationHours).toBe(24);
   });
-  it("posting for a week costs $120", () => {
-    expect(PRICING.weekAd.priceCents).toBe(12000);
+  it("posting for a week costs $99", () => {
+    expect(PRICING.weekAd.priceCents).toBe(9900);
     expect(PRICING.weekAd.durationHours).toBe(168);
+  });
+  it("posting for a month costs $299", () => {
+    expect(PRICING.monthAd.priceCents).toBe(29900);
+    expect(PRICING.monthAd.durationHours).toBe(720);
   });
   it("re-boosting to the top costs $10 for 24 hours", () => {
     expect(PRICING.boost.priceCents).toBe(1000);
     expect(PRICING.boost.durationHours).toBe(24);
   });
   it("a week ad includes a 24-hour boost", () => expect(PRICING.weekAd.includedBoostHours).toBe(24));
+  it("a month ad includes a 24-hour boost", () => expect(PRICING.monthAd.includedBoostHours).toBe(24));
 });
 
 describe("categories", () => {
