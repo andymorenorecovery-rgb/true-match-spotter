@@ -18,6 +18,8 @@ import g13 from "@/assets/g13.jpg";
 import g14 from "@/assets/g14.jpg";
 import g15 from "@/assets/g15.jpg";
 import g16 from "@/assets/g16.jpg";
+import g16b from "@/assets/g16b.jpg";
+import g16c from "@/assets/g16c.jpg";
 import g17 from "@/assets/g17.jpg";
 import g18 from "@/assets/g18.jpg";
 import g19 from "@/assets/g19.jpg";
