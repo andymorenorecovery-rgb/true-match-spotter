@@ -63,7 +63,7 @@ function Home() {
           Meet people <span className="text-gradient italic">near you</span>
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-          Local personal ads for hookups, dating and finding someone to share the same interests with.
+          Local personal ads for hookups, dating and finding someone to share the same interests with. Find your eye candy.
         </p>
         <form onSubmit={(e) => e.preventDefault()} className="mx-auto mt-8 flex max-w-2xl flex-col gap-2 rounded-2xl border bg-card p-2 sm:flex-row">
           <select
