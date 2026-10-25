@@ -35,6 +35,11 @@ if [ ! -f "$ENV_FILE" ]; then
   exit 1
 fi
 chmod 600 "$ENV_FILE" 2>/dev/null || true
+# Public backend address + publishable key ship in the repo's .env; the
+# server needs them at runtime for sign-in and accounts.
+if [ -f "$REPO/.env" ]; then
+  set -a; . <(grep -E '^(SUPABASE_URL|SUPABASE_PUBLISHABLE_KEY|SUPABASE_PROJECT_ID)=' "$REPO/.env"); set +a
+fi
 set -a; . "$ENV_FILE"; set +a
 if [ -z "${STRIPE_SECRET_KEY:-}" ]; then
   echo "STRIPE_SECRET_KEY is not in $ENV_FILE — checkout will not work." >&2

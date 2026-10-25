@@ -23,8 +23,9 @@ export const Route = createFileRoute("/_authenticated/account")({
 });
 
 function Account() {
-  const { data, isLoading } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount() });
+  const { data, isLoading, error } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount() });
   const [copied, setCopied] = useState(false);
+  if (error) return <p className="px-4 py-20 text-center text-muted-foreground">We couldn't load your account. Please refresh, or sign in again.</p>;
   if (isLoading || !data) return <p className="px-4 py-20 text-center text-muted-foreground">Loading…</p>;
   const link = data.profile ? `${window.location.origin}/?ref=${data.profile.referral_code}` : "";
   const credits = data.profile?.free_week_credits ?? 0;
