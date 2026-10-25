@@ -1,4 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
+import { getAccount, redeemFreeWeek } from "@/utils/account.functions";
+import { accountQueryKey } from "@/components/NotificationBell";
 import { useState, type FormEvent, type ReactNode } from "react";
 function formatPhone(v: string) {
   const d = v.replace(/\D/g, "").replace(/^1/, "").slice(0, 10);
@@ -8,7 +12,7 @@ function formatPhone(v: string) {
 }
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
-import { resizeImage, savePendingAd } from "@/lib/local-ads";
+import { publishPendingAd, resizeImage, savePendingAd } from "@/lib/local-ads";
 import { saveAdVideo, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
@@ -36,10 +40,16 @@ function PostAd() {
   const [details, setDetails] = useState<Details>({});
   const [photos, setPhotos] = useState<string[]>([]);
   const [video, setVideo] = useState<Blob | null>(null);
-  const [plan, setPlan] = useState<"dayAd" | "weekAd">("dayAd");
+  const [chosenPlan, setPlan] = useState<"dayAd" | "weekAd">("dayAd");
   const [boost, setBoost] = useState(false);
   const [error, setError] = useState("");
   const [checkout, setCheckout] = useState<CheckoutRequest | null>(null);
+  const user = useAuth();
+  const navigate = useNavigate();
+  const { data: account } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount(), enabled: !!user });
+  const credits = account?.profile?.free_week_credits ?? 0;
+  const [useFree, setUseFree] = useState(false);
+  const free = useFree && credits > 0;
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
 
@@ -51,6 +61,7 @@ function PostAd() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!user) return setError("Please sign in first so we can remind you when your ad or boost runs out.");
     const age = Number(f.age);
     if (!f.title.trim() || !f.name.trim()) return setError("Please add a headline and your first name.");
     if (!age || age < 18 || age > 99) return setError("You must be 18 or older to post.");
@@ -59,6 +70,7 @@ function PostAd() {
     if (!photos.length) return setError("Please add at least one photo.");
     if (!video) return setError(`Please record your ${VIDEO_SECONDS}-second video selfie so people know you're real.`);
     const now = Date.now();
+    const plan = free ? "weekAd" : chosenPlan;
     const ad: Listing = {
       id: `local-${now}`,
       title: f.title.trim(), name: f.name.trim(), age,
@@ -84,12 +96,19 @@ function PostAd() {
     } catch {
       return setError("Those photos are too big to save. Try fewer photos.");
     }
+    if (free) {
+      const r = await redeemFreeWeek({ data: { adId: ad.id, title: ad.title } }).catch(() => ({ ok: false }));
+      if (!r.ok) return setError("We couldn't use your free week. Please try again.");
+      publishPendingAd(ad.id);
+      return navigate({ to: "/account" });
+    }
     setCheckout({
       adId: ad.id,
       kind: "post",
       priceIds: [PRICE_IDS[plan], ...(plan === "dayAd" && boost ? [PRICE_IDS.boost] : [])],
     });
   };
+  const plan = free ? "weekAd" : chosenPlan;
   const total = PRICING[plan].priceCents + (plan === "dayAd" && boost ? PRICING.boost.priceCents : 0);
 
   return (
@@ -212,7 +231,14 @@ function PostAd() {
             </label>
           </Section>
 
-          <Section title="How long?">
+          {credits > 0 && (
+            <label className="flex items-center gap-3 rounded-2xl border border-primary bg-card p-4 text-sm">
+              <input type="checkbox" checked={useFree} onChange={(e) => setUseFree(e.target.checked)} className="h-4 w-4 accent-primary" />
+              Use one of my free 1-week ads ({credits} left) — no payment needed
+            </label>
+          )}
+
+          {!free && <Section title="How long?">
             <div className="flex flex-wrap gap-2">
               {(["dayAd", "weekAd"] as const).map((p) => (
                 <button type="button" key={p} onClick={() => setPlan(p)} className={`rounded-full px-4 py-2 text-sm ${plan === p ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
@@ -231,12 +257,18 @@ function PostAd() {
                 Also boost to the top with a green glow (+{formatPrice(PRICING.boost.priceCents)} for {PRICING.boost.durationHours} hours)
               </label>
             )}
-          </Section>
+          </Section>}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
-            Pay {formatPrice(total)} and post my ad
-          </button>
+          {user === null ? (
+            <Link to="/auth" search={{ next: "/post" }} className="block w-full rounded-full bg-gradient-primary py-4 text-center font-semibold text-primary-foreground shadow-glow">
+              Sign in to post your ad
+            </Link>
+          ) : (
+            <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
+              {free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+            </button>
+          )}
           <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>
         </form>
         <CheckoutDialog request={checkout} onClose={() => setCheckout(null)} />

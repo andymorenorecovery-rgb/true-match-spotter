@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getCheckoutResult } from "@/utils/payments.functions";
-import { boostLocalAd, claimSession, publishPendingAd } from "@/lib/local-ads";
+import { boostLocalAd, claimSession, pendingAdTitle, publishPendingAd } from "@/lib/local-ads";
+import { recordCheckout } from "@/utils/account.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { PRICING } from "@/lib/pricing";
 import { BUSINESS_NAME } from "@/lib/contact";
 
@@ -35,6 +37,11 @@ function CheckoutReturn() {
       .then((r) => {
         if ("error" in r || !r.paid) return setState("failed");
         const fresh = claimSession(session_id);
+        const environment = getStripeEnvironment();
+        const title = pendingAdTitle(r.adId);
+        supabase.auth.getSession().then(({ data }) => {
+          if (data.session) recordCheckout({ data: { sessionId: session_id, environment, title } }).catch(() => {});
+        });
         if (r.kind === "boost") {
           if (fresh) boostLocalAd(r.adId, PRICING.boost.durationHours);
           return setState("boosted");
