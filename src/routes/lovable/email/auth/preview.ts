@@ -18,7 +18,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "True Match Spotter"
+const SITE_NAME = "Ready Too Mingle"
 const ROOT_DOMAIN = "readytoomingle.com"
 
 // Sample data for preview mode ONLY (not used in actual email sending).

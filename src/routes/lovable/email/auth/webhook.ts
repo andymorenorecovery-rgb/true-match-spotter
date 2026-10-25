@@ -9,7 +9,7 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "True Match Spotter"
+const SITE_NAME = "Ready Too Mingle"
 const SENDER_DOMAIN = "notify.readytoomingle.com"
 const ROOT_DOMAIN = "readytoomingle.com"
 const FROM_DOMAIN = "readytoomingle.com"
