@@ -92,7 +92,7 @@
   color: transparent;
 }
 
-/* Shine sweep — left to right. Default every 3s; text-shine-slow overrides it. */
+/* Shine sweep — left to right every 6s. text-shine-slow can override it per element. */
 @keyframes shine-sweep {
   0% { background-position: 100% center, 0% center; }
   22% { background-position: 0% center, 0% center; }
@@ -109,7 +109,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: shine-sweep var(--shine-dur, 3s) ease-in-out infinite;
+  animation: shine-sweep var(--shine-dur, 6s) ease-in-out infinite;
 }
 
 /* Slower sweep for large text (the hero "near you") */
