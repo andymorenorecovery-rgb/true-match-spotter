@@ -1,3 +1,4 @@
+import { publicOrigin } from "@/lib/contact";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,7 +43,7 @@ function AuthPage() {
     setBusy(true);
     setMsg("");
     if (mode === "up") {
-      const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + "/account" } });
+      const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: publicOrigin() + "/account" } });
       if (error) setMsg(error.message);
       else if (!data.session) setMsg("Check your email and tap the link to confirm your account.");
     } else {
