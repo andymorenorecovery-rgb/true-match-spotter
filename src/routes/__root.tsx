@@ -134,15 +134,15 @@ function RootComponent() {
       <div className="flex min-h-screen flex-col">
         <PaymentTestModeBanner />
         <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
-            <Link to="/" className="text-xl font-bold sm:text-2xl" style={{ fontFamily: "var(--font-display)" }}>
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:py-4">
+            <Link to="/" className="min-w-0 whitespace-nowrap text-lg font-bold sm:text-2xl" style={{ fontFamily: "var(--font-display)" }}>
               Ready Too <span className="text-shine italic">Mingle</span>
             </Link>
-            <nav className="flex items-center gap-4 text-sm">
+            <nav className="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
               <Link to="/pricing" className="hidden text-muted-foreground hover:text-foreground sm:inline">Pricing</Link>
               <Link to="/faq" className="hidden text-muted-foreground hover:text-foreground sm:inline">FAQ</Link>
               <NotificationBell />
-              <Link to="/post" className="rounded-full bg-gradient-primary px-4 py-2 font-semibold text-primary-foreground">Post an ad</Link>
+              <Link to="/post" className="whitespace-nowrap rounded-full bg-gradient-primary px-3 py-1.5 font-semibold text-primary-foreground sm:px-4 sm:py-2">Post an ad</Link>
             </nav>
           </div>
         </header>
