@@ -1,5 +1,4 @@
 import p1 from "@/assets/p1.jpg";
-import p2 from "@/assets/p2.jpg";
 import p1b from "@/assets/p1b.jpg";
 import p1c from "@/assets/p1c.jpg";
 import g14 from "@/assets/g14.jpg";
@@ -78,7 +77,6 @@ export const SAMPLE_LISTINGS: Listing[] = [
   { id: "1", title: "Rooftop sunsets & vinyl nights", name: "Sofia", age: 28, city: "Los Angeles", state: "CA", area: "Silver Lake", category: "dating", body: "Looking for someone to split dessert with and argue about the best record of the 70s. Terrible puns encouraged.", img: p1, photos: [p1b, p1c], details: { gender: "Woman", height: `5'6"`, hairColor: "Brown", eyeColor: "Brown", bodyType: "Slim", languages: "English, Spanish", lookingFor: "Men" }, phone: "(213) 555-0142", status: "published", postedAt: "2026-08-31T00:00:00.000Z", expiresAt: FOREVER, featuredUntil: BOOST_LATEST },
   { id: "g14", title: "Brunch queen looking for a king", name: "Amara", age: 27, city: "Nashville", state: "TN", area: "East Nashville", category: "dating", body: "Mimosas, live country music and good company. Looking for someone fun, honest and adventurous.", img: g14, photos: [g14b, g14c], details: { gender: "Woman", height: "5'6\"", hairColor: "Brown", eyeColor: "Brown", bodyType: "Curvy", ethnicity: "Mixed", languages: "English", lookingFor: "Men" }, phone: "(615) 555-0123", status: "published", postedAt: "2026-08-16T00:00:00.000Z", expiresAt: FOREVER, plan: "day" },
   { id: "g16", title: "Let's dance the night away", name: "Isabella", age: 26, city: "Orlando", state: "FL", area: "Downtown", category: "hookups", body: "Outgoing, fun and always ready to hit the dance floor. Looking for good vibes and no drama. 18+ only.", img: g16, photos: [g16b, g16c], details: { gender: "Woman", height: "5'4\"", hairColor: "Black", eyeColor: "Brown", bodyType: "Curvy", ethnicity: "Hispanic / Latino", languages: "English, Spanish", lookingFor: "Men" }, phone: "(407) 555-0119", status: "published", postedAt: "2026-08-14T00:00:00.000Z", expiresAt: FOREVER },
-  { id: "5", title: "Old ad", name: "Test", age: 40, city: "Los Angeles", state: "CA", area: "Downtown", category: "dating", body: "Expired.", img: p2, details: {}, status: "published", postedAt: "2025-12-01T00:00:00.000Z", expiresAt: EXPIRED },
 ];
 
 export const isFeatured = (l: Listing, now = Date.now()) =>
