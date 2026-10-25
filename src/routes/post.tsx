@@ -49,7 +49,7 @@ function PostAd() {
   const { data: account } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount(), enabled: !!user });
   const launchFree = !!account?.launchFree;
   const credits = (account?.profile?.free_week_credits ?? 0) + (launchFree ? 1 : 0);
-  const [useFree, setUseFree] = useState(false);
+  const [useFree, setUseFree] = useState(true);
   const free = useFree && credits > 0;
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
@@ -235,7 +235,9 @@ function PostAd() {
           {credits > 0 && (
             <label className="flex items-center gap-3 rounded-2xl border border-primary bg-card p-4 text-sm">
               <input type="checkbox" checked={useFree} onChange={(e) => setUseFree(e.target.checked)} className="h-4 w-4 accent-primary" />
-              Use one of my free 1-week ads ({credits} left) — no payment needed
+              {launchFree && credits === 1
+                ? <>Launch special: post a free 1-week ad — only {account?.launchSpotsLeft} of the first 10 free spots left</>
+                : <>Use one of my free 1-week ads ({credits} left) — no payment needed</>}
             </label>
           )}
 
