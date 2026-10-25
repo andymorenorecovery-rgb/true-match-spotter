@@ -47,7 +47,8 @@ function PostAd() {
   const user = useAuth();
   const navigate = useNavigate();
   const { data: account } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount(), enabled: !!user });
-  const credits = account?.profile?.free_week_credits ?? 0;
+  const launchFree = !!account?.launchFree;
+  const credits = (account?.profile?.free_week_credits ?? 0) + (launchFree ? 1 : 0);
   const [useFree, setUseFree] = useState(false);
   const free = useFree && credits > 0;
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
