@@ -26,7 +26,7 @@ export function NotificationBell() {
   const qc = useQueryClient();
   const { data } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount(), enabled: !!user, refetchInterval: 5 * 60000 });
   if (user === undefined) return null;
-  if (!user) return <Link to="/auth" className="whitespace-nowrap rounded-full border border-primary px-3 py-1.5 text-sm font-semibold hover:bg-secondary"><span className="sm:hidden">Sign in</span><span className="hidden sm:inline">Sign up / Sign in</span></Link>;
+  if (!user) return <Link to="/auth" className="whitespace-nowrap rounded-full border border-primary px-3 py-1.5 text-sm font-semibold text-primary hover:bg-secondary"><span className="sm:hidden">Sign in</span><span className="hidden sm:inline">Sign up / Sign in</span></Link>;
   const notes = data?.notifications ?? [];
   const unread = notes.filter((n) => !n.read_at).length;
   return (
