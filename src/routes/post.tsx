@@ -40,7 +40,7 @@ function PostAd() {
   const [details, setDetails] = useState<Details>({});
   const [photos, setPhotos] = useState<string[]>([]);
   const [video, setVideo] = useState<Blob | null>(null);
-  const [chosenPlan, setPlan] = useState<"dayAd" | "weekAd">("dayAd");
+  const [chosenPlan, setPlan] = useState<"dayAd" | "weekAd" | "monthAd">("dayAd");
   const [boost, setBoost] = useState(false);
   const [error, setError] = useState("");
   const [checkout, setCheckout] = useState<CheckoutRequest | null>(null);
@@ -81,9 +81,9 @@ function PostAd() {
       status: "published",
       postedAt: new Date(now).toISOString(),
       expiresAt: new Date(now + PRICING[plan].durationHours * 3600000).toISOString(),
-      plan: plan === "dayAd" ? "day" : "week",
-      ...(plan === "weekAd" || boost
-        ? { featuredUntil: new Date(now + (plan === "weekAd" ? PRICING.weekAd.includedBoostHours : PRICING.boost.durationHours) * 3600000).toISOString() }
+      plan: plan === "dayAd" ? "day" : plan === "monthAd" ? "month" : "week",
+      ...(plan !== "dayAd" || boost
+        ? { featuredUntil: new Date(now + (plan !== "dayAd" ? PRICING[plan].includedBoostHours : PRICING.boost.durationHours) * 3600000).toISOString() }
         : {}),
     };
     try {
@@ -114,7 +114,7 @@ function PostAd() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <h1 className="text-4xl font-bold">Post an ad</h1>
-      <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours or {formatPrice(PRICING.weekAd.priceCents)} for a week. Fill in as much or as little as you like.</p>
+      <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours, {formatPrice(PRICING.weekAd.priceCents)} for a week or {formatPrice(PRICING.monthAd.priceCents)} for a month. Fill in as much or as little as you like.</p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
         <form onSubmit={submit} className="space-y-8">
@@ -240,16 +240,16 @@ function PostAd() {
 
           {!free && <Section title="How long?">
             <div className="flex flex-wrap gap-2">
-              {(["dayAd", "weekAd"] as const).map((p) => (
+              {(["dayAd", "weekAd", "monthAd"] as const).map((p) => (
                 <button type="button" key={p} onClick={() => setPlan(p)} className={`rounded-full px-4 py-2 text-sm ${plan === p ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
-                  {p === "dayAd" ? "24 hours" : "1 week"} — {formatPrice(PRICING[p].priceCents)}
+                  {p === "dayAd" ? "24 hours" : p === "weekAd" ? "1 week" : "1 month"} — {formatPrice(PRICING[p].priceCents)}
                 </button>
               ))}
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
               {plan === "dayAd"
                 ? "24-hour ads get a purple frame."
-                : `Week ads get the green glow and a spot at the top for the first ${PRICING.weekAd.includedBoostHours} hours.`}
+                : `${plan === "monthAd" ? "Month" : "Week"} ads get the green glow and a spot at the top for the first ${PRICING[plan].includedBoostHours} hours.`}
             </p>
             {plan === "dayAd" && (
               <label className="mt-3 flex items-center gap-2 text-sm">
