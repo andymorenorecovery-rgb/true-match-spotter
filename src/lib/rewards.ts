@@ -1,5 +1,5 @@
 // Pure rules for invite rewards and owner reminders (tested in src/test/rewards.test.ts).
-import { PRICING, REFERRAL, REMINDERS, formatPrice } from "@/lib/pricing";
+import { PRICING, REMINDERS, formatPrice } from "@/lib/pricing";
 
 export type AdRecord = { ad_id: string; title: string; plan: "day" | "week" | string; expires_at: string; boost_until: string | null };
 export type Reminder = { dedupe_key: string; kind: "boost_ended" | "ad_ending" | "ad_ended"; ad_id: string; message: string };
@@ -35,7 +35,6 @@ export function earnsReferralReward(p: { referredBy: string | null; alreadyRewar
   return p.paid && p.kind === "post" && !!p.referredBy && !p.alreadyRewarded;
 }
 
-export const freeWeeksPerReward = () => (REFERRAL.friendsNeeded === 1 ? REFERRAL.freeWeeksEarned : 0);
 
 /** Codes are 8 lowercase letters/digits. */
 export const isReferralCode = (c: string) => /^[a-z0-9]{8}$/.test(c);

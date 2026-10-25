@@ -6,8 +6,8 @@ export const PRICING = {
   boost: { priceCents: 1000, durationHours: 24 },
 } as const;
 
-/** Invite rewards: each friend who pays for their first ad earns the inviter free week ads. */
-export const REFERRAL = { friendsNeeded: 1, freeWeeksEarned: 1 } as const;
+/** Invite rewards: each friend who pays for their first ad earns the inviter free week ad(s). */
+export const REFERRAL = { freeWeeksPerFriend: 1 } as const;
 
 /** When to remind owners that their ad is about to end. */
 export const REMINDERS = { endingSoonHours: 6, keepEndedDays: 30 } as const;
