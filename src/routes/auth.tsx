@@ -28,7 +28,7 @@ function AuthPage() {
   const { next } = Route.useSearch();
   const navigate = useNavigate();
   const user = useAuth();
-  const [mode, setMode] = useState<"in" | "up">("up");
+  const [mode, setMode] = useState<"in" | "up" | "forgot">("up");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
@@ -67,20 +67,23 @@ function AuthPage() {
 
   return (
     <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="text-4xl font-bold">{mode === "up" ? "Create your account" : "Welcome back"}</h1>
+      <h1 className="text-4xl font-bold">{mode === "up" ? "Create your account" : mode === "in" ? "Welcome back" : "Reset your password"}</h1>
       <p className="mt-2 text-muted-foreground">Post ads, earn a free week for every friend you bring, and get reminders when your ad or boost runs out.</p>
       <button onClick={google} className="mt-8 w-full rounded-full border bg-card py-3 font-semibold">Continue with Google</button>
       <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" /></div>
       <form onSubmit={submit} className="space-y-3">
         <input className={input} type="email" required autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input className={input} type="password" required minLength={6} autoComplete={mode === "up" ? "new-password" : "current-password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        {mode !== "forgot" && <input className={input} type="password" required minLength={6} autoComplete={mode === "up" ? "new-password" : "current-password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />}
+        {mode === "in" && (
+          <button type="button" onClick={() => { setMode("forgot"); setMsg(""); }} className="block w-full text-right text-sm text-primary underline">Forgot password?</button>
+        )}
         {msg && <p className="text-sm text-muted-foreground">{msg}</p>}
         <button disabled={busy} className="w-full rounded-full bg-gradient-primary py-3 font-semibold text-primary-foreground shadow-glow disabled:opacity-60">
-          {mode === "up" ? "Create account" : "Sign in"}
+          {mode === "up" ? "Create account" : mode === "in" ? "Sign in" : "Email me a reset link"}
         </button>
       </form>
-      <button onClick={() => { setMode(mode === "up" ? "in" : "up"); setMsg(""); }} className="mt-6 w-full text-center text-sm text-muted-foreground underline">
-        {mode === "up" ? "Already have an account? Sign in" : "New here? Create an account"}
+      <button onClick={() => { setMode(mode === "in" ? "up" : "in"); setMsg(""); }} className="mt-6 w-full text-center text-sm text-muted-foreground underline">
+        {mode === "up" ? "Already have an account? Sign in" : mode === "in" ? "New here? Create an account" : "Back to sign in"}
       </button>
     </div>
   );
