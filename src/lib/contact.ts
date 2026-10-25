@@ -8,3 +8,12 @@ export const BUSINESS_NAME = "Ready Too Mingle LLC";
 export const CONTACT_EMAIL = "readytoominglellc@readytoomingle.com";
 export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}`;
 
+
+// The real public address. Email links (verify, reset) always point here,
+// even when someone signs up from an editor preview copy of the site.
+export const SITE_URL = "https://readytoomingle.com";
+export function publicOrigin(): string {
+  if (typeof window === "undefined") return SITE_URL;
+  const h = window.location.hostname;
+  return /lovable(project)?\.(app|com|dev)$/.test(h) ? SITE_URL : window.location.origin;
+}
