@@ -119,6 +119,7 @@ function PostAd() {
       const r = await redeemFreeWeek({ data: { adId: ad.id, title: ad.title } }).catch(() => ({ ok: false }));
       if (!r.ok) return setError("We couldn't use your free week. Please try again.");
       publishPendingAd(ad.id);
+      clearDraft();
       return navigate({ to: "/account" });
     }
     setCheckout({
