@@ -115,3 +115,8 @@
 @media (prefers-reduced-motion: reduce) {
   .text-shine { animation: none; }
 }
+
+/* iPhone zooms into any text box smaller than 16px; keep them at 16px on phones so the page never jumps. */
+@media (max-width: 767px) {
+  input, select, textarea { font-size: 16px !important; }
+}
