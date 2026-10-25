@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getCheckoutResult } from "@/utils/payments.functions";
 import { boostLocalAd, claimSession, pendingAdTitle, publishPendingAd } from "@/lib/local-ads";
+import { saveDraftMedia } from "@/lib/ad-videos";
 import { recordCheckout } from "@/utils/account.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { PRICING } from "@/lib/pricing";
@@ -46,7 +47,7 @@ function CheckoutReturn() {
           if (fresh) boostLocalAd(r.adId, PRICING.boost.durationHours);
           return setState("boosted");
         }
-        if (fresh) publishPendingAd(r.adId);
+        if (fresh) { publishPendingAd(r.adId); try { localStorage.removeItem("rtm-post-draft"); } catch { /* */ } saveDraftMedia([], null); }
         setState("posted");
       })
       .catch(() => setState("failed"));
