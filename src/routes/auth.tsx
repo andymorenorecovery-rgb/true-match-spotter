@@ -57,8 +57,15 @@ function AuthPage() {
     setMsg("");
     if (mode === "up") {
       const { data, error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: publicOrigin() + "/auth" } });
-      if (error) setMsg(error.message);
-      else if (!data.session) setMsg("Check your email and tap the link to confirm your account.");
+      if (error) {
+        if (/password/i.test(error.message)) setMsg("Please pick a stronger password — at least 6 characters, and not a common one.");
+        else if (/rate|too many/i.test(error.message)) setMsg("Too many tries right now. Please wait a minute and try again.");
+        else setMsg(error.message);
+      } else if (data.user && data.user.identities?.length === 0) {
+        // Email already has an account: no new email is sent, so point them to sign in.
+        setMode("in");
+        setMsg("You already have an account with this email. Sign in below, or tap \"Forgot password?\".");
+      } else if (!data.session) setMsg("Almost done! Check your email (and spam folder) and tap the link once to confirm your account. Then come back here and sign in.");
     } else if (mode === "in") {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
