@@ -2,7 +2,12 @@ import p1 from "@/assets/p1.jpg";
 import p2 from "@/assets/p2.jpg";
 import p1b from "@/assets/p1b.jpg";
 import p1c from "@/assets/p1c.jpg";
-import g1 from "@/assets/g1.jpg";
+import g14 from "@/assets/g14.jpg";
+import g14b from "@/assets/g14b.jpg";
+import g14c from "@/assets/g14c.jpg";
+import g16 from "@/assets/g16.jpg";
+import g16b from "@/assets/g16b.jpg";
+import g16c from "@/assets/g16c.jpg";
 
 export type Category = "dating" | "friendship" | "hookups" | "activity-partners";
 export const CATEGORIES: { id: Category; label: string }[] = [
