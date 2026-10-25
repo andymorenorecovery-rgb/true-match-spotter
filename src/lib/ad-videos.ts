@@ -44,3 +44,31 @@ export function useAdVideo(id: string) {
   }, [id]);
   return url;
 }
+
+// Unfinished post-form draft (photos + video), so a phone reloading the page
+// after the camera or photo picker doesn't wipe what the person already filled in.
+async function putAny(key: string, value: unknown) {
+  const db = await open();
+  await new Promise<void>((res, rej) => {
+    const tx = db.transaction(STORE, "readwrite");
+    if (value == null) tx.objectStore(STORE).delete(key);
+    else tx.objectStore(STORE).put(value, key);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+async function getAny<T>(key: string): Promise<T | undefined> {
+  if (typeof indexedDB === "undefined") return undefined;
+  const db = await open();
+  return new Promise((res) => {
+    const r = db.transaction(STORE).objectStore(STORE).get(key);
+    r.onsuccess = () => res(r.result as T | undefined);
+    r.onerror = () => res(undefined);
+  });
+}
+export const saveDraftMedia = (photos: string[], video: Blob | null) =>
+  Promise.all([putAny("draft:photos", photos.length ? photos : null), putAny("draft:video", video)]).catch(() => {});
+export const loadDraftMedia = async () => ({
+  photos: (await getAny<string[]>("draft:photos").catch(() => undefined)) ?? [],
+  video: (await getAny<Blob>("draft:video").catch(() => undefined)) ?? null,
+});

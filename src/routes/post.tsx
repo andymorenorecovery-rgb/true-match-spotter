@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { getAccount, redeemFreeWeek } from "@/utils/account.functions";
 import { accountQueryKey } from "@/components/NotificationBell";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+const DRAFT_KEY = "rtm-post-draft";
 function formatPhone(v: string) {
   const d = v.replace(/\D/g, "").replace(/^1/, "").slice(0, 10);
   if (d.length < 4) return d;
@@ -13,7 +14,7 @@ function formatPhone(v: string) {
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { publishPendingAd, resizeImage, savePendingAd } from "@/lib/local-ads";
-import { saveAdVideo, VIDEO_SECONDS } from "@/lib/ad-videos";
+import { loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
@@ -53,6 +54,23 @@ function PostAd() {
   const free = useFree && credits > 0;
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
+
+  // Autosave the draft: phones often reload the page after the camera or photo
+  // picker closes, which used to wipe everything the person typed.
+  const [restored, setRestored] = useState(false);
+  useEffect(() => {
+    try {
+      const d = JSON.parse(localStorage.getItem(DRAFT_KEY) ?? "null");
+      if (d) { setF((p) => ({ ...p, ...d.f })); setDetails(d.details ?? {}); if (d.plan) setPlan(d.plan); setBoost(!!d.boost); }
+    } catch { /* ignore broken draft */ }
+    loadDraftMedia().then((m) => { if (m.photos.length) setPhotos(m.photos); if (m.video) setVideo(m.video); }).finally(() => setRestored(true));
+  }, []);
+  useEffect(() => {
+    if (!restored) return;
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ f, details, plan: chosenPlan, boost })); } catch { /* storage full */ }
+  }, [restored, f, details, chosenPlan, boost]);
+  useEffect(() => { if (restored) saveDraftMedia(photos, video); }, [restored, photos, video]);
+  const clearDraft = () => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* */ } saveDraftMedia([], null); };
 
   const addPhotos = async (files: FileList | null) => {
     if (!files) return;
@@ -101,6 +119,7 @@ function PostAd() {
       const r = await redeemFreeWeek({ data: { adId: ad.id, title: ad.title } }).catch(() => ({ ok: false }));
       if (!r.ok) return setError("We couldn't use your free week. Please try again.");
       publishPendingAd(ad.id);
+      clearDraft();
       return navigate({ to: "/account" });
     }
     setCheckout({
