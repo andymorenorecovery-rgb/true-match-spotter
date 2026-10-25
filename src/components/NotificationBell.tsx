@@ -29,8 +29,8 @@ export function NotificationBell() {
   if (!user) return (
     <>
       {/* Phone: two compact controls so both fit on one row */}
-      <Link to="/auth" className="whitespace-nowrap px-1 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground sm:hidden">Sign in</Link>
-      <Link to="/auth" className="whitespace-nowrap rounded-full bg-gradient-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground sm:hidden">Sign up</Link>
+      <Link to="/auth" className="whitespace-nowrap px-1 py-1 text-xs font-medium text-muted-foreground hover:text-foreground sm:hidden">Sign in</Link>
+      <Link to="/auth" className="whitespace-nowrap rounded-full bg-gradient-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground sm:hidden">Sign up</Link>
       {/* Desktop: one pill */}
       <Link to="/auth" className="hidden whitespace-nowrap rounded-full border border-primary px-3 py-1.5 text-sm font-semibold text-primary hover:bg-secondary sm:inline-flex">Sign up / Sign in</Link>
     </>
