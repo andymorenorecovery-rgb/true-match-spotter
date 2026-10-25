@@ -16,6 +16,8 @@ import { BUSINESS_NAME, CONTACT_EMAIL, CONTACT_MAILTO } from "../lib/contact";
 
 import { AgeGate } from "../components/AgeGate";
 import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
+import { NotificationBell } from "../components/NotificationBell";
+import { ReferralWatcher } from "../components/ReferralWatcher";
 
 function NotFoundComponent() {
   return (
@@ -139,6 +141,7 @@ function RootComponent() {
             <nav className="flex items-center gap-4 text-sm">
               <Link to="/pricing" className="hidden text-muted-foreground hover:text-foreground sm:inline">Pricing</Link>
               <Link to="/faq" className="hidden text-muted-foreground hover:text-foreground sm:inline">FAQ</Link>
+              <NotificationBell />
               <Link to="/post" className="rounded-full bg-gradient-primary px-4 py-2 font-semibold text-primary-foreground">Post an ad</Link>
             </nav>
           </div>
@@ -163,6 +166,7 @@ function RootComponent() {
           </div>
         </footer>
         <AgeGate />
+        <ReferralWatcher />
       </div>
     </QueryClientProvider>
   );
