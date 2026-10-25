@@ -11,8 +11,8 @@ import g16c from "@/assets/g16c.jpg";
 export type Category = "dating" | "friendship" | "hookups" | "activity-partners";
 export const CATEGORIES: { id: Category; label: string }[] = [
   { id: "dating", label: "Dating" },
-  { id: "friendship", label: "Friendship" },
   { id: "hookups", label: "Hookups" },
+  { id: "friendship", label: "Friendship" },
   { id: "activity-partners", label: "Activity partners" },
 ];
 
