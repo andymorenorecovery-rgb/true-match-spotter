@@ -2,7 +2,8 @@
 export const PRICING = {
   currency: "USD",
   dayAd: { priceCents: 2000, durationHours: 24 },
-  weekAd: { priceCents: 12000, durationHours: 24 * 7, includedBoostHours: 24 },
+  weekAd: { priceCents: 9900, durationHours: 24 * 7, includedBoostHours: 24 },
+  monthAd: { priceCents: 29900, durationHours: 24 * 30, includedBoostHours: 24 },
   boost: { priceCents: 1000, durationHours: 24 },
 } as const;
 
@@ -16,4 +17,4 @@ export const formatPrice = (cents: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: PRICING.currency, maximumFractionDigits: 0 }).format(cents / 100);
 
 /** Checkout price IDs for each product (same in test and live). */
-export const PRICE_IDS = { dayAd: "day_ad_once", weekAd: "week_ad_once", boost: "boost_once" } as const;
+export const PRICE_IDS = { dayAd: "day_ad_once", weekAd: "week_ad_once", monthAd: "month_ad_once", boost: "boost_once" } as const;

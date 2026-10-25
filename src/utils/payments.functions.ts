@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 import { type StripeEnv, checkoutExtras, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
 
 const ID = /^[a-zA-Z0-9_-]+$/;
-const ALLOWED_PRICES = new Set(["day_ad_once", "week_ad_once", "boost_once"]);
+const ALLOWED_PRICES = new Set(["day_ad_once", "week_ad_once", "month_ad_once", "boost_once"]);
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .inputValidator((data: { priceIds: string[]; adId: string; kind: "post" | "boost"; returnUrl: string; environment: StripeEnv }) => {

@@ -58,7 +58,7 @@ export type Listing = {
   expiresAt: string;
   featuredUntil?: string;
   /** Which paid plan posted the ad: day ads get a purple frame. */
-  plan?: "day" | "week";
+  plan?: "day" | "week" | "month";
 };
 
 /** Demo ads are pinned in time on purpose. Reading the real clock here made the

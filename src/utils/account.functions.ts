@@ -77,12 +77,15 @@ export const recordCheckout = createServerFn({ method: "POST" })
       await db.from("user_ads").update({ boost_until: hours(PRICING.boost.durationHours) }).eq("ad_id", adId).eq("user_id", userId);
       return { ok: true };
     }
+    const month = items.includes("month_ad_once");
     const week = items.includes("week_ad_once");
-    const boosted = week || items.includes("boost_once");
+    const boosted = month || week || items.includes("boost_once");
     await db.from("user_ads").upsert({
-      ad_id: adId, user_id: userId, title: data.title, plan: week ? "week" : "day",
-      expires_at: hours(week ? PRICING.weekAd.durationHours : PRICING.dayAd.durationHours),
-      boost_until: boosted ? hours(week ? PRICING.weekAd.includedBoostHours : PRICING.boost.durationHours) : null,
+      ad_id: adId, user_id: userId, title: data.title, plan: month ? "month" : week ? "week" : "day",
+      expires_at: hours(month ? PRICING.monthAd.durationHours : week ? PRICING.weekAd.durationHours : PRICING.dayAd.durationHours),
+      boost_until: boosted
+        ? hours(month ? PRICING.monthAd.includedBoostHours : week ? PRICING.weekAd.includedBoostHours : PRICING.boost.durationHours)
+        : null,
     });
 
     const { data: me } = await db.from("profiles").select("referred_by, referral_rewarded").eq("id", userId).maybeSingle();
