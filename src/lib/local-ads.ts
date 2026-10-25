@@ -93,3 +93,11 @@ export function publishPendingAd(id: string): boolean {
   localStorage.setItem(PENDING, JSON.stringify(all));
   return true;
 }
+
+export function pendingAdTitle(id: string): string {
+  try {
+    return (JSON.parse(localStorage.getItem(PENDING) ?? "{}")[id] as Listing | undefined)?.title ?? "";
+  } catch {
+    return "";
+  }
+}

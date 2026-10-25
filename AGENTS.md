@@ -18,3 +18,5 @@
 - Payments: checkout server functions live in `src/utils/payments.functions.ts`; ads/boosts are applied only after the server confirms the checkout was paid. Why: never trust the browser for money.
 - Business identity (brand name, registered LLC name, contact email) lives in `src/lib/contact.ts`; legal, footer, age-gate and payment surfaces use the LLC name while marketing copy uses the brand name. Why: the company is a registered LLC and these facts must be changeable in one place.
 
+- Accounts, invite rewards and reminders: server functions in `src/utils/account.functions.ts`; reward/reminder rules are pure functions in `src/lib/rewards.ts` with tests. Reminders are derived from ad end/boost times when the account is loaded (no scheduled jobs). Why: no extra moving parts on self-hosting, rules stay testable.
+- Ad content still lives in the poster's browser; the backend only records each paid ad's owner, plan and end/boost times. Why: reminders and rewards need server truth, full ad storage is a later step.
