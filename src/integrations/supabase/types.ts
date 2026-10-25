@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      launch_claims: {
+        Row: {
+          ad_id: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           ad_id: string | null
@@ -135,7 +153,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_launch_spot: {
+        Args: { _ad_id: string; _limit: number; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

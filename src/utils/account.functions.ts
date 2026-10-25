@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { type StripeEnv, createStripeClient } from "@/lib/stripe.server";
-import { PRICING, REFERRAL } from "@/lib/pricing";
+import { LAUNCH, PRICING, REFERRAL } from "@/lib/pricing";
 import { earnsReferralReward, isReferralCode, remindersFor, type AdRecord } from "@/lib/rewards";
 
 const AD_ID = /^[a-zA-Z0-9_-]{1,60}$/;
@@ -22,7 +22,14 @@ export const getAccount = createServerFn({ method: "GET" })
     const { data: notes } = await supabase
       .from("notifications").select("id, kind, ad_id, message, read_at, created_at")
       .eq("user_id", userId).order("created_at", { ascending: false }).limit(30);
-    return { profile: profile ?? null, ads: ads ?? [], notifications: notes ?? [] };
+    const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
+    const [{ count: claimed }, { data: mine }] = await Promise.all([
+      db.from("launch_claims").select("user_id", { count: "exact", head: true }),
+      db.from("launch_claims").select("user_id").eq("user_id", userId).maybeSingle(),
+    ]);
+    const launchSpotsLeft = Math.max(0, LAUNCH.freeSpots - (claimed ?? 0));
+    const launchFree = !mine && launchSpotsLeft > 0;
+    return { profile: profile ?? null, ads: ads ?? [], notifications: notes ?? [], launchFree, launchSpotsLeft };
   });
 
 export const markNotificationsRead = createServerFn({ method: "POST" })
@@ -115,7 +122,16 @@ export const redeemFreeWeek = createServerFn({ method: "POST" })
     const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
     const { data: me } = await db.from("profiles").select("free_week_credits").eq("id", userId).single();
     const credits = me?.free_week_credits ?? 0;
-    if (credits < 1) return { ok: false };
+    if (credits < 1) {
+      // Launch promo: first people to post get one free week, once each.
+      const { data: got } = await db.rpc("claim_launch_spot", { _user_id: userId, _ad_id: data.adId, _limit: LAUNCH.freeSpots });
+      if (!got) return { ok: false };
+      await db.from("user_ads").insert({
+        ad_id: data.adId, user_id: userId, title: data.title, plan: "week",
+        expires_at: hours(PRICING.weekAd.durationHours), boost_until: hours(PRICING.weekAd.includedBoostHours),
+      });
+      return { ok: true };
+    }
     const { data: spent } = await db.from("profiles").update({ free_week_credits: credits - 1 })
       .eq("id", userId).eq("free_week_credits", credits).select("id");
     if (!spent?.length) return { ok: false };
