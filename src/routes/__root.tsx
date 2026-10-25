@@ -143,8 +143,8 @@ function RootComponent() {
               <Link to="/faq" className="hidden text-muted-foreground hover:text-foreground sm:inline">FAQ</Link>
               <NotificationBell />
               <Link to="/post" className="whitespace-nowrap rounded-full bg-gradient-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground sm:px-4 sm:py-2 sm:text-sm">
-                <span className="hidden min-[360px]:inline">Post an ad</span>
-                <span className="min-[360px]:hidden">Post</span>
+                <span className="hidden min-[390px]:inline">Post an ad</span>
+                <span className="min-[390px]:hidden">Post</span>
               </Link>
             </nav>
           </div>
