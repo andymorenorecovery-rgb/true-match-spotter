@@ -13,14 +13,18 @@ function formatPhone(v: string) {
 }
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
-import { publishPendingAd, resizeImage, savePendingAd } from "@/lib/local-ads";
-import { loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
+import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
+import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
 import { CheckoutDialog, type CheckoutRequest } from "@/components/CheckoutDialog";
 
 export const Route = createFileRoute("/post")({
+  validateSearch: (s: Record<string, unknown>): { edit?: string } => {
+    const edit = typeof s["edit"] === "string" && s["edit"].startsWith("local-") ? s["edit"] : undefined;
+    return edit ? { edit } : {};
+  },
   head: () => ({
     meta: [
       { title: "Post an ad — Ready Too Mingle" },
@@ -57,8 +61,24 @@ function PostAd() {
 
   // Autosave the draft: phones often reload the page after the camera or photo
   // picker closes, which used to wipe everything the person typed.
+  // Editing an existing ad skips the draft and loads that ad instead.
+  const editId = Route.useSearch().edit;
   const [restored, setRestored] = useState(false);
+  const [missingEdit, setMissingEdit] = useState(false);
   useEffect(() => {
+    if (editId) {
+      const ad = loadLocalAds().find((a) => a.id === editId);
+      if (ad) {
+        setF({ title: ad.title, name: ad.name, age: String(ad.age), category: ad.category, city: ad.city, state: ad.state, area: ad.area, body: ad.body, phone: ad.phone ?? "", showPhone: !!ad.phone });
+        setDetails(ad.details ?? {});
+        setPhotos([ad.img, ...(ad.photos ?? [])]);
+        getAdVideo(ad.id).then((v) => { if (v) setVideo(v); }).finally(() => setRestored(true));
+      } else {
+        setMissingEdit(true);
+        setRestored(true);
+      }
+      return;
+    }
     try {
       const d = JSON.parse(localStorage.getItem(DRAFT_KEY) ?? "null");
       if (d) { setF((p) => ({ ...p, ...d.f })); setDetails(d.details ?? {}); if (d.plan) setPlan(d.plan); setBoost(!!d.boost); }
@@ -66,10 +86,10 @@ function PostAd() {
     loadDraftMedia().then((m) => { if (m.photos.length) setPhotos(m.photos); if (m.video) setVideo(m.video); }).finally(() => setRestored(true));
   }, []);
   useEffect(() => {
-    if (!restored) return;
+    if (!restored || editId) return;
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ f, details, plan: chosenPlan, boost })); } catch { /* storage full */ }
-  }, [restored, f, details, chosenPlan, boost]);
-  useEffect(() => { if (restored) saveDraftMedia(photos, video); }, [restored, photos, video]);
+  }, [restored, f, details, chosenPlan, boost, editId]);
+  useEffect(() => { if (restored && !editId) saveDraftMedia(photos, video); }, [restored, photos, video, editId]);
   const clearDraft = () => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* */ } saveDraftMedia([], null); };
 
   const addPhotos = async (files: FileList | null) => {
@@ -80,7 +100,6 @@ function PostAd() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (free && !user) return setError("Please sign in to use a free ad.");
     const age = Number(f.age);
     if (!f.title.trim() || !f.name.trim()) return setError("Please add a headline and your first name.");
     if (!age || age < 18 || age > 99) return setError("You must be 18 or older to post.");
@@ -88,6 +107,25 @@ function PostAd() {
     if (!f.body.trim()) return setError("Please write something in your ad.");
     if (!photos.length) return setError("Please add at least one photo.");
     if (!video) return setError(`Please record your ${VIDEO_SECONDS}-second video selfie so people know you're real.`);
+    if (editId) {
+      const base = loadLocalAds().find((a) => a.id === editId);
+      if (!base) return setError("We couldn't find that ad on this device.");
+      const updated: Listing = { ...base, title: f.title.trim(), name: f.name.trim(), age, city: f.city.trim(), state: f.state, area: f.area.trim(), category: f.category, body: f.body.trim(), img: photos[0]!, photos: photos.slice(1), details };
+      if (f.showPhone && f.phone) updated.phone = f.phone;
+      else delete updated.phone;
+      try {
+        await saveAdVideo(editId, video);
+      } catch {
+        return setError("We couldn't save your video. Please try recording again.");
+      }
+      try {
+        updateLocalAd(updated);
+      } catch {
+        return setError("Those photos are too big to save. Try fewer photos.");
+      }
+      return navigate({ to: "/listings/$id", params: { id: editId } });
+    }
+    if (free && !user) return setError("Please sign in to use a free ad.");
     const now = Date.now();
     const plan = free ? "weekAd" : chosenPlan;
     const ad: Listing = {
@@ -133,8 +171,8 @@ function PostAd() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-4xl font-bold">Post an ad</h1>
-      <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours, {formatPrice(PRICING.weekAd.priceCents)} for a week or {formatPrice(PRICING.monthAd.priceCents)} for a month. Fill in as much or as little as you like.</p>
+      <h1 className="text-4xl font-bold">{editId ? "Edit my ad" : "Post an ad"}</h1>
+      {!editId && <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours, {formatPrice(PRICING.weekAd.priceCents)} for a week or {formatPrice(PRICING.monthAd.priceCents)} for a month. Fill in as much or as little as you like.</p>}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
         <form onSubmit={submit} className="space-y-8">
@@ -251,7 +289,7 @@ function PostAd() {
             </label>
           </Section>
 
-          {credits > 0 && (
+          {!editId && credits > 0 && (
             <label className="flex items-center gap-3 rounded-2xl border border-primary bg-card p-4 text-sm">
               <input type="checkbox" checked={useFree} onChange={(e) => setUseFree(e.target.checked)} className="h-4 w-4 accent-primary" />
               {launchFree && credits === 1
@@ -260,7 +298,7 @@ function PostAd() {
             </label>
           )}
 
-          {!free && <Section title="How long?">
+          {!free && !editId && <Section title="How long?">
             <div className="flex flex-wrap gap-2">
               {(["dayAd", "weekAd", "monthAd"] as const).map((p) => (
                 <button type="button" key={p} onClick={() => setPlan(p)} className={`rounded-full px-4 py-2 text-sm ${plan === p ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
@@ -281,18 +319,19 @@ function PostAd() {
             )}
           </Section>}
 
+          {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
-            {free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+            {editId ? "Save my changes" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
           </button>
-          {user === null && (
+          {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
               No account needed.{" "}
               <Link to="/auth" search={{ next: "/post" }} className="text-primary underline">Sign in</Link>{" "}
               to grab a free launch spot and get reminders when your ad runs out.
             </p>
           )}
-          <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>
+          {!editId && <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>}
         </form>
         <CheckoutDialog request={checkout} onClose={() => setCheckout(null)} />
 

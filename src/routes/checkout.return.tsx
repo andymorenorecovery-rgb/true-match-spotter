@@ -30,13 +30,13 @@ export const Route = createFileRoute("/checkout/return")({
 
 function CheckoutReturn() {
   const { session_id } = Route.useSearch();
-  const [state, setState] = useState<"loading" | "posted" | "boosted" | "failed">("loading");
+  const [state, setState] = useState<{ kind: "loading" | "failed" } | { kind: "posted" | "boosted"; adId: string }>({ kind: "loading" });
 
   useEffect(() => {
-    if (!session_id) return setState("failed");
+    if (!session_id) return setState({ kind: "failed" });
     getCheckoutResult({ data: { sessionId: session_id, environment: getStripeEnvironment() } })
       .then((r) => {
-        if ("error" in r || !r.paid) return setState("failed");
+        if ("error" in r || !r.paid) return setState({ kind: "failed" });
         const fresh = claimSession(session_id);
         const environment = getStripeEnvironment();
         const title = pendingAdTitle(r.adId);
@@ -45,12 +45,12 @@ function CheckoutReturn() {
         });
         if (r.kind === "boost") {
           if (fresh) boostLocalAd(r.adId, PRICING.boost.durationHours);
-          return setState("boosted");
+          return setState({ kind: "boosted", adId: r.adId });
         }
         if (fresh) { publishPendingAd(r.adId); try { localStorage.removeItem("rtm-post-draft"); } catch { /* */ } saveDraftMedia([], null); }
-        setState("posted");
+        setState({ kind: "posted", adId: r.adId });
       })
-      .catch(() => setState("failed"));
+      .catch(() => setState({ kind: "failed" }));
   }, [session_id]);
 
   const text = {
@@ -58,19 +58,28 @@ function CheckoutReturn() {
     posted: ["Payment received — your ad is live!", "Thanks! Your ad is now showing in the listings."],
     boosted: ["Boosted!", `Your ad is back on top with the green glow for the next ${PRICING.boost.durationHours} hours.`],
     failed: ["Payment not completed", "We couldn't confirm a payment, so nothing was charged or posted. You can try again."],
-  }[state];
+  }[state.kind];
 
   return (
     <div className="mx-auto max-w-md px-4 py-20 text-center">
       <h1 className="text-3xl font-bold">{text[0]}</h1>
       <p className="mt-3 text-muted-foreground">{text[1]}</p>
-      {state !== "loading" && (
+      {state.kind !== "loading" && (
         <p className="mt-6 text-xs text-muted-foreground">Payment processed for {BUSINESS_NAME}</p>
       )}
-      {state !== "loading" && (
+      {state.kind === "failed" && (
         <Link to="/" className="mt-8 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground">See the listings</Link>
       )}
-
+      {(state.kind === "posted" || state.kind === "boosted") && (
+        <>
+          <Link to="/listings/$id" params={{ id: state.adId }} className="mt-8 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground shadow-glow">
+            {state.kind === "posted" ? "See my ad" : "Back to my ad"}
+          </Link>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Your ad is saved on this phone or browser. Come back here any time to edit or boost it.
+          </p>
+        </>
+      )}
     </div>
   );
 }

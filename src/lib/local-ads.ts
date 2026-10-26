@@ -31,6 +31,13 @@ export function boostLocalAd(id: string, hours: number) {
   window.dispatchEvent(new Event(EVENT));
 }
 
+/** Saves edits to an ad that's already live (same id, plan and expiry). */
+export function updateLocalAd(ad: Listing) {
+  const all = loadLocalAds().map((a) => (a.id === ad.id ? ad : a));
+  localStorage.setItem(KEY, JSON.stringify(all));
+  window.dispatchEvent(new Event(EVENT));
+}
+
 export function clearLocalAds() {
   localStorage.removeItem(KEY);
   window.dispatchEvent(new Event(EVENT));
