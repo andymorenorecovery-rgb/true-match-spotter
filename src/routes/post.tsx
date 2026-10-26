@@ -99,7 +99,6 @@ function PostAd() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (free && !user) return setError("Please sign in to use a free ad.");
     const age = Number(f.age);
     if (!f.title.trim() || !f.name.trim()) return setError("Please add a headline and your first name.");
     if (!age || age < 18 || age > 99) return setError("You must be 18 or older to post.");
@@ -107,6 +106,25 @@ function PostAd() {
     if (!f.body.trim()) return setError("Please write something in your ad.");
     if (!photos.length) return setError("Please add at least one photo.");
     if (!video) return setError(`Please record your ${VIDEO_SECONDS}-second video selfie so people know you're real.`);
+    if (editId) {
+      const base = loadLocalAds().find((a) => a.id === editId);
+      if (!base) return setError("We couldn't find that ad on this device.");
+      const updated: Listing = { ...base, title: f.title.trim(), name: f.name.trim(), age, city: f.city.trim(), state: f.state, area: f.area.trim(), category: f.category, body: f.body.trim(), img: photos[0]!, photos: photos.slice(1), details };
+      if (f.showPhone && f.phone) updated.phone = f.phone;
+      else delete updated.phone;
+      try {
+        await saveAdVideo(editId, video);
+      } catch {
+        return setError("We couldn't save your video. Please try recording again.");
+      }
+      try {
+        updateLocalAd(updated);
+      } catch {
+        return setError("Those photos are too big to save. Try fewer photos.");
+      }
+      return navigate({ to: "/account" });
+    }
+    if (free && !user) return setError("Please sign in to use a free ad.");
     const now = Date.now();
     const plan = free ? "weekAd" : chosenPlan;
     const ad: Listing = {
