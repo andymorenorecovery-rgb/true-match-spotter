@@ -35,7 +35,7 @@ function Account() {
     <div className="mx-auto max-w-3xl space-y-8 px-4 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-4xl font-bold">My account</h1>
-        <button onClick={() => supabase.auth.signOut().then(() => (window.location.href = "/"))} className="text-sm text-muted-foreground underline">Sign out</button>
+        <button onClick={() => supabase.auth.signOut().then(() => window.location.replace("/"))} className="rounded-full border border-primary px-4 py-1.5 text-sm font-semibold text-primary hover:bg-secondary">Sign out</button>
       </div>
 
       <section className="rounded-2xl border border-primary bg-card p-6">
