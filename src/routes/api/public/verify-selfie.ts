@@ -38,26 +38,26 @@ export const Route = createFileRoute("/api/public/verify-selfie")({
 
         const content = [
           {
-            type: "input_text",
+            type: "text",
             text:
-              `Image 1 is the profile photo from a dating ad. Images 2-${body.frames.length + 1} are frames taken across a selfie video the same person recorded live. ` +
-              "Decide: (a) faceInEveryFrame: is one real person's face clearly visible (not covered, not black/dark, not a wall, not pointed away, not a photo of a screen or printed picture) in EVERY video frame? " +
-              "(b) samePerson: is the person in the video the same person as in the profile photo? Be strict but allow for different lighting, angles, makeup and hair. " +
-              "Give a short friendly reason addressed to the poster if either is false.",
+              `Moderation check for a dating site's anti-catfish rule. Image 1 is the main photo on an ad. Images 2-${body.frames.length + 1} are frames from a selfie video the poster recorded live. ` +
+              "faceInEveryFrame: true only if a real person's face is clearly visible in EVERY video frame (not covered, not black or too dark, not a wall, not turned away). " +
+              "samePerson: compare visible features (face shape, skin tone, hair, eyes, nose, age range) and say whether the video and the photo look like the same person. Allow for lighting, angle, makeup and hairstyle changes; mark false only when they clearly look like different people. " +
+              "reason: if either is false, one short friendly sentence to the poster saying what to fix; otherwise empty.",
           },
-          { type: "input_image", image_url: body.photo },
-          ...body.frames.map((f) => ({ type: "input_image", image_url: f })),
+          { type: "image_url", image_url: { url: body.photo } },
+          ...body.frames.map((f) => ({ type: "image_url", image_url: { url: f } })),
         ];
-        const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
+        const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: { Authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
           body: JSON.stringify({
-            model: "openai/gpt-6-astra",
-            reasoning: { effort: "low" },
-            input: [{ role: "user", content }],
-            text: {
-              format: {
-                type: "json_schema", name: "selfie_check", strict: true,
+            model: "google/gemini-3.8-flash",
+            messages: [{ role: "user", content }],
+            response_format: {
+              type: "json_schema",
+              json_schema: {
+                name: "selfie_check", strict: true,
                 schema: {
                   type: "object", additionalProperties: false,
                   required: ["faceInEveryFrame", "samePerson", "reason"],
@@ -68,8 +68,8 @@ export const Route = createFileRoute("/api/public/verify-selfie")({
           }),
         });
         if (!res.ok) return json({ error: "check_unavailable", status: res.status }, 502);
-        const out = (await res.json()) as { output_text?: string; output?: { content?: { type: string; text?: string }[] }[] };
-        const raw = out.output_text ?? out.output?.flatMap((o) => o.content ?? []).find((c) => c.type === "output_text")?.text ?? "";
+        const out = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+        const raw = out.choices?.[0]?.message?.content ?? "";
         try {
           const r = JSON.parse(raw) as { faceInEveryFrame: boolean; samePerson: boolean; reason: string };
           return json({ ok: r.faceInEveryFrame && r.samePerson, ...r });
