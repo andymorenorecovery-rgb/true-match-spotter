@@ -60,8 +60,24 @@ function PostAd() {
 
   // Autosave the draft: phones often reload the page after the camera or photo
   // picker closes, which used to wipe everything the person typed.
+  // Editing an existing ad skips the draft and loads that ad instead.
+  const editId = Route.useSearch().edit;
   const [restored, setRestored] = useState(false);
+  const [missingEdit, setMissingEdit] = useState(false);
   useEffect(() => {
+    if (editId) {
+      const ad = loadLocalAds().find((a) => a.id === editId);
+      if (ad) {
+        setF({ title: ad.title, name: ad.name, age: String(ad.age), category: ad.category, city: ad.city, state: ad.state, area: ad.area, body: ad.body, phone: ad.phone ?? "", showPhone: !!ad.phone });
+        setDetails(ad.details ?? {});
+        setPhotos([ad.img, ...(ad.photos ?? [])]);
+        getAdVideo(ad.id).then((v) => { if (v) setVideo(v); }).finally(() => setRestored(true));
+      } else {
+        setMissingEdit(true);
+        setRestored(true);
+      }
+      return;
+    }
     try {
       const d = JSON.parse(localStorage.getItem(DRAFT_KEY) ?? "null");
       if (d) { setF((p) => ({ ...p, ...d.f })); setDetails(d.details ?? {}); if (d.plan) setPlan(d.plan); setBoost(!!d.boost); }
@@ -69,10 +85,10 @@ function PostAd() {
     loadDraftMedia().then((m) => { if (m.photos.length) setPhotos(m.photos); if (m.video) setVideo(m.video); }).finally(() => setRestored(true));
   }, []);
   useEffect(() => {
-    if (!restored) return;
+    if (!restored || editId) return;
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ f, details, plan: chosenPlan, boost })); } catch { /* storage full */ }
-  }, [restored, f, details, chosenPlan, boost]);
-  useEffect(() => { if (restored) saveDraftMedia(photos, video); }, [restored, photos, video]);
+  }, [restored, f, details, chosenPlan, boost, editId]);
+  useEffect(() => { if (restored && !editId) saveDraftMedia(photos, video); }, [restored, photos, video, editId]);
   const clearDraft = () => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* */ } saveDraftMedia([], null); };
 
   const addPhotos = async (files: FileList | null) => {
