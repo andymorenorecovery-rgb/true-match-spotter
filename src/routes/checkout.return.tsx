@@ -58,7 +58,7 @@ function CheckoutReturn() {
     posted: ["Payment received — your ad is live!", "Thanks! Your ad is now showing in the listings."],
     boosted: ["Boosted!", `Your ad is back on top with the green glow for the next ${PRICING.boost.durationHours} hours.`],
     failed: ["Payment not completed", "We couldn't confirm a payment, so nothing was charged or posted. You can try again."],
-  }[state];
+  }[state.kind];
 
   return (
     <div className="mx-auto max-w-md px-4 py-20 text-center">
@@ -67,10 +67,19 @@ function CheckoutReturn() {
       {state !== "loading" && (
         <p className="mt-6 text-xs text-muted-foreground">Payment processed for {BUSINESS_NAME}</p>
       )}
-      {state !== "loading" && (
+      {state.kind === "failed" && (
         <Link to="/" className="mt-8 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground">See the listings</Link>
       )}
-
+      {(state.kind === "posted" || state.kind === "boosted") && (
+        <>
+          <Link to="/listings/$id" params={{ id: state.adId }} className="mt-8 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground shadow-glow">
+            {state.kind === "posted" ? "See my ad" : "Back to my ad"}
+          </Link>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Your ad is saved on this phone or browser. Come back here any time to edit or boost it.
+          </p>
+        </>
+      )}
     </div>
   );
 }
