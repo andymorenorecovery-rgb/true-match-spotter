@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BadgeCheck, ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Play, Star } from "lucide-react";
 import { useIsOwnAd } from "@/lib/local-ads";
+import { FitImage } from "@/components/FitImage";
 import { SimpleVideo } from "@/components/SimpleVideo";
 import { useAdVideo } from "@/lib/ad-videos";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
@@ -22,7 +23,7 @@ export function PhotoGallery({ l }: { l: Listing }) {
         {cur.kind === "video" ? (
           <SimpleVideo key={cur.src} src={cur.src} autoPlay />
         ) : (
-          <img src={cur.src} alt={`${l.name} photo ${i + 1}`} className="h-full w-full object-cover" />
+          <FitImage src={cur.src} alt={`${l.name} photo ${i + 1}`} />
         )}
         {videoUrl && (
           <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"><BadgeCheck className="h-3.5 w-3.5" /> Video verified</span>
@@ -42,7 +43,7 @@ export function PhotoGallery({ l }: { l: Listing }) {
               {m.kind === "video" ? (
                 <span className="grid h-full w-full place-items-center"><Play className="h-6 w-6 text-primary" /></span>
               ) : (
-                <img src={m.src} alt="" className="h-full w-full object-cover" />
+                <FitImage src={m.src} alt="" />
               )}
             </button>
           ))}
