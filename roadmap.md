@@ -17,3 +17,5 @@
 - [x] Update workflow: scripts/deploy.sh (pull + rebuild + restart), scripts/start-site.sh (start only, used by @reboot)
 - [ ] DreamHost one-time: both Stripe keys into ~/.site-env (600), then register @reboot start-site.sh
 
+
+- [ ] Video selfie anti-cheat: face must be visible and well lit, live head-turn check, face in video must match ad photos (awaiting owner choice)
