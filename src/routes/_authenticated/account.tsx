@@ -6,6 +6,7 @@ import { getAccount } from "@/utils/account.functions";
 import { accountQueryKey, NotificationList } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
 import { REFERRAL } from "@/lib/pricing";
+import { useLocalAds } from "@/lib/local-ads";
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
@@ -30,6 +31,10 @@ function Account() {
   const link = data.profile ? `${window.location.origin}/?ref=${data.profile.referral_code}` : "";
   const credits = data.profile?.free_week_credits ?? 0;
   const now = Date.now();
+  // Ads posted on this device (full content) plus any ads only known to the server.
+  const deviceAds = useLocalAds();
+  const onDevice = new Set(deviceAds.map((a) => a.id));
+  const serverOnly = data.ads.filter((a) => !onDevice.has(a.ad_id));
 
   return (
     <div className="mx-auto max-w-3xl space-y-8 px-4 py-10">
