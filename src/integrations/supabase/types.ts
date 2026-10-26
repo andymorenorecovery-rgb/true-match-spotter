@@ -200,6 +200,10 @@ export type Database = {
         Returns: boolean
       }
       claim_referral: { Args: { _code: string }; Returns: boolean }
+      delete_ad: {
+        Args: { _id: string; _secret: string; _user_id: string }
+        Returns: boolean
+      }
       launch_status: {
         Args: { _limit: number }
         Returns: {
