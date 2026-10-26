@@ -15,6 +15,13 @@
       "when": 1792969119629,
       "tag": "0001_launch_free_spots",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792973042552,
+      "tag": "0002_account_functions_without_admin",
+      "breakpoints": true
     }
   ]
 }
