@@ -82,6 +82,13 @@ export async function deleteAdEverywhere(id: string): Promise<boolean> {
   const { deleteAd } = await import("@/utils/ads.functions");
   const { usedSessions, removeLocalAd } = await import("@/lib/local-ads");
   const res = await deleteAd({ data: { id, sessionIds: usedSessions(), environment: getStripeEnvironment() } });
-  if (res.ok || id.startsWith("local-")) removeLocalAd(id);
-  return res.ok;
+  // Still on the site? Double-check: if it's gone for everyone, it's done.
+  let gone = res.ok;
+  if (!gone) {
+    const { data, error } = await supabase.from("ads").select("id").eq("id", id).maybeSingle();
+    gone = !error && !data;
+  }
+  if (gone) removeLocalAd(id);
+  if (!gone) throw new Error("Server refused delete");
+  return true;
 }
