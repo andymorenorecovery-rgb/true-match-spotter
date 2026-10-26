@@ -1,3 +1,4 @@
+import { PasswordInput } from "@/components/PasswordInput";
 import { publicOrigin } from "@/lib/contact";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
@@ -93,7 +94,7 @@ function AuthPage() {
       <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" /></div>
       <form onSubmit={submit} className="space-y-3">
         <input className={input} type="email" required autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        {mode !== "forgot" && <input className={input} type="password" required minLength={6} autoComplete={mode === "up" ? "new-password" : "current-password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />}
+        {mode !== "forgot" && <PasswordInput className={input} required minLength={6} autoComplete={mode === "up" ? "new-password" : "current-password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />}
         {mode === "in" && (
           <button type="button" onClick={() => { setMode("forgot"); setMsg(""); }} className="block w-full text-right text-sm text-primary underline">Forgot password?</button>
         )}
