@@ -4,6 +4,7 @@ import { Bell } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getAccount, markNotificationsRead } from "@/utils/account.functions";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const accountQueryKey = ["account"] as const;
 
@@ -49,6 +50,12 @@ export function NotificationBell() {
           <Link to="/account" className="text-xs text-primary underline">My account</Link>
         </div>
         <NotificationList notes={notes} />
+        <button
+          onClick={async () => { await qc.cancelQueries(); qc.clear(); await supabase.auth.signOut(); window.location.replace("/"); }}
+          className="mt-4 w-full rounded-full border border-primary px-3 py-2 text-sm font-semibold text-primary hover:bg-secondary"
+        >
+          Sign out
+        </button>
       </PopoverContent>
     </Popover>
   );
