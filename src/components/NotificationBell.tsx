@@ -35,11 +35,16 @@ export function NotificationBell() {
     </>
   );
   return (
-    <button
-      onClick={async () => { await qc.cancelQueries(); qc.clear(); await supabase.auth.signOut(); window.location.replace("/"); }}
-      className="whitespace-nowrap rounded-full border border-primary px-2.5 py-1 text-xs font-semibold text-primary hover:bg-secondary sm:px-3 sm:py-1.5 sm:text-sm"
-    >
-      Sign out
-    </button>
+    <>
+      <Link to="/account" className="whitespace-nowrap rounded-full bg-gradient-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground sm:px-3 sm:py-1.5 sm:text-sm">
+        My ads
+      </Link>
+      <button
+        onClick={async () => { await qc.cancelQueries(); qc.clear(); await supabase.auth.signOut(); window.location.replace("/"); }}
+        className="whitespace-nowrap px-1 py-1 text-xs font-medium text-muted-foreground hover:text-foreground sm:text-sm"
+      >
+        Sign out
+      </button>
+    </>
   );
 }
