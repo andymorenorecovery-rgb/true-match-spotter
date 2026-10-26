@@ -63,7 +63,7 @@ export async function checkSelfie(video: Blob, photo: string): Promise<SelfieRes
     });
     const r = (await res.json()) as { ok?: boolean; reason?: string; error?: string };
     if (!res.ok || r.error) return { ok: false, unavailable: true };
-    return { ok: !!r.ok, reason: r.reason };
+    return { ok: !!r.ok, ...(r.reason ? { reason: r.reason } : {}) };
   } catch {
     return { ok: false, unavailable: true };
   }
