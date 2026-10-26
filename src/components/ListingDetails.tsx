@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BadgeCheck, ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Play, Star } from "lucide-react";
-import { isOwnAd } from "@/lib/local-ads";
+import { useIsOwnAd } from "@/lib/local-ads";
 import { SimpleVideo } from "@/components/SimpleVideo";
 import { useAdVideo } from "@/lib/ad-videos";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
@@ -8,7 +8,7 @@ import { CATEGORIES, DETAIL_FIELDS, formatLocation, getPhotos, isFeatured, type 
 import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export function PhotoGallery({ l }: { l: Listing }) {
-  const videoUrl = useAdVideo(l.id);
+  const videoUrl = useAdVideo(l.id) ?? l.video ?? null;
   const media: { kind: "photo" | "video"; src: string }[] = [
     ...getPhotos(l).map((src) => ({ kind: "photo" as const, src })),
     ...(videoUrl ? [{ kind: "video" as const, src: videoUrl }] : []),
@@ -56,6 +56,7 @@ export function ListingInfo({ l }: { l: Listing }) {
   const [boosted, setBoosted] = useState(false);
   const [reporting, setReporting] = useState(false);
   const [reported, setReported] = useState(false);
+  const own = useIsOwnAd(l.id);
   const rows = [{ label: "Age", value: String(l.age) }, ...DETAIL_FIELDS.map((f) => ({ label: f.label, value: l.details[f.key] }))].filter((r) => r.value);
   return (
     <div>
@@ -85,7 +86,7 @@ export function ListingInfo({ l }: { l: Listing }) {
       ) : (
         <p className="mt-8 rounded-full bg-secondary py-3 text-center text-sm text-muted-foreground">This person chose not to share a number</p>
       )}
-      {!isOwnAd(l.id) && (
+      {!own && (
         <div className="mt-4 text-center text-sm">
           {reported ? (
             <p className="text-muted-foreground">Thanks — this ad was reported and will be reviewed.</p>
@@ -100,7 +101,7 @@ export function ListingInfo({ l }: { l: Listing }) {
           )}
         </div>
       )}
-      {isOwnAd(l.id) && (
+      {own && (
         <div className="mt-4 rounded-2xl border border-boost p-4 text-center">
           <button
             onClick={() => setBoosted(true)}

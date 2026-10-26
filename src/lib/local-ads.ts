@@ -19,8 +19,13 @@ export function saveLocalAd(ad: Listing) {
   window.dispatchEvent(new Event(EVENT));
 }
 
-/** Test mode: ads saved on this device are the visitor's own. */
-export const isOwnAd = (id: string) => id.startsWith("local-");
+/** The owner's copy of each ad lives on the device it was posted from. */
+export const isOwnAd = (id: string) => loadLocalAds().some((a) => a.id === id);
+
+export function useIsOwnAd(id: string) {
+  const ads = useLocalAds();
+  return ads.some((a) => a.id === id);
+}
 
 /** Puts the ad back on top for another boost period (starts now). */
 export function boostLocalAd(id: string, hours: number) {
@@ -87,6 +92,15 @@ export function claimSession(sessionId: string): boolean {
   if (used.includes(sessionId)) return false;
   localStorage.setItem(USED, JSON.stringify([...used, sessionId]));
   return true;
+}
+
+/** Paid checkouts made on this device (sent to the server as proof of payment). */
+export function usedSessions(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(USED) ?? "[]");
+  } catch {
+    return [];
+  }
 }
 
 export function publishPendingAd(id: string): boolean {

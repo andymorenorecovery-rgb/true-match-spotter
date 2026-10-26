@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      ads: {
+        Row: {
+          boost_until: string | null
+          data: Json
+          expires_at: string
+          id: string
+          posted_at: string
+          updated_at: string
+        }
+        Insert: {
+          boost_until?: string | null
+          data: Json
+          expires_at: string
+          id: string
+          posted_at: string
+          updated_at?: string
+        }
+        Update: {
+          boost_until?: string | null
+          data?: Json
+          expires_at?: string
+          id?: string
+          posted_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      app_secrets: {
+        Row: {
+          hash: string
+          name: string
+        }
+        Insert: {
+          hash: string
+          name: string
+        }
+        Update: {
+          hash?: string
+          name?: string
+        }
+        Relationships: []
+      }
       launch_claims: {
         Row: {
           ad_id: string
@@ -164,6 +206,17 @@ export type Database = {
           already_claimed: boolean
           spots_left: number
         }[]
+      }
+      publish_ad: {
+        Args: {
+          _boost_until: string
+          _data: Json
+          _expires_at: string
+          _id: string
+          _posted_at: string
+          _secret: string
+        }
+        Returns: boolean
       }
       redeem_free_week: {
         Args: {

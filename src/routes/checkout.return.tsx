@@ -4,6 +4,7 @@ import { getStripeEnvironment } from "@/lib/stripe";
 import { getCheckoutResult } from "@/utils/payments.functions";
 import { boostLocalAd, claimSession, pendingAdTitle, publishPendingAd } from "@/lib/local-ads";
 import { saveDraftMedia } from "@/lib/ad-videos";
+import { syncAd } from "@/lib/ad-sync";
 import { recordCheckout } from "@/utils/account.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { PRICING } from "@/lib/pricing";
@@ -35,7 +36,7 @@ function CheckoutReturn() {
   useEffect(() => {
     if (!session_id) return setState({ kind: "failed" });
     getCheckoutResult({ data: { sessionId: session_id, environment: getStripeEnvironment() } })
-      .then((r) => {
+      .then(async (r) => {
         if ("error" in r || !r.paid) return setState({ kind: "failed" });
         const fresh = claimSession(session_id);
         const environment = getStripeEnvironment();
@@ -45,9 +46,12 @@ function CheckoutReturn() {
         });
         if (r.kind === "boost") {
           if (fresh) boostLocalAd(r.adId, PRICING.boost.durationHours);
+          await syncAd(r.adId);
           return setState({ kind: "boosted", adId: r.adId });
         }
         if (fresh) { publishPendingAd(r.adId); try { localStorage.removeItem("rtm-post-draft"); } catch { /* */ } saveDraftMedia([], null); }
+        // Share it with everyone (the server re-checks the payment first).
+        await syncAd(r.adId);
         setState({ kind: "posted", adId: r.adId });
       })
       .catch(() => setState({ kind: "failed" }));
@@ -76,7 +80,7 @@ function CheckoutReturn() {
             {state.kind === "posted" ? "See my ad" : "Back to my ad"}
           </Link>
           <p className="mt-4 text-xs text-muted-foreground">
-            Your ad is saved on this phone or browser. Come back here any time to edit or boost it.
+            Everyone can see your ad now. To edit or boost it, use this same phone or browser.
           </p>
         </>
       )}
