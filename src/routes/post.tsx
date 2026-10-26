@@ -14,6 +14,7 @@ function formatPhone(v: string) {
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
+import { syncAd } from "@/lib/ad-sync";
 import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
@@ -118,11 +119,15 @@ function PostAd() {
       } catch {
         return setError("We couldn't save your video. Please try recording again.");
       }
+      // New video gets uploaded again; photos re-upload only if they changed.
+      updated.synced = false;
+      if (updated.remote) { const { video: _old, ...keep } = updated.remote; updated.remote = keep; }
       try {
         updateLocalAd(updated);
       } catch {
         return setError("Those photos are too big to save. Try fewer photos.");
       }
+      await syncAd(editId);
       return navigate({ to: "/listings/$id", params: { id: editId } });
     }
     if (free && !user) return setError("Please sign in to use a free ad.");
@@ -158,6 +163,7 @@ function PostAd() {
       if (!r.ok) return setError("We couldn't use your free week. Please try again.");
       publishPendingAd(ad.id);
       clearDraft();
+      await syncAd(ad.id);
       return navigate({ to: "/account" });
     }
     setCheckout({

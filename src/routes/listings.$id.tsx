@@ -4,13 +4,15 @@ import { ArrowLeft } from "lucide-react";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
 import { SAMPLE_LISTINGS, isPubliclyVisible, type Listing } from "@/lib/listings";
 import { useLocalAds } from "@/lib/local-ads";
+import { getPublicAd } from "@/utils/ads.functions";
 
 export const Route = createFileRoute("/listings/$id")({
-  // Sample ads render on the server for search engines. A person's own ad only
-  // exists on the device they posted it from, so it loads in the browser below.
-  loader: ({ params }) => {
+  // Shared ads load from the server so anyone can open them; an ad that isn't
+  // shared yet can still be opened on the phone it was posted from (below).
+  loader: async ({ params }) => {
     const l = SAMPLE_LISTINGS.find((x) => x.id === params.id);
-    return l && isPubliclyVisible(l) ? l : null;
+    if (l) return isPubliclyVisible(l) ? l : null;
+    return getPublicAd({ data: { id: params.id } });
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -54,13 +56,12 @@ function LocalAdPage() {
   if (!l) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">
-        <h1 className="text-3xl font-bold">{ready ? "This ad isn't on this device" : "Loading…"}</h1>
+        <h1 className="text-3xl font-bold">{ready ? "This ad isn't available" : "Loading…"}</h1>
         {ready && (
           <>
             <p className="mt-2 text-muted-foreground">
-              Ads are saved on the phone or browser they were posted from, so this one can only be opened there.
+              It may have ended or been removed.
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">Sign in on that device and open My account to view, edit or boost it.</p>
           </>
         )}
         <Link to="/" className="mt-6 inline-block text-primary">Browse ads</Link>

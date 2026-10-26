@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { ListingCard } from "@/components/ListingCard";
 import { CATEGORIES, SAMPLE_LISTINGS, isFeatured, rankListings, type Category } from "@/lib/listings";
 import { PRICING, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
 import { useLocalAds } from "@/lib/local-ads";
+import { listPublicAds } from "@/utils/ads.functions";
+import { syncUnsharedAds } from "@/lib/ad-sync";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,6 +20,8 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  // Everyone's live ads come from the server, so every phone sees the same list.
+  loader: () => listPublicAds(),
   component: Home,
 });
 
@@ -32,13 +36,17 @@ function Home() {
   const [shown, setShown] = useState(PAGE);
   const [seeking, setSeeking] = useState<"" | "Woman" | "Man">("");
 
+  const serverAds = Route.useLoaderData();
   const localAds = useLocalAds();
+  // Ads posted from this phone that aren't shared yet (older ads, a failed try) get shared now.
+  useEffect(() => { syncUnsharedAds(); }, []);
   const cities = useMemo(() => {
     if (state) return [...(US_CITIES[state] ?? [])];
     return [...new Set(SAMPLE_LISTINGS.map((l) => l.city))].sort();
   }, [state]);
   const results = useMemo(() => {
-    let r = rankListings([...localAds, ...SAMPLE_LISTINGS]);
+    const onServer = new Set(serverAds.map((a) => a.id));
+    let r = rankListings([...serverAds, ...localAds.filter((a) => !onServer.has(a.id)), ...SAMPLE_LISTINGS]);
     // Boosted ads stay on top whichever sort is picked; only the rest reshuffles.
     if (sort === "newest") {
       const boosted = r.filter((l) => isFeatured(l));
@@ -54,7 +62,7 @@ function Home() {
         (!seeking || l.details?.gender === seeking) &&
         (!term || `${l.title} ${l.body} ${l.area}`.toLowerCase().includes(term)),
     );
-  }, [q, state, city, cat, sort, seeking, localAds]);
+  }, [q, state, city, cat, sort, seeking, localAds, serverAds]);
 
   return (
     <div>
