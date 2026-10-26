@@ -13,14 +13,17 @@ function formatPhone(v: string) {
 }
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
-import { publishPendingAd, resizeImage, savePendingAd } from "@/lib/local-ads";
-import { loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
+import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
+import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
 import { CheckoutDialog, type CheckoutRequest } from "@/components/CheckoutDialog";
 
 export const Route = createFileRoute("/post")({
+  validateSearch: (s: Record<string, unknown>): { edit?: string } => ({
+    edit: typeof s["edit"] === "string" && s["edit"].startsWith("local-") ? s["edit"] : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Post an ad — Ready Too Mingle" },
