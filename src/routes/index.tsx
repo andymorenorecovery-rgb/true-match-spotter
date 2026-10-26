@@ -40,6 +40,14 @@ function Home() {
   const localAds = useLocalAds();
   // Ads posted from this phone that aren't shared yet (older ads, a failed try) get shared now.
   useEffect(() => { syncUnsharedAds(); }, []);
+  // Ads that were shared but are gone from the site (deleted or removed) disappear from this phone too.
+  useEffect(() => {
+    const onServer = new Set(serverAds.map((a) => a.id));
+    const now = Date.now();
+    for (const a of localAds) {
+      if (a.synced && !onServer.has(a.id) && Date.parse(a.expiresAt) > now) removeLocalAd(a.id);
+    }
+  }, [serverAds, localAds]);
   const cities = useMemo(() => {
     if (state) return [...(US_CITIES[state] ?? [])];
     return [...new Set(SAMPLE_LISTINGS.map((l) => l.city))].sort();
