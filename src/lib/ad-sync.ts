@@ -15,7 +15,7 @@ async function toBlob(src: string): Promise<Blob> {
 
 async function upload(id: string, blob: Blob, ext: string) {
   const path = `ads/${id}/${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from("ad-media").upload(path, blob, { contentType: blob.type || undefined, upsert: false });
+  const { error } = await supabase.storage.from("ad-media").upload(path, blob, { contentType: blob.type || (ext === "jpg" ? "image/jpeg" : "video/webm"), upsert: false });
   if (error) throw error;
   return path;
 }
