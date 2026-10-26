@@ -1,3 +1,4 @@
+import { DeleteAdButton } from "@/components/DeleteAdButton";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -86,6 +87,7 @@ function Account() {
                     {live && <Link to="/listings/$id" params={{ id: a.id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">View</Link>}
                     {live && <Link to="/post" search={{ edit: a.id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">Edit</Link>}
                     {!live && <Link to="/post" className="rounded-full bg-secondary px-3 py-1.5 text-xs">Post again</Link>}
+                    <DeleteAdButton id={a.id} />
                   </div>
                 </li>
               );
@@ -101,9 +103,12 @@ function Account() {
                       {live ? `Ends ${new Date(a.expires_at).toLocaleString()}` : "Ended"}{boosted ? " · Boosted" : ""}
                     </p>
                   </div>
+                  <div className="flex gap-2">
                   {live
                     ? <Link to="/listings/$id" params={{ id: a.ad_id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">{boosted ? "View" : "Boost again"}</Link>
                     : <Link to="/post" className="rounded-full bg-secondary px-3 py-1.5 text-xs">Repost</Link>}
+                  <DeleteAdButton id={a.ad_id} />
+                  </div>
                 </li>
               );
             })}

@@ -118,3 +118,42 @@ export const getPublicAd = createServerFn({ method: "GET" })
       return null;
     }
   });
+
+/**
+ * Removes an ad for everyone. Only the owner can do it: they must hold a paid
+ * checkout for this ad, or the ad must be on their signed-in account.
+ */
+export const deleteAd = createServerFn({ method: "POST" })
+  .inputValidator((d: { id: string; sessionIds: string[]; environment: StripeEnv }) => {
+    if (!AD_ID.test(d.id)) throw new Error("Invalid ad");
+    if (d.environment !== "sandbox" && d.environment !== "live") throw new Error("Invalid env");
+    const sessionIds = [...new Set((Array.isArray(d.sessionIds) ? d.sessionIds : []).filter((s) => typeof s === "string" && SESSION.test(s)))].slice(-20);
+    return { id: d.id, sessionIds, environment: d.environment };
+  })
+  .handler(async ({ data }): Promise<{ ok: boolean }> => {
+    const { adsDb } = await import("@/lib/ads.server");
+    let owner = false;
+    let userId: string | null = null;
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const token = getRequest()?.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+    if (token) {
+      const db = adsDb(token);
+      const { data: row } = await db.from("user_ads").select("user_id").eq("ad_id", data.id).maybeSingle();
+      if (row) { owner = true; userId = row.user_id; }
+    }
+    if (!owner && data.sessionIds.length) {
+      const { createStripeClient } = await import("@/lib/stripe.server");
+      const stripe = createStripeClient(data.environment);
+      for (const sid of data.sessionIds) {
+        try {
+          const s = await stripe.checkout.sessions.retrieve(sid);
+          if (s.status === "complete" && s.payment_status !== "unpaid" && s.metadata?.["adId"] === data.id) { owner = true; break; }
+        } catch { /* ignore */ }
+      }
+    }
+    if (!owner) return { ok: false };
+    const secret = process.env["AD_PUBLISH_SECRET"];
+    if (!secret) return { ok: false };
+    const { data: ok, error } = await adsDb().rpc("delete_ad", { _secret: secret, _id: data.id, _user_id: userId as string });
+    return { ok: !error && !!ok };
+  });
