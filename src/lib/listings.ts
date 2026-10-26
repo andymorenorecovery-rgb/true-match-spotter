@@ -59,6 +59,12 @@ export type Listing = {
   featuredUntil?: string;
   /** Which paid plan posted the ad: day ads get a purple frame. */
   plan?: "day" | "week" | "month";
+  /** Web address of the selfie video (ads shared from the server). */
+  video?: string;
+  /** Owner's copy only: true once this version is saved on the server for everyone. */
+  synced?: boolean;
+  /** Owner's copy only: where the photos/video were uploaded (sig = which photos). */
+  remote?: { sig: string; img: string; photos: string[]; video?: string };
 };
 
 /** Demo ads are pinned in time on purpose. Reading the real clock here made the
