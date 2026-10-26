@@ -64,7 +64,7 @@ function CheckoutReturn() {
     <div className="mx-auto max-w-md px-4 py-20 text-center">
       <h1 className="text-3xl font-bold">{text[0]}</h1>
       <p className="mt-3 text-muted-foreground">{text[1]}</p>
-      {state !== "loading" && (
+      {state.kind !== "loading" && (
         <p className="mt-6 text-xs text-muted-foreground">Payment processed for {BUSINESS_NAME}</p>
       )}
       {state.kind === "failed" && (

@@ -21,9 +21,10 @@ import { US_CITIES, US_STATES } from "@/data/us-locations";
 import { CheckoutDialog, type CheckoutRequest } from "@/components/CheckoutDialog";
 
 export const Route = createFileRoute("/post")({
-  validateSearch: (s: Record<string, unknown>): { edit?: string } => ({
-    edit: typeof s["edit"] === "string" && s["edit"].startsWith("local-") ? s["edit"] : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { edit?: string } => {
+    const edit = typeof s["edit"] === "string" && s["edit"].startsWith("local-") ? s["edit"] : undefined;
+    return edit ? { edit } : {};
+  },
   head: () => ({
     meta: [
       { title: "Post an ad — Ready Too Mingle" },
