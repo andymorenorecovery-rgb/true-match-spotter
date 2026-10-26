@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { useNavigate, useRouter } from "@tanstack/react-router";
+
 import { deleteAdEverywhere } from "@/lib/ad-sync";
 
 export function DeleteAdButton({ id, className, after }: { id: string; className?: string; after?: "home" }) {
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
+  const router = useRouter();
   return (
     <button
       type="button"
@@ -16,10 +17,10 @@ export function DeleteAdButton({ id, className, after }: { id: string; className
         setBusy(true);
         try {
           await deleteAdEverywhere(id);
-          toast.success("Your ad was deleted.");
+          router.invalidate();
           if (after === "home") navigate({ to: "/" });
         } catch {
-          toast.error("Couldn't delete the ad. Please try again.");
+          window.alert("Couldn't delete the ad. Please try again.");
         } finally {
           setBusy(false);
         }
