@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Images, MapPin, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { FitImage } from "@/components/FitImage";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
 import { CATEGORIES, getPhotos, glowOf, isFeatured, type Listing } from "@/lib/listings";
 
@@ -16,7 +17,7 @@ export function ListingCard({ l }: { l: Listing }) {
         className={`group block w-full overflow-hidden rounded-xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-boost shadow-boost" : glowOf(l) === "day" ? "border-day-glow shadow-day" : ""}`}
       >
         <div className="relative aspect-[3/4] overflow-hidden">
-          <img src={l.img} alt={l.title} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
+          <FitImage src={l.img} alt={l.title} lazy />
           {featured && (
             <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-boost px-2 py-0.5 text-[10px] font-semibold text-background">
               <Star className="h-2.5 w-2.5 fill-primary text-primary" /> Boosted

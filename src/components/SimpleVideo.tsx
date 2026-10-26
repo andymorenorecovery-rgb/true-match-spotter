@@ -22,7 +22,7 @@ export function SimpleVideo({ src, autoPlay = false, className = "" }: { src: st
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onEnded={() => setPlaying(false)}
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain bg-muted"
       />
       {!playing && (
         <button type="button" aria-label="Play video" className="absolute inset-0 grid place-items-center bg-overlay/30">
