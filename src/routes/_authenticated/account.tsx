@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Copy, Gift } from "lucide-react";
 import { getAccount } from "@/utils/account.functions";
 import { accountQueryKey, NotificationList } from "@/components/NotificationBell";
