@@ -18,6 +18,7 @@ import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocal
 import { syncAd } from "@/lib/ad-sync";
 import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
+import { checkSelfie } from "@/lib/selfie-check";
 import { PRICING, PRICE_IDS, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
 import { CheckoutDialog, type CheckoutRequest } from "@/components/CheckoutDialog";
@@ -51,6 +52,8 @@ function PostAd() {
   const [boost, setBoost] = useState(false);
   const [error, setError] = useState("");
   const [checkout, setCheckout] = useState<CheckoutRequest | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [verified, setVerified] = useState<{ video: Blob; photo: string } | null>(null);
   const user = useAuth();
   const navigate = useNavigate();
   const { data: account } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount(), enabled: !!user });
@@ -109,6 +112,15 @@ function PostAd() {
     if (!f.body.trim()) return setError("Please write something in your ad.");
     if (!photos.length) return setError("Please add at least one photo.");
     if (!video) return setError(`Please record your ${VIDEO_SECONDS}-second video selfie so people know you're real.`);
+    if (!(verified && verified.video === video && verified.photo === photos[0])) {
+      setError("");
+      setChecking(true);
+      const r = await checkSelfie(video, photos[0]!);
+      setChecking(false);
+      if (r.unavailable) return setError("We couldn't check your video right now. Please try again in a minute.");
+      if (!r.ok) return setError(`Your video didn't pass the check: ${r.reason || "your face must be clearly seen the whole time and match your main photo."} Please record again.`);
+      setVerified({ video, photo: photos[0]! });
+    }
     if (editId) {
       const base = loadLocalAds().find((a) => a.id === editId);
       if (!base) return setError("We couldn't find that ad on this device.");
