@@ -34,6 +34,13 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
+  // Google sign-in only works on Lovable hosting (it needs Lovable's /~oauth path);
+  // on the self-hosted server that path returns 404, so hide the button there.
+  const [googleOk, setGoogleOk] = useState(false);
+  useEffect(() => {
+    const h = window.location.hostname;
+    setGoogleOk(h.endsWith(".lovable.app") || h.endsWith(".lovableproject.com") || h === "localhost");
+  }, []);
 
   // Email confirmation links land here. If the link was already used or expired
   // (e.g. tapped twice, or opened in a different app), explain it instead of failing silently.
@@ -90,8 +97,12 @@ function AuthPage() {
     <div className="mx-auto max-w-md px-4 py-16">
       <h1 className="text-4xl font-bold">{mode === "up" ? "Create your account" : mode === "in" ? "Welcome back" : "Reset your password"}</h1>
       <p className="mt-2 text-muted-foreground">Post ads, earn a free week for every friend you bring, and get reminders when your ad or boost runs out.</p>
-      <button onClick={google} className="mt-8 w-full rounded-full border bg-card py-3 font-semibold">Continue with Google</button>
-      <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" /></div>
+      {googleOk ? (
+        <>
+          <button onClick={google} className="mt-8 w-full rounded-full border bg-card py-3 font-semibold">Continue with Google</button>
+          <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" /></div>
+        </>
+      ) : <div className="mt-8" />}
       <form onSubmit={submit} className="space-y-3">
         <input className={input} type="email" required autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         {mode !== "forgot" && <PasswordInput className={input} required minLength={6} autoComplete={mode === "up" ? "new-password" : "current-password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />}
