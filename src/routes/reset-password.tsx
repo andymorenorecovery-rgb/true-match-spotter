@@ -1,3 +1,4 @@
+import { PasswordInput } from "@/components/PasswordInput";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,8 +55,8 @@ function ResetPasswordPage() {
         <p className="mt-4 text-muted-foreground">Open this page from the reset link in your email. If the link expired, go to Sign in and tap "Forgot password?" again.</p>
       ) : (
         <form onSubmit={submit} className="mt-8 space-y-3">
-          <input className={input} type="password" required minLength={6} autoComplete="new-password" placeholder="New password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <input className={input} type="password" required minLength={6} autoComplete="new-password" placeholder="Type it again" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+          <PasswordInput className={input} required minLength={6} autoComplete="new-password" placeholder="New password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <PasswordInput className={input} required minLength={6} autoComplete="new-password" placeholder="Type it again" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
           {msg && <p className="text-sm text-muted-foreground">{msg}</p>}
           <button disabled={busy} className="w-full rounded-full bg-gradient-primary py-3 font-semibold text-primary-foreground shadow-glow disabled:opacity-60">Save new password</button>
         </form>

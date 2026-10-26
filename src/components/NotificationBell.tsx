@@ -36,8 +36,18 @@ export function NotificationBell() {
       <Link to="/auth" className="hidden whitespace-nowrap rounded-full border border-primary px-3 py-1.5 text-sm font-semibold text-primary hover:bg-secondary sm:inline-flex">Sign up / Sign in</Link>
     </>
   );
-  const notes = data?.notifications ?? [];
-  const unread = notes.filter((n) => !n.read_at).length;
+  void data;
+  return (
+    <button
+      onClick={async () => { await qc.cancelQueries(); qc.clear(); await supabase.auth.signOut(); window.location.replace("/"); }}
+      className="whitespace-nowrap rounded-full border border-primary px-2.5 py-1 text-xs font-semibold text-primary hover:bg-secondary sm:px-3 sm:py-1.5 sm:text-sm"
+    >
+      Sign out
+    </button>
+  );
+}
+
+function _UnusedBellMenu({ notes, unread, qc }: { notes: { id: string; message: string; read_at: string | null; created_at: string }[]; unread: number; qc: ReturnType<typeof useQueryClient> }) {
   return (
     <Popover onOpenChange={(open) => { if (!open && unread) markNotificationsRead().then(() => qc.invalidateQueries({ queryKey: accountQueryKey })); }}>
       <PopoverTrigger aria-label="Notifications" className="relative grid h-9 w-9 place-items-center rounded-full hover:bg-secondary">
