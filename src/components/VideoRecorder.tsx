@@ -119,7 +119,7 @@ export function VideoRecorder({ value, onChange }: { value: Blob | null; onChang
             Start {VIDEO_SECONDS}-second recording
           </button>
         )}
-        {state === "recording" && <p className="text-sm text-muted-foreground">Look at the camera and talk…</p>}
+        {state === "recording" && <p className="text-sm text-muted-foreground">Keep your face in view and talk…</p>}
       </div>
       <div className="mx-auto mt-3 max-w-[280px] rounded-xl border bg-secondary/40 p-3 text-sm">
         <p className="font-semibold">In your video, tell people:</p>

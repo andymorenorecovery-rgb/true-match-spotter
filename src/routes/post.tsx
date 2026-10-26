@@ -229,7 +229,7 @@ function PostAd() {
           </Section>
 
           <Section title="Video selfie (required)">
-            <p className="mb-4 text-sm text-muted-foreground">Record a quick {VIDEO_SECONDS}-second video of yourself with your camera so people know you're real. It shows on your profile with your photos.</p>
+            <p className="mb-4 text-sm text-muted-foreground">Record a quick {VIDEO_SECONDS}-second video of yourself with your camera so people know you're real. It shows on your profile with your photos. Keep your face clearly in view the whole time, in good light. We check that it's you and that you match your main photo.</p>
             <VideoRecorder value={video} onChange={setVideo} />
           </Section>
 
@@ -340,8 +340,8 @@ function PostAd() {
 
           {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
-            {editId ? "Save my changes" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+          <button type="submit" disabled={checking} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
+            {checking ? "Checking your video…" : editId ? "Save my changes" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
           </button>
           {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
