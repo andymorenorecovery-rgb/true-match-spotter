@@ -288,7 +288,7 @@ function PostAd() {
             </label>
           </Section>
 
-          {credits > 0 && (
+          {!editId && credits > 0 && (
             <label className="flex items-center gap-3 rounded-2xl border border-primary bg-card p-4 text-sm">
               <input type="checkbox" checked={useFree} onChange={(e) => setUseFree(e.target.checked)} className="h-4 w-4 accent-primary" />
               {launchFree && credits === 1
@@ -297,7 +297,7 @@ function PostAd() {
             </label>
           )}
 
-          {!free && <Section title="How long?">
+          {!free && !editId && <Section title="How long?">
             <div className="flex flex-wrap gap-2">
               {(["dayAd", "weekAd", "monthAd"] as const).map((p) => (
                 <button type="button" key={p} onClick={() => setPlan(p)} className={`rounded-full px-4 py-2 text-sm ${plan === p ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
@@ -318,18 +318,19 @@ function PostAd() {
             )}
           </Section>}
 
+          {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
-            {free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+            {editId ? "Save my changes" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
           </button>
-          {user === null && (
+          {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
               No account needed.{" "}
               <Link to="/auth" search={{ next: "/post" }} className="text-primary underline">Sign in</Link>{" "}
               to grab a free launch spot and get reminders when your ad runs out.
             </p>
           )}
-          <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>
+          {!editId && <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>}
         </form>
         <CheckoutDialog request={checkout} onClose={() => setCheckout(null)} />
 
