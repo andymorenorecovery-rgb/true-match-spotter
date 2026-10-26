@@ -170,8 +170,8 @@ function PostAd() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-4xl font-bold">Post an ad</h1>
-      <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours, {formatPrice(PRICING.weekAd.priceCents)} for a week or {formatPrice(PRICING.monthAd.priceCents)} for a month. Fill in as much or as little as you like.</p>
+      <h1 className="text-4xl font-bold">{editId ? "Edit my ad" : "Post an ad"}</h1>
+      {!editId && <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours, {formatPrice(PRICING.weekAd.priceCents)} for a week or {formatPrice(PRICING.monthAd.priceCents)} for a month. Fill in as much or as little as you like.</p>}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
         <form onSubmit={submit} className="space-y-8">
