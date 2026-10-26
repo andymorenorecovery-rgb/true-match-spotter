@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
@@ -5,7 +6,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { CATEGORIES, SAMPLE_LISTINGS, isFeatured, rankListings, type Category } from "@/lib/listings";
 import { PRICING, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
-import { useLocalAds } from "@/lib/local-ads";
+import { useLocalAds, removeLocalAd } from "@/lib/local-ads";
 import { listPublicAds } from "@/utils/ads.functions";
 import { syncUnsharedAds } from "@/lib/ad-sync";
 
@@ -40,6 +41,18 @@ function Home() {
   const localAds = useLocalAds();
   // Ads posted from this phone that aren't shared yet (older ads, a failed try) get shared now.
   useEffect(() => { syncUnsharedAds(); }, []);
+  // Ads that were shared but are gone from the site (deleted or removed) disappear from this phone too.
+  useEffect(() => {
+    const onServer = new Set(serverAds.map((a) => a.id));
+    const now = Date.now();
+    for (const a of localAds) {
+      if (!a.synced || onServer.has(a.id) || Date.parse(a.expiresAt) <= now) continue;
+      // Double-check directly so a hiccup loading the list never wipes a live ad.
+      supabase.from("ads").select("id").eq("id", a.id).maybeSingle().then(({ data, error }) => {
+        if (!error && !data) removeLocalAd(a.id);
+      });
+    }
+  }, [serverAds, localAds]);
   const cities = useMemo(() => {
     if (state) return [...(US_CITIES[state] ?? [])];
     return [...new Set(SAMPLE_LISTINGS.map((l) => l.city))].sort();
