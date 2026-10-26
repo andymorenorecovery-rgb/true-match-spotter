@@ -80,7 +80,7 @@ export async function syncUnsharedAds() {
 /** Deletes an ad everywhere (server + this device). Returns false if the server refused. */
 export async function deleteAdEverywhere(id: string): Promise<boolean> {
   const { deleteAd } = await import("@/utils/ads.functions");
-  const { usedSessions, removeLocalAd, loadLocalAds } = await import("@/lib/local-ads");
+  const { usedSessions, removeLocalAd } = await import("@/lib/local-ads");
   const res = await deleteAd({ data: { id, sessionIds: usedSessions(), environment: getStripeEnvironment() } });
   // Still on the site? Double-check: if it's gone for everyone, it's done.
   let gone = res.ok;
@@ -88,8 +88,7 @@ export async function deleteAdEverywhere(id: string): Promise<boolean> {
     const { data, error } = await supabase.from("ads").select("id").eq("id", id).maybeSingle();
     gone = !error && !data;
   }
-  const local = loadLocalAds().some((a) => a.id === id);
-  if (gone || local) removeLocalAd(id);
+  if (gone) removeLocalAd(id);
   if (!gone) throw new Error("Server refused delete");
   return true;
 }
