@@ -6,7 +6,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { CATEGORIES, SAMPLE_LISTINGS, isFeatured, rankListings, type Category } from "@/lib/listings";
 import { PRICING, formatPrice } from "@/lib/pricing";
 import { US_CITIES, US_STATES } from "@/data/us-locations";
-import { useLocalAds } from "@/lib/local-ads";
+import { useLocalAds, removeLocalAd } from "@/lib/local-ads";
 import { listPublicAds } from "@/utils/ads.functions";
 import { syncUnsharedAds } from "@/lib/ad-sync";
 
