@@ -122,7 +122,7 @@ function PostAd() {
       } catch {
         return setError("Those photos are too big to save. Try fewer photos.");
       }
-      return navigate({ to: "/account" });
+      return navigate({ to: "/listings/$id", params: { id: editId } });
     }
     if (free && !user) return setError("Please sign in to use a free ad.");
     const now = Date.now();
