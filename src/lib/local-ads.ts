@@ -122,3 +122,9 @@ export function pendingAdTitle(id: string): string {
     return "";
   }
 }
+
+/** Removes the ad from this device. */
+export function removeLocalAd(id: string) {
+  localStorage.setItem(KEY, JSON.stringify(loadLocalAds().filter((a) => a.id !== id)));
+  window.dispatchEvent(new Event(EVENT));
+}

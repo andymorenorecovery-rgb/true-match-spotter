@@ -76,3 +76,12 @@ export async function syncUnsharedAds() {
     if (!a.synced && Date.parse(a.expiresAt) > now) await syncAd(a.id);
   }
 }
+
+/** Deletes an ad everywhere (server + this device). Returns false if the server refused. */
+export async function deleteAdEverywhere(id: string): Promise<boolean> {
+  const { deleteAd } = await import("@/utils/ads.functions");
+  const { usedSessions, removeLocalAd } = await import("@/lib/local-ads");
+  const res = await deleteAd({ data: { id, sessionIds: usedSessions(), environment: getStripeEnvironment() } });
+  if (res.ok || id.startsWith("local-")) removeLocalAd(id);
+  return res.ok;
+}
