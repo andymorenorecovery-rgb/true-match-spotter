@@ -80,7 +80,7 @@ function PostAd() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!user) return setError("Please sign in first so we can remind you when your ad or boost runs out.");
+    if (free && !user) return setError("Please sign in to use a free ad.");
     const age = Number(f.age);
     if (!f.title.trim() || !f.name.trim()) return setError("Please add a headline and your first name.");
     if (!age || age < 18 || age > 99) return setError("You must be 18 or older to post.");
@@ -282,14 +282,15 @@ function PostAd() {
           </Section>}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
-          {user === null ? (
-            <Link to="/auth" search={{ next: "/post" }} className="block w-full rounded-full bg-gradient-primary py-4 text-center font-semibold text-primary-foreground shadow-glow">
-              Create an account or sign in to post your ad
-            </Link>
-          ) : (
-            <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
-              {free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
-            </button>
+          <button type="submit" className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow">
+            {free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+          </button>
+          {user === null && (
+            <p className="text-center text-xs text-muted-foreground">
+              No account needed.{" "}
+              <Link to="/auth" search={{ next: "/post" }} className="text-primary underline">Sign in</Link>{" "}
+              to grab a free launch spot and get reminders when your ad runs out.
+            </p>
           )}
           <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>
         </form>
