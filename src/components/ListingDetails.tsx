@@ -19,11 +19,11 @@ export function PhotoGallery({ l }: { l: Listing }) {
   const go = (d: number) => setI((x) => (x + d + media.length) % media.length);
   return (
     <div>
-      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
+      <div className={`relative overflow-hidden rounded-2xl bg-muted ${cur.kind === "video" ? "aspect-[3/4]" : ""}`}>
         {cur.kind === "video" ? (
           <SimpleVideo key={cur.src} src={cur.src} autoPlay />
         ) : (
-          <FitImage src={cur.src} alt={`${l.name} photo ${i + 1}`} />
+          <img src={cur.src} alt={`${l.name} photo ${i + 1}`} className="block h-auto w-full" />
         )}
         {videoUrl && (
           <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"><BadgeCheck className="h-3.5 w-3.5" /> Video verified</span>
