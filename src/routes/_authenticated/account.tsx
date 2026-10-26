@@ -7,6 +7,7 @@ import { accountQueryKey, NotificationList } from "@/components/NotificationBell
 import { supabase } from "@/integrations/supabase/client";
 import { REFERRAL } from "@/lib/pricing";
 import { useLocalAds } from "@/lib/local-ads";
+import { syncUnsharedAds } from "@/lib/ad-sync";
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
@@ -29,6 +30,7 @@ function Account() {
   // Ads posted on this device (full content) plus any ads only known to the server.
   // Hooks stay above the early returns so their order never changes.
   const deviceAds = useLocalAds();
+  useEffect(() => { syncUnsharedAds(); }, []);
   if (error) return <p className="px-4 py-20 text-center text-muted-foreground">We couldn't load your account. Please refresh, or sign in again.</p>;
   if (isLoading || !data) return <p className="px-4 py-20 text-center text-muted-foreground">Loading…</p>;
   const link = data.profile ? `${window.location.origin}/?ref=${data.profile.referral_code}` : "";
