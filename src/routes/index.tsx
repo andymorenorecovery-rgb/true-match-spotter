@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
@@ -45,7 +46,11 @@ function Home() {
     const onServer = new Set(serverAds.map((a) => a.id));
     const now = Date.now();
     for (const a of localAds) {
-      if (a.synced && !onServer.has(a.id) && Date.parse(a.expiresAt) > now) removeLocalAd(a.id);
+      if (!a.synced || onServer.has(a.id) || Date.parse(a.expiresAt) <= now) continue;
+      // Double-check directly so a hiccup loading the list never wipes a live ad.
+      supabase.from("ads").select("id").eq("id", a.id).maybeSingle().then(({ data, error }) => {
+        if (!error && !data) removeLocalAd(a.id);
+      });
     }
   }, [serverAds, localAds]);
   const cities = useMemo(() => {
