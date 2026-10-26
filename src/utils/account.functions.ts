@@ -22,13 +22,11 @@ export const getAccount = createServerFn({ method: "GET" })
     const { data: notes } = await supabase
       .from("notifications").select("id, kind, ad_id, message, read_at, created_at")
       .eq("user_id", userId).order("created_at", { ascending: false }).limit(30);
-    const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
-    const [{ count: claimed }, { data: mine }] = await Promise.all([
-      db.from("launch_claims").select("user_id", { count: "exact", head: true }),
-      db.from("launch_claims").select("user_id").eq("user_id", userId).maybeSingle(),
-    ]);
-    const launchSpotsLeft = Math.max(0, LAUNCH.freeSpots - (claimed ?? 0));
-    const launchFree = !mine && launchSpotsLeft > 0;
+    // Runs as the signed-in user (no admin key needed, so self-hosted servers work too).
+    const { data: launch } = await supabase.rpc("launch_status", { _limit: LAUNCH.freeSpots });
+    const row = Array.isArray(launch) ? launch[0] : launch;
+    const launchSpotsLeft = row?.spots_left ?? 0;
+    const launchFree = !row?.already_claimed && launchSpotsLeft > 0;
     return { profile: profile ?? null, ads: ads ?? [], notifications: notes ?? [], launchFree, launchSpotsLeft };
   });
 
@@ -52,11 +50,8 @@ export const claimReferral = createServerFn({ method: "POST" })
     if (!me || me.referred_by || me.referral_code === data.code) return { ok: false };
     const { count } = await supabase.from("user_ads").select("ad_id", { count: "exact", head: true }).eq("user_id", userId);
     if (count) return { ok: false };
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: inviter } = await supabaseAdmin.from("profiles").select("id").eq("referral_code", data.code).maybeSingle();
-    if (!inviter) return { ok: false };
-    await supabaseAdmin.from("profiles").update({ referred_by: inviter.id }).eq("id", userId).is("referred_by", null);
-    return { ok: true };
+    const { data: ok } = await supabase.rpc("claim_referral", { _code: data.code });
+    return { ok: !!ok };
   });
 
 /** Records a paid checkout on the account: saves the ad/boost and pays out invite rewards. */
@@ -118,26 +113,10 @@ export const redeemFreeWeek = createServerFn({ method: "POST" })
     return { ...d, title: cleanTitle(d.title) };
   })
   .handler(async ({ data, context }) => {
-    const { userId } = context;
-    const { supabaseAdmin: db } = await import("@/integrations/supabase/client.server");
-    const { data: me } = await db.from("profiles").select("free_week_credits").eq("id", userId).single();
-    const credits = me?.free_week_credits ?? 0;
-    if (credits < 1) {
-      // Launch promo: first people to post get one free week, once each.
-      const { data: got } = await db.rpc("claim_launch_spot", { _user_id: userId, _ad_id: data.adId, _limit: LAUNCH.freeSpots });
-      if (!got) return { ok: false };
-      await db.from("user_ads").insert({
-        ad_id: data.adId, user_id: userId, title: data.title, plan: "week",
-        expires_at: hours(PRICING.weekAd.durationHours), boost_until: hours(PRICING.weekAd.includedBoostHours),
-      });
-      return { ok: true };
-    }
-    const { data: spent } = await db.from("profiles").update({ free_week_credits: credits - 1 })
-      .eq("id", userId).eq("free_week_credits", credits).select("id");
-    if (!spent?.length) return { ok: false };
-    await db.from("user_ads").insert({
-      ad_id: data.adId, user_id: userId, title: data.title, plan: "week",
-      expires_at: hours(PRICING.weekAd.durationHours), boost_until: hours(PRICING.weekAd.includedBoostHours),
+    // Free credit first, otherwise a launch spot — decided atomically in the database.
+    const { data: ok, error } = await context.supabase.rpc("redeem_free_week", {
+      _ad_id: data.adId, _title: data.title, _launch_limit: LAUNCH.freeSpots,
+      _expires_at: hours(PRICING.weekAd.durationHours), _boost_until: hours(PRICING.weekAd.includedBoostHours),
     });
-    return { ok: true };
+    return { ok: !error && !!ok };
   });

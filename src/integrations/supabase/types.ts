@@ -157,6 +157,24 @@ export type Database = {
         Args: { _ad_id: string; _limit: number; _user_id: string }
         Returns: boolean
       }
+      claim_referral: { Args: { _code: string }; Returns: boolean }
+      launch_status: {
+        Args: { _limit: number }
+        Returns: {
+          already_claimed: boolean
+          spots_left: number
+        }[]
+      }
+      redeem_free_week: {
+        Args: {
+          _ad_id: string
+          _boost_until: string
+          _expires_at: string
+          _launch_limit: number
+          _title: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
