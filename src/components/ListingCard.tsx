@@ -13,7 +13,7 @@ export function ListingCard({ l }: { l: Listing }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className={`group block w-full overflow-hidden rounded-xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-boost shadow-boost" : glowOf(l) === "day" ? "border-day-glow shadow-day" : ""}`}
+        className={`group flex w-full flex-col justify-start overflow-hidden rounded-xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-boost shadow-boost" : glowOf(l) === "day" ? "border-day-glow shadow-day" : ""}`}
       >
         <div className="relative overflow-hidden bg-muted">
           <img src={l.img} alt={l.title} loading="lazy" className="block h-auto w-full" />
