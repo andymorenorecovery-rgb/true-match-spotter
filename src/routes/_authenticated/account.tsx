@@ -26,13 +26,14 @@ export const Route = createFileRoute("/_authenticated/account")({
 function Account() {
   const { data, isLoading, error } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount() });
   const [copied, setCopied] = useState(false);
+  // Ads posted on this device (full content) plus any ads only known to the server.
+  // Hooks stay above the early returns so their order never changes.
+  const deviceAds = useLocalAds();
   if (error) return <p className="px-4 py-20 text-center text-muted-foreground">We couldn't load your account. Please refresh, or sign in again.</p>;
   if (isLoading || !data) return <p className="px-4 py-20 text-center text-muted-foreground">Loading…</p>;
   const link = data.profile ? `${window.location.origin}/?ref=${data.profile.referral_code}` : "";
   const credits = data.profile?.free_week_credits ?? 0;
   const now = Date.now();
-  // Ads posted on this device (full content) plus any ads only known to the server.
-  const deviceAds = useLocalAds();
   const onDevice = new Set(deviceAds.map((a) => a.id));
   const serverOnly = data.ads.filter((a) => !onDevice.has(a.ad_id));
 
