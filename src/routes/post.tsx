@@ -1,3 +1,4 @@
+import { FitImage } from "@/components/FitImage";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -201,7 +202,7 @@ function PostAd() {
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
               {photos.map((p, i) => (
                 <div key={i} className="relative aspect-[3/4] overflow-hidden rounded-lg">
-                  <img src={p} alt="" className="h-full w-full object-cover" />
+                  <FitImage src={p} alt="" />
                   <button type="button" aria-label="Remove photo" onClick={() => setPhotos((ps) => ps.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-overlay/70 p-1"><X className="h-3 w-3" /></button>
                 </div>
               ))}
