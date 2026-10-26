@@ -30,13 +30,13 @@ export const Route = createFileRoute("/checkout/return")({
 
 function CheckoutReturn() {
   const { session_id } = Route.useSearch();
-  const [state, setState] = useState<"loading" | "posted" | "boosted" | "failed">("loading");
+  const [state, setState] = useState<{ kind: "loading" | "failed" } | { kind: "posted" | "boosted"; adId: string }>({ kind: "loading" });
 
   useEffect(() => {
-    if (!session_id) return setState("failed");
+    if (!session_id) return setState({ kind: "failed" });
     getCheckoutResult({ data: { sessionId: session_id, environment: getStripeEnvironment() } })
       .then((r) => {
-        if ("error" in r || !r.paid) return setState("failed");
+        if ("error" in r || !r.paid) return setState({ kind: "failed" });
         const fresh = claimSession(session_id);
         const environment = getStripeEnvironment();
         const title = pendingAdTitle(r.adId);
@@ -45,12 +45,12 @@ function CheckoutReturn() {
         });
         if (r.kind === "boost") {
           if (fresh) boostLocalAd(r.adId, PRICING.boost.durationHours);
-          return setState("boosted");
+          return setState({ kind: "boosted", adId: r.adId });
         }
         if (fresh) { publishPendingAd(r.adId); try { localStorage.removeItem("rtm-post-draft"); } catch { /* */ } saveDraftMedia([], null); }
-        setState("posted");
+        setState({ kind: "posted", adId: r.adId });
       })
-      .catch(() => setState("failed"));
+      .catch(() => setState({ kind: "failed" }));
   }, [session_id]);
 
   const text = {
