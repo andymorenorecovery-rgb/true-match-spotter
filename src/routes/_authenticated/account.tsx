@@ -66,9 +66,28 @@ function Account() {
 
       <section>
         <h2 className="mb-3 text-xl font-semibold">My ads</h2>
-        {!data.ads.length ? <p className="text-sm text-muted-foreground">No ads yet. <Link to="/post" className="underline">Post your first ad</Link></p> : (
+        {!deviceAds.length && !serverOnly.length ? <p className="text-sm text-muted-foreground">No ads yet. <Link to="/post" className="underline">Post your first ad</Link></p> : (
           <ul className="space-y-2">
-            {data.ads.map((a) => {
+            {deviceAds.map((a) => {
+              const live = Date.parse(a.expiresAt) > now;
+              const boosted = !!a.featuredUntil && Date.parse(a.featuredUntil) > now;
+              return (
+                <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border p-3 text-sm">
+                  <div>
+                    <p className="font-medium">{a.title || "My ad"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {live ? `Live — ends ${new Date(a.expiresAt).toLocaleString()}` : "Ended"}{boosted ? " · Boosted" : ""}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    {live && <Link to="/listings/$id" params={{ id: a.id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">View</Link>}
+                    {live && <Link to="/post" search={{ edit: a.id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">Edit</Link>}
+                    {!live && <Link to="/post" className="rounded-full bg-secondary px-3 py-1.5 text-xs">Post again</Link>}
+                  </div>
+                </li>
+              );
+            })}
+            {serverOnly.map((a) => {
               const live = Date.parse(a.expires_at) > now;
               const boosted = a.boost_until && Date.parse(a.boost_until) > now;
               return (
@@ -87,6 +106,7 @@ function Account() {
             })}
           </ul>
         )}
+        <p className="mt-3 text-xs text-muted-foreground">Ads are saved on the phone or browser you posted them from — open your account there to view, edit or boost them.</p>
       </section>
     </div>
   );
