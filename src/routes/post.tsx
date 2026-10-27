@@ -197,7 +197,7 @@ function PostAd() {
         <form onSubmit={submit} className="space-y-8">
           <Section title="About you">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Headline" wide><input className={input} maxLength={80} value={f.title} onChange={(e) => set("title", e.target.value)} placeholder="e.g. Coffee lover looking for a hiking buddy" /></Field>
+              <Field label="Headline" wide><input className={input} maxLength={80} value={f.title} onChange={(e) => set("title", e.target.value)} /></Field>
               <Field label="First name"><input className={input} maxLength={30} value={f.name} onChange={(e) => set("name", e.target.value)} /></Field>
               <Field label="Age"><input className={input} type="number" min={18} max={99} value={f.age} onChange={(e) => set("age", e.target.value)} /></Field>
               <Field label="Category" wide>
@@ -301,7 +301,7 @@ function PostAd() {
           </Section>
 
           <Section title="Contact">
-            <Field label="Phone number"><input className={input} type="tel" value={f.phone} inputMode="tel" autoComplete="tel" maxLength={14} onChange={(e) => set("phone", formatPhone(e.target.value))} placeholder="(213) 555-0123" /></Field>
+            <Field label="Phone number"><input className={input} type="tel" value={f.phone} inputMode="tel" autoComplete="tel" maxLength={14} onChange={(e) => set("phone", formatPhone(e.target.value))} /></Field>
             <label className="mt-3 flex items-center gap-2 text-sm">
               <input type="checkbox" checked={f.showPhone} onChange={(e) => set("showPhone", e.target.checked)} className="h-4 w-4 accent-primary" />
               Show my number on my ad
