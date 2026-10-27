@@ -16,6 +16,7 @@ import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
 import { syncAd } from "@/lib/ad-sync";
+import { adFlashState } from "@/lib/ad-flash";
 import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { checkSelfie } from "@/lib/selfie-check";
@@ -144,7 +145,7 @@ function PostAd() {
       if (!(await syncAd(editId))) {
         return setError("Your changes are saved on this phone, but we couldn't put the ad on the site. Please try again, or contact us if it keeps happening.");
       }
-      return navigate({ to: "/listings/$id", params: { id: editId } });
+      return navigate({ to: "/listings/$id", params: { id: editId }, state: adFlashState("Your ad has been reposted — everyone can see it now.") });
     }
     if (free && !user) return setError("Please sign in to use a free ad.");
     const now = Date.now();
@@ -180,7 +181,7 @@ function PostAd() {
       publishPendingAd(ad.id);
       clearDraft();
       await syncAd(ad.id);
-      return navigate({ to: "/account" });
+      return navigate({ to: "/account", state: adFlashState("Your ad is live — everyone can see it now.") });
     }
     setCheckout({
       adId: ad.id,
@@ -352,7 +353,7 @@ function PostAd() {
           {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" disabled={checking} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
-            {checking ? "Checking your video…" : editId ? "Save my changes" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+            {checking ? "Checking your video…" : editId ? "Save & repost my ad" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
           </button>
           {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
