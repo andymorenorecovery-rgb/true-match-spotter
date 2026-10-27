@@ -121,14 +121,10 @@ export function VideoRecorder({ value, onChange }: { value: Blob | null; onChang
         )}
         {state === "recording" && <p className="text-sm text-muted-foreground">Keep your face in view and talk…</p>}
       </div>
-      <div className="mx-auto mt-3 max-w-[280px] rounded-xl border bg-secondary/40 p-3 text-sm">
-        <p className="font-semibold">In your video, tell people:</p>
-        <ol className="mt-1 list-decimal space-y-0.5 pl-5 text-muted-foreground">
-          <li>How old you are</li>
-          <li>Where you're from</li>
-          <li>What you like to do</li>
-        </ol>
+      <div className="mx-auto mt-3 max-w-[280px] rounded-xl border bg-secondary/40 p-3 text-center text-sm text-muted-foreground">
+        We're making sure you are a real person so no one can use your pics.
       </div>
+
       {err && <p className="mt-2 text-center text-xs text-destructive">{err}</p>}
     </div>
   );
