@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { CATEGORIES, type Category, type Listing } from "@/lib/listings";
-import { adWindowFromCheckouts, type AdWindow, type PaidCheckout } from "@/lib/ad-window";
+import { adWindowFromCheckouts, giveawayWindow, type AdWindow, type PaidCheckout } from "@/lib/ad-window";
 import type { StripeEnv } from "@/lib/stripe.server";
 
 const AD_ID = /^[a-zA-Z0-9_-]{1,60}$/;
@@ -164,3 +164,14 @@ export const deleteAd = createServerFn({ method: "POST" })
     const { data: ok, error } = await adsDb().rpc("delete_ad", { _secret: secret, _id: data.id, _user_id: userId as string });
     return { ok: !error && !!ok };
   });
+
+/** How many no-account giveaway ads are still open. */
+export const giveawaySpotsLeft = createServerFn({ method: "GET" }).handler(async (): Promise<number> => {
+  try {
+    const { adsDb } = await import("@/lib/ads.server");
+    const { GIVEAWAY } = await import("@/lib/pricing");
+    if (GIVEAWAY.spots <= 0) return 0;
+    const { data } = await adsDb().rpc("guest_spots_left", { _limit: GIVEAWAY.spots });
+    return typeof data === "number" ? data : 0;
+  } catch { return 0; }
+});

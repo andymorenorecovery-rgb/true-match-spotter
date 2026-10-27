@@ -53,6 +53,7 @@ export async function syncAd(id: string): Promise<boolean> {
         },
         sessionIds: usedSessions(),
         environment: getStripeEnvironment(),
+        ...(ad.giveaway ? { giveaway: true } : {}),
       },
     });
     if (!r.ok) return false;
