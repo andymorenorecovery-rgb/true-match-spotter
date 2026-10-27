@@ -36,6 +36,13 @@
       "when": 1792990200086,
       "tag": "0004_delete_ad",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793071217859,
+      "tag": "0005_restore_melkitty_free_week",
+      "breakpoints": true
     }
   ]
 }

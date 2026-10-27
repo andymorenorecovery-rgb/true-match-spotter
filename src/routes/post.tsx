@@ -140,7 +140,9 @@ function PostAd() {
       } catch {
         return setError("Those photos are too big to save. Try fewer photos.");
       }
-      await syncAd(editId);
+      if (!(await syncAd(editId))) {
+        return setError("Your changes are saved on this phone, but we couldn't put the ad on the site. Please try again, or contact us if it keeps happening.");
+      }
       return navigate({ to: "/listings/$id", params: { id: editId } });
     }
     if (free && !user) return setError("Please sign in to use a free ad.");
