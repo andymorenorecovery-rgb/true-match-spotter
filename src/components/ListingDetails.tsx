@@ -38,16 +38,16 @@ export function PhotoGallery({ l }: { l: Listing }) {
         )}
       </div>
       {media.length > 1 && (
-        <div className="mt-3 grid grid-cols-4 gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           {media.map((m, n) => (
-            <button key={n} onClick={() => setI(n)} aria-label={m.kind === "video" ? "Play video" : `Show photo ${n + 1}`} className={`relative aspect-[3/4] overflow-hidden rounded-xl border-2 bg-muted ${n === i ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"}`}>
+            <button key={n} onClick={() => setI(n)} aria-label={m.kind === "video" ? "Play video" : `Show photo ${n + 1}`} className={`relative h-28 overflow-hidden rounded-xl border-2 bg-muted sm:h-36 ${n === i ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"}`}>
               {m.kind === "video" ? (
                 <>
-                  <video src={`${m.src}#t=0.5`} muted playsInline preload="metadata" className="h-full w-full object-contain" />
+                  <video src={`${m.src}#t=0.5`} muted playsInline preload="metadata" className="block h-full w-auto" />
                   <span className="absolute inset-0 grid place-items-center"><span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground"><Play className="ml-0.5 h-4 w-4" fill="currentColor" /></span></span>
                 </>
               ) : (
-                <img src={m.src} alt="" loading="lazy" className="h-full w-full object-contain" />
+                <img src={m.src} alt="" loading="lazy" className="block h-full w-auto" />
               )}
             </button>
           ))}
