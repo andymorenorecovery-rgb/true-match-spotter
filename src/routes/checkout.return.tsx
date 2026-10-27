@@ -32,6 +32,7 @@ export const Route = createFileRoute("/checkout/return")({
 
 function CheckoutReturn() {
   const { session_id } = Route.useSearch();
+  const navigate = useNavigate();
   const [state, setState] = useState<{ kind: "loading" | "failed" } | { kind: "posted" | "boosted"; adId: string }>({ kind: "loading" });
 
   useEffect(() => {
@@ -77,9 +78,9 @@ function CheckoutReturn() {
       )}
       {(state.kind === "posted" || state.kind === "boosted") && (
         <>
-          <Link to="/listings/$id" params={{ id: state.adId }} className="mt-8 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground shadow-glow">
+          <button onClick={() => navigate({ to: "/listings/$id", params: { id: state.adId }, state: adFlashState(state.kind === "posted" ? "Your ad is live — everyone can see it now." : `Your ad is boosted to the top with the green glow for the next ${PRICING.boost.durationHours} hours.`) })} className="mt-8 inline-block rounded-full bg-gradient-primary px-6 py-3 font-semibold text-primary-foreground shadow-glow">
             {state.kind === "posted" ? "See my ad" : "Back to my ad"}
-          </Link>
+          </button>
           <p className="mt-4 text-xs text-muted-foreground">
             Everyone can see your ad now. To edit or boost it, use this same phone or browser.
           </p>

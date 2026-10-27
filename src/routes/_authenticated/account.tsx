@@ -30,13 +30,14 @@ function Account() {
   const [copied, setCopied] = useState(false);
   // Green confirmation line: "Your ad has been reposted", "Your ad is live", etc.
   const [flash, setFlash] = useState("");
+  // Confirmation carried from the post form (e.g. after a free ad goes live).
+  const routeFlash = useRouterState({ select: (s) => s.location.state.adFlash ?? "" });
   const [busyId, setBusyId] = useState("");
   // Ads posted on this device (full content) plus any ads only known to the server.
   // Hooks stay above the early returns so their order never changes.
   const deviceAds = useLocalAds();
   useEffect(() => {
     syncUnsharedAds();
-    setFlash(takeAdFlash());
   }, []);
 
   const repost = async (id: string) => {
@@ -62,9 +63,9 @@ function Account() {
         <button onClick={() => supabase.auth.signOut().then(() => window.location.replace("/"))} className="rounded-full border border-primary px-4 py-1.5 text-sm font-semibold text-primary hover:bg-secondary">Sign out</button>
       </div>
 
-      {flash && (
+      {(flash || routeFlash) && (
         <p role="status" className="flex items-center gap-2 rounded-xl border border-like/40 bg-secondary px-4 py-3 text-sm font-semibold text-like">
-          <CheckCircle2 className="h-4 w-4 shrink-0" /> {flash}
+          <CheckCircle2 className="h-4 w-4 shrink-0" /> {flash || routeFlash}
         </p>
       )}
 
