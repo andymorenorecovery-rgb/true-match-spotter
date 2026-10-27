@@ -18,6 +18,7 @@ import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
 import { syncAd } from "@/lib/ad-sync";
+import { giveawaySpotsLeft } from "@/utils/ads.functions";
 import { adFlashState } from "@/lib/ad-flash";
 import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
@@ -64,6 +65,11 @@ function PostAd() {
   const credits = (account?.profile?.free_week_credits ?? 0) + (launchFree ? 1 : 0);
   const [useFree, setUseFree] = useState(true);
   const free = useFree && credits > 0;
+  const { data: giveawayLeft = 0 } = useQuery({ queryKey: ["giveaway-spots"], queryFn: () => giveawaySpotsLeft() });
+  const [useGiveaway, setUseGiveaway] = useState(true);
+  const giveaway = !Route.useSearch().edit && !free && useGiveaway && giveawayLeft > 0;
+  const editingGiveaway = (() => { const id = Route.useSearch().edit; return !!id && typeof window !== "undefined" && !!loadLocalAds().find((a) => a.id === id)?.giveaway; })();
+  const videoOptional = giveaway || editingGiveaway;
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
 
@@ -114,8 +120,8 @@ function PostAd() {
     if (!f.state || !f.city.trim()) return setError("Please pick your state and city.");
     if (!f.body.trim()) return setError("Please write something in your ad.");
     if (!photos.length) return setError("Please add at least one photo.");
-    if (!video) return setError(`Please record your ${VIDEO_SECONDS}-second video selfie so people know you're real.`);
-    if (!(verified && verified.video === video && verified.photo === photos[0])) {
+    if (!video && !videoOptional) return setError(`Please record your ${VIDEO_SECONDS}-second video selfie so people know you're real.`);
+    if (video && !(verified && verified.video === video && verified.photo === photos[0])) {
       setError("");
       setChecking(true);
       const r = await checkSelfie(video, photos[0]!);
@@ -131,7 +137,7 @@ function PostAd() {
       if (f.showPhone && f.phone) updated.phone = f.phone;
       else delete updated.phone;
       try {
-        await saveAdVideo(editId, video);
+        if (video) await saveAdVideo(editId, video);
       } catch {
         return setError("We couldn't save your video. Please try recording again.");
       }
@@ -151,7 +157,7 @@ function PostAd() {
     }
     if (free && !user) return setError("Please sign in to use a free ad.");
     const now = Date.now();
-    const plan = free ? "weekAd" : chosenPlan;
+    const plan = free || giveaway ? "weekAd" : chosenPlan;
     const ad: Listing = {
       id: `local-${now}`,
       title: f.title.trim(), name: f.name.trim(), age,
@@ -160,6 +166,7 @@ function PostAd() {
       img: photos[0]!, photos: photos.slice(1), details,
       ...(f.showPhone && f.phone ? { phone: f.phone } : {}),
       status: "published",
+      ...(giveaway ? { giveaway: true } : {}),
       postedAt: new Date(now).toISOString(),
       expiresAt: new Date(now + PRICING[plan].durationHours * 3600000).toISOString(),
       plan: plan === "dayAd" ? "day" : plan === "monthAd" ? "month" : "week",
@@ -168,7 +175,7 @@ function PostAd() {
         : {}),
     };
     try {
-      await saveAdVideo(ad.id, video);
+      if (video) await saveAdVideo(ad.id, video);
     } catch {
       return setError("We couldn't save your video. Please try recording again.");
     }
@@ -185,13 +192,19 @@ function PostAd() {
       await syncAd(ad.id);
       return navigate({ to: "/account", state: adFlashState("Your ad is live — everyone can see it now.") });
     }
+    if (giveaway) {
+      publishPendingAd(ad.id);
+      if (!(await syncAd(ad.id))) return setError("Sorry — the free ads may all be taken, or something went wrong. Please try again.");
+      clearDraft();
+      return navigate({ to: "/listings/$id", params: { id: ad.id }, state: adFlashState("Your free ad is live — everyone can see it now.") });
+    }
     setCheckout({
       adId: ad.id,
       kind: "post",
       priceIds: [PRICE_IDS[plan], ...(plan === "dayAd" && boost ? [PRICE_IDS.boost] : [])],
     });
   };
-  const plan = free ? "weekAd" : chosenPlan;
+  const plan = free || giveaway ? "weekAd" : chosenPlan;
   const total = PRICING[plan].priceCents + (plan === "dayAd" && boost ? PRICING.boost.priceCents : 0);
 
   return (
@@ -242,7 +255,7 @@ function PostAd() {
             <p className="mt-2 text-xs text-muted-foreground">Up to {MAX_PHOTOS} photos. The first one is your main photo.</p>
           </Section>
 
-          <Section title="Video selfie (required)">
+          <Section title={videoOptional ? "Video selfie (optional)" : "Video selfie (required)"}>
             <p className="mb-4 text-sm text-muted-foreground">Record a quick {VIDEO_SECONDS}-second video of yourself with your camera so people know you're real. It shows on your profile with your photos. Keep your face clearly in view the whole time, in good light. We check that it's you and that you match your main photo.</p>
             <VideoRecorder value={video} onChange={setVideo} />
           </Section>
@@ -331,7 +344,14 @@ function PostAd() {
             </label>
           )}
 
-          {!free && !editId && <Section title="How long?">
+          {!editId && !free && giveawayLeft > 0 && (
+            <label className="flex items-center gap-3 rounded-2xl border border-primary bg-card p-4 text-sm">
+              <input type="checkbox" checked={useGiveaway} onChange={(e) => setUseGiveaway(e.target.checked)} className="h-4 w-4 accent-primary" />
+              <span>Free ad giveaway: post a free 1-week ad — no account needed, video optional. Only {giveawayLeft} of 10 left.</span>
+            </label>
+          )}
+
+          {!free && !giveaway && !editId && <Section title="How long?">
             <div className="flex flex-wrap gap-2">
               {(["dayAd", "weekAd", "monthAd"] as const).map((p) => (
                 <button type="button" key={p} onClick={() => setPlan(p)} className={`rounded-full px-4 py-2 text-sm ${plan === p ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
@@ -355,7 +375,7 @@ function PostAd() {
           {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" disabled={checking} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
-            {checking ? "Checking your video…" : editId ? "Save & repost my ad" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+            {checking ? "Checking your video…" : editId ? "Save & repost my ad" : free || giveaway ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
           </button>
           {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
@@ -365,7 +385,7 @@ function PostAd() {
             </p>
           )}
 
-          {!editId && <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>}
+          {!editId && !giveaway && <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>}
         </form>
         <CheckoutDialog request={checkout} onClose={() => setCheckout(null)} />
 
