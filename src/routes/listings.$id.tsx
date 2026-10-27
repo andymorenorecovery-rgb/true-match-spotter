@@ -52,7 +52,7 @@ function LocalAdPage() {
   const [ready, setReady] = useState(false);
   const ads = useLocalAds();
   useEffect(() => setReady(true), []);
-  const l = ads.find((a) => a.id === id);
+  const l = ads.find((a) => a.id === id && !a.removed);
   if (!l) {
     return (
       <div className="mx-auto max-w-md px-4 py-24 text-center">

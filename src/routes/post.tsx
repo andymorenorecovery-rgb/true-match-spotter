@@ -134,6 +134,7 @@ function PostAd() {
       }
       // New video gets uploaded again; photos re-upload only if they changed.
       updated.synced = false;
+      delete updated.removed;
       if (updated.remote) { const { video: _old, ...keep } = updated.remote; updated.remote = keep; }
       try {
         updateLocalAd(updated);
