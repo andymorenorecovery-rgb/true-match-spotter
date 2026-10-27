@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
 import { SAMPLE_LISTINGS, isPubliclyVisible, type Listing } from "@/lib/listings";
 import { useLocalAds } from "@/lib/local-ads";
