@@ -145,6 +145,7 @@ function PostAd() {
       if (!(await syncAd(editId))) {
         return setError("Your changes are saved on this phone, but we couldn't put the ad on the site. Please try again, or contact us if it keeps happening.");
       }
+      setAdFlash("Your ad has been reposted — everyone can see it now.");
       return navigate({ to: "/listings/$id", params: { id: editId } });
     }
     if (free && !user) return setError("Please sign in to use a free ad.");
@@ -181,6 +182,7 @@ function PostAd() {
       publishPendingAd(ad.id);
       clearDraft();
       await syncAd(ad.id);
+      setAdFlash("Your ad is live — everyone can see it now.");
       return navigate({ to: "/account" });
     }
     setCheckout({
@@ -353,7 +355,7 @@ function PostAd() {
           {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
           <button type="submit" disabled={checking} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
-            {checking ? "Checking your video…" : editId ? "Save my changes" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+            {checking ? "Checking your video…" : editId ? "Save & repost my ad" : free ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
           </button>
           {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
