@@ -20,9 +20,9 @@ export function PhotoGallery({ l }: { l: Listing }) {
   const go = (d: number) => setI((x) => (x + d + media.length) % media.length);
   return (
     <div>
-      <div className={`relative overflow-hidden rounded-2xl bg-muted ${cur.kind === "video" ? "aspect-[3/4]" : ""}`}>
+      <div className="relative overflow-hidden rounded-2xl bg-muted">
         {cur.kind === "video" ? (
-          <SimpleVideo key={cur.src} src={cur.src} autoPlay />
+          <SimpleVideo key={cur.src} src={cur.src} autoPlay natural />
         ) : (
           <img src={cur.src} alt={`${l.name} photo ${i + 1}`} className="block h-auto w-full" />
         )}
@@ -40,11 +40,14 @@ export function PhotoGallery({ l }: { l: Listing }) {
       {media.length > 1 && (
         <div className="mt-3 grid grid-cols-4 gap-2">
           {media.map((m, n) => (
-            <button key={n} onClick={() => setI(n)} aria-label={m.kind === "video" ? "Play video" : `Show photo ${n + 1}`} className={`relative aspect-square overflow-hidden rounded-xl border-2 bg-muted ${n === i ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"}`}>
+            <button key={n} onClick={() => setI(n)} aria-label={m.kind === "video" ? "Play video" : `Show photo ${n + 1}`} className={`relative aspect-[3/4] overflow-hidden rounded-xl border-2 bg-muted ${n === i ? "border-primary" : "border-transparent opacity-70 hover:opacity-100"}`}>
               {m.kind === "video" ? (
-                <span className="grid h-full w-full place-items-center"><Play className="h-6 w-6 text-primary" /></span>
+                <>
+                  <video src={`${m.src}#t=0.5`} muted playsInline preload="metadata" className="h-full w-full object-contain" />
+                  <span className="absolute inset-0 grid place-items-center"><span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground"><Play className="ml-0.5 h-4 w-4" fill="currentColor" /></span></span>
+                </>
               ) : (
-                <FitImage src={m.src} alt="" />
+                <img src={m.src} alt="" loading="lazy" className="h-full w-full object-contain" />
               )}
             </button>
           ))}
