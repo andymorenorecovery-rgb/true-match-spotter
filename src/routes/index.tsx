@@ -38,7 +38,7 @@ function Home() {
   const [seeking, setSeeking] = useState<"" | "Woman" | "Man">("");
 
   const serverAds = Route.useLoaderData();
-  const localAds = useLocalAds();
+  const localAds = useLocalAds().filter((a) => !a.removed);
   // Ads posted from this phone that aren't shared yet (older ads, a failed try) get shared now.
   useEffect(() => { syncUnsharedAds(); }, []);
   // Ads that were shared but are gone from the site (deleted or removed) disappear from this phone too.

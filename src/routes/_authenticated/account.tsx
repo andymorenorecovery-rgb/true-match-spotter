@@ -8,7 +8,7 @@ import { accountQueryKey, NotificationList } from "@/components/NotificationBell
 import { supabase } from "@/integrations/supabase/client";
 import { REFERRAL } from "@/lib/pricing";
 import { useLocalAds } from "@/lib/local-ads";
-import { syncUnsharedAds } from "@/lib/ad-sync";
+import { repostAd, syncUnsharedAds } from "@/lib/ad-sync";
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
@@ -74,6 +74,18 @@ function Account() {
           <ul className="space-y-2">
             {deviceAds.map((a) => {
               const live = Date.parse(a.expiresAt) > now;
+              if (a.removed) return (
+                <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border p-3 text-sm">
+                  <div>
+                    <p className="font-medium">{a.title || "My ad"}</p>
+                    <p className="text-xs text-muted-foreground">{live ? `Taken down — you can repost until ${new Date(a.expiresAt).toLocaleString()}` : "Ended"}</p>
+                  </div>
+                  {live && <div className="flex gap-2">
+                    <Link to="/post" search={{ edit: a.id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">Edit &amp; repost</Link>
+                    <button onClick={() => repostAd(a.id).then((ok) => { if (!ok) alert("Couldn't repost the ad. Please try again."); })} className="rounded-full bg-gradient-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">Repost</button>
+                  </div>}
+                </li>
+              );
               const boosted = !!a.featuredUntil && Date.parse(a.featuredUntil) > now;
               return (
                 <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border p-3 text-sm">

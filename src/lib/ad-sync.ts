@@ -73,14 +73,14 @@ export async function syncAd(id: string): Promise<boolean> {
 export async function syncUnsharedAds() {
   const now = Date.now();
   for (const a of loadLocalAds()) {
-    if (!a.synced && Date.parse(a.expiresAt) > now) await syncAd(a.id);
+    if (!a.synced && !a.removed && Date.parse(a.expiresAt) > now) await syncAd(a.id);
   }
 }
 
 /** Deletes an ad everywhere (server + this device). Returns false if the server refused. */
 export async function deleteAdEverywhere(id: string): Promise<boolean> {
   const { deleteAd } = await import("@/utils/ads.functions");
-  const { usedSessions, removeLocalAd } = await import("@/lib/local-ads");
+  const { usedSessions } = await import("@/lib/local-ads");
   const res = await deleteAd({ data: { id, sessionIds: usedSessions(), environment: getStripeEnvironment() } });
   // Still on the site? Double-check: if it's gone for everyone, it's done.
   let gone = res.ok;
@@ -88,7 +88,20 @@ export async function deleteAdEverywhere(id: string): Promise<boolean> {
     const { data, error } = await supabase.from("ads").select("id").eq("id", id).maybeSingle();
     gone = !error && !data;
   }
-  if (gone) removeLocalAd(id);
+  // Keep the owner's copy (hidden) so they can repost it while their paid time lasts.
+  const mine = loadLocalAds().find((a) => a.id === id);
+  if (gone && mine) updateLocalAd({ ...mine, removed: true, synced: false });
   if (!gone) throw new Error("Server refused delete");
   return true;
+}
+
+/** Puts a taken-down ad back up, same paid time as before. */
+export async function repostAd(id: string): Promise<boolean> {
+  const ad = loadLocalAds().find((a) => a.id === id);
+  if (!ad) return false;
+  const { removed: _r, ...rest } = ad;
+  updateLocalAd({ ...rest, synced: false });
+  const ok = await syncAd(id);
+  if (!ok) updateLocalAd({ ...(loadLocalAds().find((a) => a.id === id) ?? ad), removed: true, synced: false });
+  return ok;
 }
