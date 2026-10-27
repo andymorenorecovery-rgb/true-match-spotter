@@ -81,3 +81,16 @@ describe("Women filter", () => {
     }
   });
 });
+
+import { giveawayWindow } from "@/lib/ad-window";
+import { GIVEAWAY } from "@/lib/pricing";
+describe("no-account giveaway", () => {
+  it("gives 10 spots", () => expect(GIVEAWAY.spots).toBe(10));
+  it("is a free week with 24h top boost", () => {
+    const t = Date.parse("2026-10-28T00:00:00Z");
+    const w = giveawayWindow(t);
+    expect(w.plan).toBe("week");
+    expect(w.expiresAt).toBe("2026-11-04T00:00:00.000Z");
+    expect(w.boostUntil).toBe("2026-10-29T00:00:00.000Z");
+  });
+});

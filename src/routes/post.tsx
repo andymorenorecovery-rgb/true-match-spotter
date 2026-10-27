@@ -68,7 +68,7 @@ function PostAd() {
   const { data: giveawayLeft = 0 } = useQuery({ queryKey: ["giveaway-spots"], queryFn: () => giveawaySpotsLeft() });
   const [useGiveaway, setUseGiveaway] = useState(true);
   const giveaway = !Route.useSearch().edit && !free && useGiveaway && giveawayLeft > 0;
-  const editingGiveaway = (() => { const id = Route.useSearch().edit; return !!id && typeof window !== "undefined" && !!loadLocalAds().find((a) => a.id === id)?.giveaway; })();
+  const [editingGiveaway, setEditingGiveaway] = useState(false);
   const videoOptional = giveaway || editingGiveaway;
   const set = (k: keyof typeof f, v: string | boolean) => setF((p) => ({ ...p, [k]: v }));
   const loc = formatLocation(f);
@@ -85,6 +85,7 @@ function PostAd() {
       if (ad) {
         setF({ title: ad.title, name: ad.name, age: String(ad.age), category: ad.category, city: ad.city, state: ad.state, area: ad.area, body: ad.body, phone: ad.phone ?? "", showPhone: !!ad.phone });
         setDetails(ad.details ?? {});
+        setEditingGiveaway(!!ad.giveaway);
         setPhotos([ad.img, ...(ad.photos ?? [])]);
         getAdVideo(ad.id).then((v) => { if (v) setVideo(v); }).finally(() => setRestored(true));
       } else {
