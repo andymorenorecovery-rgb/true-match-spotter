@@ -192,6 +192,14 @@ function PostAd() {
     <div className="mx-auto max-w-6xl px-4 py-10">
       <h1 className="text-4xl font-bold">{editId ? "Edit my ad" : "Post an ad"}</h1>
       {!editId && <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours, {formatPrice(PRICING.weekAd.priceCents)} for a week or {formatPrice(PRICING.monthAd.priceCents)} for a month. Fill in as much or as little as you like.</p>}
+      {user === null && !editId && (
+        <div className="mt-4 rounded-2xl border border-primary bg-card p-4">
+          <p className="font-semibold text-primary">Want to post a free ad?</p>
+          <p className="mt-1 text-sm text-muted-foreground">Make an account — it's free to make. Free 1-week ads are open to the first 10 people who sign up.</p>
+          <Link to="/auth" search={{ next: "/post" }} className="mt-3 inline-block rounded-full bg-gradient-primary px-5 py-2 text-sm font-semibold text-primary-foreground">Make a free account</Link>
+        </div>
+      )}
+
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
         <form onSubmit={submit} className="space-y-8">
@@ -345,11 +353,12 @@ function PostAd() {
           </button>
           {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
-              No account needed.{" "}
-              <Link to="/auth" search={{ next: "/post" }} className="text-primary underline">Sign in</Link>{" "}
-              to grab a free launch spot and get reminders when your ad runs out.
+              Want a free ad?{" "}
+              <Link to="/auth" search={{ next: "/post" }} className="text-primary underline">Make an account</Link>{" "}
+              — it's free to make, and you'll get reminders when your ad runs out.
             </p>
           )}
+
           {!editId && <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>}
         </form>
         <CheckoutDialog request={checkout} onClose={() => setCheckout(null)} />
