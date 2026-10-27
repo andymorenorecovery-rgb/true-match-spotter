@@ -11,6 +11,8 @@ export const PRICING = {
 export const REFERRAL = { freeWeeksPerFriend: 1 } as const;
 /** Launch promo: the first `freeSpots` people get one free 1-week ad (one per person). Set freeSpots to 0 to end it. */
 export const LAUNCH = { freeSpots: 10 } as const;
+/** Giveaway: the next `spots` ads are free 1-week ads with no account and an optional video. Set spots to 0 to end it. */
+export const GIVEAWAY = { spots: 10 } as const;
 
 /** When to remind owners that their ad is about to end. */
 export const REMINDERS = { endingSoonHours: 6, keepEndedDays: 30 } as const;

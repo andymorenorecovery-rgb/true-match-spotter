@@ -56,6 +56,21 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_ads: {
+        Row: {
+          ad_id: string
+          created_at: string
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       launch_claims: {
         Row: {
           ad_id: string
@@ -195,6 +210,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_guest_ad: {
+        Args: { _ad_id: string; _limit: number; _secret: string }
+        Returns: string
+      }
       claim_launch_spot: {
         Args: { _ad_id: string; _limit: number; _user_id: string }
         Returns: boolean
@@ -204,6 +223,7 @@ export type Database = {
         Args: { _id: string; _secret: string; _user_id: string }
         Returns: boolean
       }
+      guest_spots_left: { Args: { _limit: number }; Returns: number }
       launch_status: {
         Args: { _limit: number }
         Returns: {

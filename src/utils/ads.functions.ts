@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { CATEGORIES, type Category, type Listing } from "@/lib/listings";
-import { adWindowFromCheckouts, type AdWindow, type PaidCheckout } from "@/lib/ad-window";
+import { adWindowFromCheckouts, giveawayWindow, type AdWindow, type PaidCheckout } from "@/lib/ad-window";
 import type { StripeEnv } from "@/lib/stripe.server";
 
 const AD_ID = /^[a-zA-Z0-9_-]{1,60}$/;
@@ -45,10 +45,10 @@ function cleanAd(a: AdInput): AdInput {
  * Times always come from those records, never from the browser.
  */
 export const publishAd = createServerFn({ method: "POST" })
-  .inputValidator((d: { ad: AdInput; sessionIds: string[]; environment: StripeEnv }) => {
+  .inputValidator((d: { ad: AdInput; sessionIds: string[]; environment: StripeEnv; giveaway?: boolean }) => {
     if (d.environment !== "sandbox" && d.environment !== "live") throw new Error("Invalid env");
     const sessionIds = [...new Set((Array.isArray(d.sessionIds) ? d.sessionIds : []).filter((s) => typeof s === "string" && SESSION.test(s)))].slice(-20);
-    return { ad: cleanAd(d.ad), sessionIds, environment: d.environment };
+    return { ad: cleanAd(d.ad), sessionIds, environment: d.environment, giveaway: d.giveaway === true };
   })
   .handler(async ({ data }): Promise<{ ok: true; plan: AdWindow["plan"]; expiresAt: string; featuredUntil: string | null } | { ok: false; reason: string }> => {
     const { adsDb } = await import("@/lib/ads.server");
@@ -77,10 +77,17 @@ export const publishAd = createServerFn({ method: "POST" })
         if (row) base = { plan: row.plan === "month" ? "month" : row.plan === "day" ? "day" : "week", postedAt: row.created_at, expiresAt: row.expires_at, boostUntil: row.boost_until };
       }
     }
-    const w = adWindowFromCheckouts(checkouts, base);
-    if (!w) return { ok: false, reason: "not-paid" };
     const secret = process.env["AD_PUBLISH_SECRET"];
     if (!secret) return { ok: false, reason: "server-not-ready" };
+    if (!base && data.giveaway && !checkouts.some((c) => c.kind === "post")) {
+      // No-account giveaway: the server hands out at most GIVEAWAY.spots free weeks (same ad keeps its spot on edits).
+      const { GIVEAWAY } = await import("@/lib/pricing");
+      const { data: claimed } = await adsDb().rpc("claim_guest_ad", { _secret: secret, _ad_id: ad.id, _limit: GIVEAWAY.spots });
+      if (!claimed) return { ok: false, reason: "giveaway-full" };
+      base = giveawayWindow(Date.parse(claimed as string));
+    }
+    const w = adWindowFromCheckouts(checkouts, base);
+    if (!w) return { ok: false, reason: "not-paid" };
     const { id, ...rest } = ad;
     const { data: ok, error } = await adsDb().rpc("publish_ad", {
       _secret: secret, _id: id, _data: { ...rest, plan: w.plan },
@@ -157,3 +164,14 @@ export const deleteAd = createServerFn({ method: "POST" })
     const { data: ok, error } = await adsDb().rpc("delete_ad", { _secret: secret, _id: data.id, _user_id: userId as string });
     return { ok: !error && !!ok };
   });
+
+/** How many no-account giveaway ads are still open. */
+export const giveawaySpotsLeft = createServerFn({ method: "GET" }).handler(async (): Promise<number> => {
+  try {
+    const { adsDb } = await import("@/lib/ads.server");
+    const { GIVEAWAY } = await import("@/lib/pricing");
+    if (GIVEAWAY.spots <= 0) return 0;
+    const { data } = await adsDb().rpc("guest_spots_left", { _limit: GIVEAWAY.spots });
+    return typeof data === "number" ? data : 0;
+  } catch { return 0; }
+});
