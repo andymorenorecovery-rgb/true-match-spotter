@@ -16,6 +16,7 @@ import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
 import { syncAd } from "@/lib/ad-sync";
+import { setAdFlash } from "@/lib/ad-flash";
 import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { checkSelfie } from "@/lib/selfie-check";

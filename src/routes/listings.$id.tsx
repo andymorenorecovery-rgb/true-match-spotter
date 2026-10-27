@@ -5,6 +5,7 @@ import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
 import { SAMPLE_LISTINGS, isPubliclyVisible, type Listing } from "@/lib/listings";
 import { useLocalAds } from "@/lib/local-ads";
 import { getPublicAd } from "@/utils/ads.functions";
+import { takeAdFlash } from "@/lib/ad-flash";
 
 export const Route = createFileRoute("/listings/$id")({
   // Shared ads load from the server so anyone can open them; an ad that isn't
@@ -35,8 +36,16 @@ function ListingPage() {
 }
 
 function AdView({ l }: { l: Listing }) {
+  // "Your ad has been reposted" / "Your ad is live" — set just before landing here.
+  const [flash, setFlash] = useState("");
+  useEffect(() => setFlash(takeAdFlash()), []);
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
+      {flash && (
+        <p role="status" className="mb-4 flex items-center gap-2 rounded-xl border border-like/40 bg-secondary px-4 py-3 text-sm font-semibold text-like">
+          <CheckCircle2 className="h-4 w-4 shrink-0" /> {flash}
+        </p>
+      )}
       <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="h-4 w-4" /> All ads</Link>
       <div className="grid gap-8 md:grid-cols-2">
         <PhotoGallery l={l} />
