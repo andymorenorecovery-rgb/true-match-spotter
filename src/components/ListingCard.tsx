@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Images, MapPin, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -7,6 +7,8 @@ import { CATEGORIES, getPhotos, glowOf, isFeatured, type Listing } from "@/lib/l
 
 export function ListingCard({ l }: { l: Listing }) {
   const [open, setOpen] = useState(false);
+  const [shown, setShown] = useState(false);
+  useEffect(() => setShown(true), []);
   const featured = isFeatured(l);
   const count = getPhotos(l).length;
   return (
@@ -16,7 +18,13 @@ export function ListingCard({ l }: { l: Listing }) {
         className={`group flex w-full flex-col justify-start overflow-hidden rounded-xl border bg-card text-left transition hover:-translate-y-0.5 ${featured ? "border-boost shadow-boost" : glowOf(l) === "day" ? "border-day-glow shadow-day" : ""}`}
       >
         <div className="relative overflow-hidden bg-muted">
-          <img src={l.img} alt={l.title} loading="lazy" className="block h-auto w-full" />
+          {/* Photos load only in a real browser, never in the page sent to link readers
+              (Instagram, iMessage…), so a shared link can never show a member's photo. */}
+          {shown ? (
+            <img src={l.img} alt={l.title} loading="lazy" className="block h-auto w-full" />
+          ) : (
+            <div className="aspect-[4/5] w-full" />
+          )}
           {featured && (
             <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-boost px-2 py-0.5 text-[10px] font-semibold text-background">
               <Star className="h-2.5 w-2.5 fill-primary text-primary" /> Boosted
