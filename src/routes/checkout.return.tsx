@@ -1,11 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getCheckoutResult } from "@/utils/payments.functions";
 import { boostLocalAd, claimSession, pendingAdTitle, publishPendingAd } from "@/lib/local-ads";
 import { saveDraftMedia } from "@/lib/ad-videos";
 import { syncAd } from "@/lib/ad-sync";
-import { setAdFlash } from "@/lib/ad-flash";
+import { adFlashState } from "@/lib/ad-flash";
 import { recordCheckout } from "@/utils/account.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { PRICING } from "@/lib/pricing";
@@ -48,13 +48,11 @@ function CheckoutReturn() {
         if (r.kind === "boost") {
           if (fresh) boostLocalAd(r.adId, PRICING.boost.durationHours);
           await syncAd(r.adId);
-          setAdFlash(`Your ad is boosted to the top with the green glow for the next ${PRICING.boost.durationHours} hours.`);
           return setState({ kind: "boosted", adId: r.adId });
         }
         if (fresh) { publishPendingAd(r.adId); try { localStorage.removeItem("rtm-post-draft"); } catch { /* */ } saveDraftMedia([], null); }
         // Share it with everyone (the server re-checks the payment first).
         await syncAd(r.adId);
-        setAdFlash("Your ad is live — everyone can see it now.");
         setState({ kind: "posted", adId: r.adId });
       })
       .catch(() => setState({ kind: "failed" }));

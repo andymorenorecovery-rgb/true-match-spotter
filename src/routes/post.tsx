@@ -16,7 +16,7 @@ import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
 import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
 import { syncAd } from "@/lib/ad-sync";
-import { setAdFlash } from "@/lib/ad-flash";
+import { adFlashState } from "@/lib/ad-flash";
 import { getAdVideo, loadDraftMedia, saveAdVideo, saveDraftMedia, VIDEO_SECONDS } from "@/lib/ad-videos";
 import { VideoRecorder } from "@/components/VideoRecorder";
 import { checkSelfie } from "@/lib/selfie-check";
@@ -145,8 +145,7 @@ function PostAd() {
       if (!(await syncAd(editId))) {
         return setError("Your changes are saved on this phone, but we couldn't put the ad on the site. Please try again, or contact us if it keeps happening.");
       }
-      setAdFlash("Your ad has been reposted — everyone can see it now.");
-      return navigate({ to: "/listings/$id", params: { id: editId } });
+      return navigate({ to: "/listings/$id", params: { id: editId }, state: adFlashState("Your ad has been reposted — everyone can see it now.") });
     }
     if (free && !user) return setError("Please sign in to use a free ad.");
     const now = Date.now();
@@ -182,8 +181,7 @@ function PostAd() {
       publishPendingAd(ad.id);
       clearDraft();
       await syncAd(ad.id);
-      setAdFlash("Your ad is live — everyone can see it now.");
-      return navigate({ to: "/account" });
+      return navigate({ to: "/account", state: adFlashState("Your ad is live — everyone can see it now.") });
     }
     setCheckout({
       adId: ad.id,
