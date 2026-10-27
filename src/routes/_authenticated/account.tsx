@@ -2,13 +2,14 @@ import { DeleteAdButton } from "@/components/DeleteAdButton";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Copy, Gift } from "lucide-react";
+import { CheckCircle2, Copy, Gift } from "lucide-react";
 import { getAccount } from "@/utils/account.functions";
 import { accountQueryKey, NotificationList } from "@/components/NotificationBell";
 import { supabase } from "@/integrations/supabase/client";
 import { REFERRAL } from "@/lib/pricing";
 import { useLocalAds } from "@/lib/local-ads";
 import { repostAd, syncUnsharedAds } from "@/lib/ad-sync";
+import { takeAdFlash } from "@/lib/ad-flash";
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
@@ -28,10 +29,25 @@ export const Route = createFileRoute("/_authenticated/account")({
 function Account() {
   const { data, isLoading, error } = useQuery({ queryKey: accountQueryKey, queryFn: () => getAccount() });
   const [copied, setCopied] = useState(false);
+  // Green confirmation line: "Your ad has been reposted", "Your ad is live", etc.
+  const [flash, setFlash] = useState("");
+  const [busyId, setBusyId] = useState("");
   // Ads posted on this device (full content) plus any ads only known to the server.
   // Hooks stay above the early returns so their order never changes.
   const deviceAds = useLocalAds();
-  useEffect(() => { syncUnsharedAds(); }, []);
+  useEffect(() => {
+    syncUnsharedAds();
+    setFlash(takeAdFlash());
+  }, []);
+
+  const repost = async (id: string) => {
+    setBusyId(id);
+    const ok = await repostAd(id);
+    setBusyId("");
+    if (ok) setFlash("Your ad has been reposted — everyone can see it now.");
+    else alert("Couldn't repost the ad. Please try again.");
+  };
+
   if (error) return <p className="px-4 py-20 text-center text-muted-foreground">We couldn't load your account. Please refresh, or sign in again.</p>;
   if (isLoading || !data) return <p className="px-4 py-20 text-center text-muted-foreground">Loading…</p>;
   const link = data.profile ? `${window.location.origin}/?ref=${data.profile.referral_code}` : "";
@@ -46,6 +62,12 @@ function Account() {
         <h1 className="text-4xl font-bold">My account</h1>
         <button onClick={() => supabase.auth.signOut().then(() => window.location.replace("/"))} className="rounded-full border border-primary px-4 py-1.5 text-sm font-semibold text-primary hover:bg-secondary">Sign out</button>
       </div>
+
+      {flash && (
+        <p role="status" className="flex items-center gap-2 rounded-xl border border-like/40 bg-secondary px-4 py-3 text-sm font-semibold text-like">
+          <CheckCircle2 className="h-4 w-4 shrink-0" /> {flash}
+        </p>
+      )}
 
       <section className="rounded-2xl border border-primary bg-card p-6">
         <h2 className="flex items-center gap-2 text-xl font-semibold"><Gift className="h-5 w-5 text-primary" /> Bring a friend, get a free week</h2>
@@ -80,10 +102,16 @@ function Account() {
                     <p className="font-medium">{a.title || "My ad"}</p>
                     <p className="text-xs text-muted-foreground">{live ? `Taken down — you can repost until ${new Date(a.expiresAt).toLocaleString()}` : "Ended"}</p>
                   </div>
-                  {live && <div className="flex gap-2">
-                    <Link to="/post" search={{ edit: a.id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">Edit &amp; repost</Link>
-                    <button onClick={() => repostAd(a.id).then((ok) => { if (!ok) alert("Couldn't repost the ad. Please try again."); })} className="rounded-full bg-gradient-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">Repost</button>
-                  </div>}
+                  {live ? (
+                    <div className="flex gap-2">
+                      <Link to="/post" search={{ edit: a.id }} className="rounded-full bg-secondary px-3 py-1.5 text-xs">Edit &amp; repost</Link>
+                      <button onClick={() => repost(a.id)} disabled={busyId === a.id} className="rounded-full bg-gradient-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-60">
+                        {busyId === a.id ? "Reposting…" : "Repost"}
+                      </button>
+                    </div>
+                  ) : (
+                    <Link to="/post" className="rounded-full bg-secondary px-3 py-1.5 text-xs">Post again</Link>
+                  )}
                 </li>
               );
               const boosted = !!a.featuredUntil && Date.parse(a.featuredUntil) > now;
