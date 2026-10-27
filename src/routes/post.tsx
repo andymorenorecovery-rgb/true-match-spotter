@@ -296,7 +296,7 @@ function PostAd() {
           </Section>
 
           <Section title="Your ad">
-            <textarea className={`${input} min-h-36`} maxLength={2000} value={f.body} onChange={(e) => set("body", e.target.value)} placeholder="Tell people about yourself and who you'd like to meet." />
+            <textarea className={`${input} min-h-36`} maxLength={2000} value={f.body} onChange={(e) => set("body", e.target.value)} placeholder="" />
             <p className="mt-1 text-right text-xs text-muted-foreground">{f.body.length}/2000</p>
           </Section>
 
