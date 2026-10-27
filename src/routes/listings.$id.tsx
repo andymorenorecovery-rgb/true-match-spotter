@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
@@ -37,8 +37,7 @@ function ListingPage() {
 
 function AdView({ l }: { l: Listing }) {
   // "Your ad has been reposted" / "Your ad is live" — set just before landing here.
-  const [flash, setFlash] = useState("");
-  useEffect(() => setFlash(takeAdFlash()), []);
+  const flash = useRouterState({ select: (s) => s.location.state.adFlash ?? "" });
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       {flash && (

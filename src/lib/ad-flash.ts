@@ -1,22 +1,10 @@
-// A one-line confirmation ("Your ad has been reposted") that survives the jump
-// from the form to the ad page, so people always see proof their ad went up.
-const KEY = "rtm-ad-flash";
-
-export function setAdFlash(message: string) {
-  try {
-    sessionStorage.setItem(KEY, message);
-  } catch {
-    /* private mode: the page they land on just won't show the note */
+// Carries the "Your ad has been reposted" confirmation from the form to the page
+// the person lands on. It rides along in the router's own page state, so it shows
+// once on the page they arrive at and never ends up in a link they could share.
+declare module "@tanstack/react-router" {
+  interface HistoryState {
+    adFlash?: string;
   }
 }
 
-/** Reads the confirmation and clears it, so it only ever shows once. */
-export function takeAdFlash(): string {
-  try {
-    const value = sessionStorage.getItem(KEY) ?? "";
-    sessionStorage.removeItem(KEY);
-    return value;
-  } catch {
-    return "";
-  }
-}
+export const adFlashState = (message: string) => ({ adFlash: message });
