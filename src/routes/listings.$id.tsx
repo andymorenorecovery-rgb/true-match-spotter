@@ -5,7 +5,6 @@ import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
 import { SAMPLE_LISTINGS, isPubliclyVisible, type Listing } from "@/lib/listings";
 import { useLocalAds } from "@/lib/local-ads";
 import { getPublicAd } from "@/utils/ads.functions";
-import { takeAdFlash } from "@/lib/ad-flash";
 
 export const Route = createFileRoute("/listings/$id")({
   // Shared ads load from the server so anyone can open them; an ad that isn't

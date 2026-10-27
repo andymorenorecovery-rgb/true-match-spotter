@@ -1,5 +1,5 @@
 import { DeleteAdButton } from "@/components/DeleteAdButton";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { CheckCircle2, Copy, Gift } from "lucide-react";
@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { REFERRAL } from "@/lib/pricing";
 import { useLocalAds } from "@/lib/local-ads";
 import { repostAd, syncUnsharedAds } from "@/lib/ad-sync";
-import { takeAdFlash } from "@/lib/ad-flash";
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
