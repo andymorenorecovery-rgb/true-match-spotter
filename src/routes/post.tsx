@@ -1,4 +1,6 @@
 import { FitImage } from "@/components/FitImage";
+// Server accepts a main photo plus 9 more.
+const MAX_PHOTOS = 10;
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -100,8 +102,8 @@ function PostAd() {
 
   const addPhotos = async (files: FileList | null) => {
     if (!files) return;
-    const urls = await Promise.all([...files].slice(0, 6 - photos.length).map((file) => resizeImage(file)));
-    setPhotos((p) => [...p, ...urls].slice(0, 6));
+    const urls = await Promise.all([...files].slice(0, MAX_PHOTOS - photos.length).map((file) => resizeImage(file)));
+    setPhotos((p) => [...p, ...urls].slice(0, MAX_PHOTOS));
   };
 
   const submit = async (e: FormEvent) => {
@@ -223,21 +225,21 @@ function PostAd() {
           </Section>
 
           <Section title="Photos">
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+            <div className="flex flex-wrap gap-2">
               {photos.map((p, i) => (
-                <div key={i} className="relative aspect-[3/4] overflow-hidden rounded-lg">
-                  <FitImage src={p} alt="" />
+                <div key={i} className="relative h-28 overflow-hidden rounded-lg bg-muted">
+                  <img src={p} alt="" className="block h-full w-auto" />
                   <button type="button" aria-label="Remove photo" onClick={() => setPhotos((ps) => ps.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-overlay/70 p-1"><X className="h-3 w-3" /></button>
                 </div>
               ))}
-              {photos.length < 6 && (
-                <label className="flex aspect-[3/4] cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed text-xs text-muted-foreground">
+              {photos.length < MAX_PHOTOS && (
+                <label className="flex h-28 w-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed text-xs text-muted-foreground">
                   <ImagePlus className="h-5 w-5" /> Add
                   <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }} />
                 </label>
               )}
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">Up to 6 photos. The first one is your main photo.</p>
+            <p className="mt-2 text-xs text-muted-foreground">Up to {MAX_PHOTOS} photos. The first one is your main photo.</p>
           </Section>
 
           <Section title="Video selfie (required)">
