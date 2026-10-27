@@ -8,6 +8,7 @@ export function SimpleVideo({ src, autoPlay = false, className = "", natural = f
   const toggle = () => {
     const v = ref.current;
     if (!v) return;
+    v.muted = false;
     if (v.paused) v.play().catch(() => {}); else v.pause();
   };
   return (
