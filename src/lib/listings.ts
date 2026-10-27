@@ -64,6 +64,8 @@ export type Listing = {
   video?: string;
   /** Owner's copy only: true once this version is saved on the server for everyone. */
   synced?: boolean;
+  /** Free giveaway ad posted without an account (owner device only). */
+  giveaway?: boolean;
   /** Owner took it down; kept on their phone so they can repost while the paid time lasts. */
   removed?: boolean;
   /** Owner's copy only: where the photos/video were uploaded (sig = which photos). */

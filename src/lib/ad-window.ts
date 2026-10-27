@@ -31,3 +31,13 @@ export function adWindowFromCheckouts(list: PaidCheckout[], base?: AdWindow | nu
   }
   return w;
 }
+
+/** A no-account giveaway ad: one free week with the week ad's included top boost. */
+export function giveawayWindow(claimedMs: number): AdWindow {
+  return {
+    plan: "week",
+    postedAt: iso(claimedMs),
+    expiresAt: iso(claimedMs + PRICING.weekAd.durationHours * H),
+    boostUntil: iso(claimedMs + PRICING.weekAd.includedBoostHours * H),
+  };
+}
