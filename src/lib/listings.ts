@@ -8,9 +8,10 @@ import g16 from "@/assets/g16.jpg";
 import g16b from "@/assets/g16b.jpg";
 import g16c from "@/assets/g16c.jpg";
 
-export type Category = "hookups" | "dating" | "eye-candy";
+export type Category = "hookups" | "quick-dates" | "dating" | "eye-candy";
 export const CATEGORIES: { id: Category; label: string }[] = [
   { id: "hookups", label: "Hookups" },
+  { id: "quick-dates", label: "Quick Dates" },
   { id: "dating", label: "Dating" },
   { id: "eye-candy", label: "Eye Candy" },
 ];
