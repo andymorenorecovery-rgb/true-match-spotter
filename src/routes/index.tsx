@@ -19,6 +19,11 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Browse local personal ads for hookups, dating and casual encounters, or post your own." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      // Branded share picture so link previews never grab a member's photo.
+      { property: "og:image", content: "https://readytoomingle.com/share-card.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: "https://readytoomingle.com/share-card.jpg" },
     ],
   }),
   // Everyone's live ads come from the server, so every phone sees the same list.
