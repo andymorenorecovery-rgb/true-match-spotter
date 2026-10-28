@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { getAccount, redeemFreeWeek } from "@/utils/account.functions";
 import { accountQueryKey } from "@/components/NotificationBell";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 const DRAFT_KEY = "rtm-post-draft";
 function formatPhone(v: string) {
   const d = v.replace(/\D/g, "").replace(/^1/, "").slice(0, 10);
