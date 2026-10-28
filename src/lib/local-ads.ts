@@ -135,7 +135,7 @@ export function useLocalAds() {
   const [ads, setAds] = useState<Listing[]>([]);
   useEffect(() => {
     const sync = () => setAds(loadLocalAds());
-    sync();
+    if (loaded) sync();
     localAdsReady().then(sync);
     window.addEventListener(EVENT, sync);
     return () => window.removeEventListener(EVENT, sync);
