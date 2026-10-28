@@ -173,7 +173,7 @@ function PostAd() {
       }
       return navigate({ to: "/listings/$id", params: { id: editId }, state: adFlashState("Your ad has been reposted — everyone can see it now.") });
     }
-    if (free && !user) return setError("Please sign in to use a free ad.");
+    if (!user && !editId) return setError("Please make a free account or sign in to post, so you can edit or delete your ad later.");
     const now = Date.now();
     const plan = free || giveaway ? "weekAd" : chosenPlan;
     const ad: Listing = {
@@ -232,8 +232,8 @@ function PostAd() {
       {!editId && <p className="mt-2 text-muted-foreground">{formatPrice(PRICING.dayAd.priceCents)} for 24 hours, {formatPrice(PRICING.weekAd.priceCents)} for a week or {formatPrice(PRICING.monthAd.priceCents)} for a month. Fill in as much or as little as you like.</p>}
       {user === null && !editId && (
         <div className="mt-4 rounded-2xl border border-primary bg-card p-4">
-          <p className="font-semibold text-primary">Want to post a free ad?</p>
-          <p className="mt-1 text-sm text-muted-foreground">Make an account — it's free to make. Free 1-week ads are open to the first 10 people who sign up.</p>
+          <p className="font-semibold text-primary">Make a free account to post</p>
+          <p className="mt-1 text-sm text-muted-foreground">An account lets you edit or delete your ad anytime, and gives you an invite link to share. It's free to make, and the first 10 people get a free 1-week ad.</p>
           <Link to="/auth" search={{ next: "/post" }} className="mt-3 inline-block rounded-full bg-gradient-primary px-5 py-2 text-sm font-semibold text-primary-foreground">Make a free account</Link>
         </div>
       )}
@@ -393,15 +393,14 @@ function PostAd() {
 
           {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <button type="submit" disabled={checking || submitting} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
-            {checking ? "Checking your video…" : submitting ? "Posting your ad…" : editId ? "Save & repost my ad" : free || giveaway ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
-          </button>
-          {user === null && !editId && (
-            <p className="text-center text-xs text-muted-foreground">
-              Want a free ad?{" "}
-              <Link to="/auth" search={{ next: "/post" }} className="text-primary underline">Make an account</Link>{" "}
-              — it's free to make, and you'll get reminders when your ad runs out.
-            </p>
+          {user === null && !editId ? (
+            <Link to="/auth" search={{ next: "/post" }} className="block w-full rounded-full bg-gradient-primary py-4 text-center font-semibold text-primary-foreground shadow-glow">
+              Make a free account or sign in to post
+            </Link>
+          ) : (
+            <button type="submit" disabled={checking || submitting} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
+              {checking ? "Checking your video…" : submitting ? "Posting your ad…" : editId ? "Save & repost my ad" : free || giveaway ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+            </button>
           )}
 
           {!editId && !giveaway && <p className="text-center text-xs text-muted-foreground">Your ad goes live as soon as your payment goes through.</p>}
