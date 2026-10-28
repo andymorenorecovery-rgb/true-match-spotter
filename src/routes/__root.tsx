@@ -164,6 +164,7 @@ function RootComponent() {
             </div>
             <div className="flex gap-4">
 
+              <Link to="/personals">Cities</Link>
               <Link to="/pricing">Pricing</Link>
               <Link to="/faq">FAQ</Link>
               <Link to="/contact">Contact</Link>
