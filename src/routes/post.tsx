@@ -16,7 +16,7 @@ function formatPhone(v: string) {
 }
 import { ImagePlus, MapPin, Phone, X } from "lucide-react";
 import { CATEGORIES, DETAIL_FIELDS, formatLocation, type Category, type Details, type Listing } from "@/lib/listings";
-import { loadLocalAds, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
+import { flushPhotos, loadLocalAds, localAdsReady, publishPendingAd, resizeImage, savePendingAd, updateLocalAd } from "@/lib/local-ads";
 import { syncAd } from "@/lib/ad-sync";
 import { giveawaySpotsLeft } from "@/utils/ads.functions";
 import { adFlashState } from "@/lib/ad-flash";
@@ -81,6 +81,7 @@ function PostAd() {
   const [missingEdit, setMissingEdit] = useState(false);
   useEffect(() => {
     if (editId) {
+      localAdsReady().then(() => {
       const ad = loadLocalAds().find((a) => a.id === editId);
       if (ad) {
         setF({ title: ad.title, name: ad.name, age: String(ad.age), category: ad.category, city: ad.city, state: ad.state, area: ad.area, body: ad.body, phone: ad.phone ?? "", showPhone: !!ad.phone });
@@ -92,6 +93,7 @@ function PostAd() {
         setMissingEdit(true);
         setRestored(true);
       }
+      });
       return;
     }
     try {
@@ -162,8 +164,9 @@ function PostAd() {
       if (updated.remote) { const { video: _old, ...keep } = updated.remote; updated.remote = keep; }
       try {
         updateLocalAd(updated);
+        await flushPhotos();
       } catch {
-        return setError("Those photos are too big to save. Try fewer photos.");
+        return setError("We couldn't save your changes on this phone. Please free up some space on your phone, or try fewer photos.");
       }
       if (!(await syncAd(editId))) {
         return setError("Your changes are saved on this phone, but we couldn't put the ad on the site. Please try again, or contact us if it keeps happening.");
@@ -195,9 +198,10 @@ function PostAd() {
       return setError("We couldn't save your video. Please try recording again.");
     }
     try {
-      savePendingAd(ad);
+      await localAdsReady();
+      await savePendingAd(ad);
     } catch {
-      return setError("Those photos are too big to save. Try fewer photos.");
+      return setError("We couldn't save your ad on this phone. Please free up some space on your phone, or try fewer photos.");
     }
     if (free) {
       const r = await redeemFreeWeek({ data: { adId: ad.id, title: ad.title } }).catch(() => ({ ok: false }));

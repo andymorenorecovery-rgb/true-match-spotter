@@ -72,3 +72,23 @@ export const loadDraftMedia = async () => ({
   photos: (await getAny<string[]>("draft:photos").catch(() => undefined)) ?? [],
   video: (await getAny<Blob>("draft:video").catch(() => undefined)) ?? null,
 });
+
+// Ad photos also live here (localStorage is only ~5MB on iPhones; 10 photos alone can fill it).
+const PHOTO_PREFIX = "photos:";
+export const putAdPhotos = (id: string, photos: string[] | null) => putAny(PHOTO_PREFIX + id, photos);
+export async function getAllAdPhotos(): Promise<Map<string, string[]>> {
+  const out = new Map<string, string[]>();
+  if (typeof indexedDB === "undefined") return out;
+  const db = await open();
+  return new Promise((res) => {
+    const range = IDBKeyRange.bound(PHOTO_PREFIX, PHOTO_PREFIX + "\uffff");
+    const r = db.transaction(STORE).objectStore(STORE).openCursor(range);
+    r.onsuccess = () => {
+      const c = r.result;
+      if (!c) return res(out);
+      out.set(String(c.key).slice(PHOTO_PREFIX.length), c.value as string[]);
+      c.continue();
+    };
+    r.onerror = () => res(out);
+  });
+}
