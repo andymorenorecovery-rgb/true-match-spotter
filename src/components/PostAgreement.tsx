@@ -5,13 +5,16 @@ import { BUSINESS_NAME } from "@/lib/contact";
 
 const KEY = "rtm-post-agreed";
 
-const RULES: [string, string][] = [
+export const RULES: [string, string][] = [
   ["Adults only", `You must be ${MIN_AGE} or older to post or reply. Lying about your age gets your account removed with no refund and, where the law allows, reported to authorities.`],
+  ["What this site is for", "This is an ad company for dating and for people who want to hook up. Nothing else."],
+  ["No sex for money", "We do not allow and we do not promote prostitution of any kind. Ads offering, asking for or selling sex for money or gifts are taken down, and the people behind them are kicked off and reported if they break our rules."],
   ["Be real", "No fake profiles, catfishing, scams, spam or using someone else's pictures."],
   ["Respect others", "No harassment, threats, hate or pressuring anyone. Stop contacting anyone who asks you to stop."],
+  ["You are responsible for your actions", "Every member is responsible for their own actions on and off this site. We are not responsible for what people do when they meet, contact or pay anyone through ads on this site."],
   ["Trafficking and minors", "Any ad involving minors or trafficking is removed and reported to law enforcement and the National Center for Missing & Exploited Children."],
-  ["Your safety", "Meet in public, tell a friend where you are going, and never send money. We are not responsible for what happens when members meet off the site."],
-  ["Removal", "We may remove any ad or account that breaks these rules without refund. Paying for an ad does not guarantee views, contacts or matches."],
+  ["Your safety", "Meet in public, tell a friend where you are going, and never send money to anyone you meet here."],
+  ["Removal", "Anyone who gets reported and breaks these rules is kicked off the site with no refund. Paying for an ad does not guarantee views, contacts or matches."],
   ["Full terms", "Posting also means you agree to our Terms of Service and Privacy Policy."],
 ];
 
