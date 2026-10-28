@@ -35,7 +35,7 @@ export function loadLocalAds(): Listing[] {
 
 export function saveLocalAd(ad: Listing) {
   const all = [ad, ...loadLocalAds()];
-  localStorage.setItem(KEY, JSON.stringify(all));
+  safeSet(KEY, JSON.stringify(all));
   window.dispatchEvent(new Event(EVENT));
 }
 
