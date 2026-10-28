@@ -1,3 +1,4 @@
+import { PostAgreement } from "@/components/PostAgreement";
 import { FitImage } from "@/components/FitImage";
 // Server accepts a main photo plus 9 more.
 const MAX_PHOTOS = 10;
@@ -42,10 +43,16 @@ export const Route = createFileRoute("/post")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: PostAd,
+  component: PostPage,
 });
 
 const input = "w-full rounded-xl border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring";
+
+function PostPage() {
+  const { edit } = Route.useSearch();
+  if (edit) return <PostAd />;
+  return <PostAgreement><PostAd /></PostAgreement>;
+}
 
 function PostAd() {
   const [f, setF] = useState({ title: "", name: "", age: "", category: "dating" as Category, city: "", state: "", area: "", body: "", phone: "", showPhone: false });
