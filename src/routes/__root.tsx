@@ -162,7 +162,7 @@ function RootComponent() {
               <p>© {new Date().getFullYear()} {BUSINESS_NAME} · 18+ only</p>
               <p><a href={CONTACT_MAILTO} className="hover:text-foreground">{CONTACT_EMAIL}</a></p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
 
               <Link to="/personals">Cities</Link>
               <Link to="/pricing">Pricing</Link>

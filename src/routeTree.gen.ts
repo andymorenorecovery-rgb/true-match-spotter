@@ -22,6 +22,8 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as ListingsIdRouteImport } from './routes/listings.$id'
+import { Route as PersonalsIndexRouteImport } from './routes/personals.index'
+import { Route as PersonalsCityRouteImport } from './routes/personals.$city'
 import { Route as ApiPublicVerifySelfieRouteImport } from './routes/api/public/verify-selfie'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -90,6 +92,16 @@ const ListingsIdRoute = ListingsIdRouteImport.update({
   path: '/listings/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PersonalsIndexRoute = PersonalsIndexRouteImport.update({
+  id: '/personals/',
+  path: '/personals/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalsCityRoute = PersonalsCityRouteImport.update({
+  id: '/personals/$city',
+  path: '/personals/$city',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicVerifySelfieRoute = ApiPublicVerifySelfieRouteImport.update({
   id: '/api/public/verify-selfie',
   path: '/api/public/verify-selfie',
@@ -119,6 +131,8 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/personals/$city': typeof PersonalsCityRoute
+  '/personals/': typeof PersonalsIndexRoute
   '/api/public/verify-selfie': typeof ApiPublicVerifySelfieRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -136,6 +150,8 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/personals/$city': typeof PersonalsCityRoute
+  '/personals': typeof PersonalsIndexRoute
   '/api/public/verify-selfie': typeof ApiPublicVerifySelfieRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -155,6 +171,8 @@ export interface FileRoutesById {
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/personals/$city': typeof PersonalsCityRoute
+  '/personals/': typeof PersonalsIndexRoute
   '/api/public/verify-selfie': typeof ApiPublicVerifySelfieRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -174,6 +192,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/checkout/return'
     | '/listings/$id'
+    | '/personals/$city'
+    | '/personals/'
     | '/api/public/verify-selfie'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -191,6 +211,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/checkout/return'
     | '/listings/$id'
+    | '/personals/$city'
+    | '/personals'
     | '/api/public/verify-selfie'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -209,6 +231,8 @@ export interface FileRouteTypes {
     | '/_authenticated/account'
     | '/checkout/return'
     | '/listings/$id'
+    | '/personals/$city'
+    | '/personals/'
     | '/api/public/verify-selfie'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -227,6 +251,8 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   ListingsIdRoute: typeof ListingsIdRoute
+  PersonalsCityRoute: typeof PersonalsCityRoute
+  PersonalsIndexRoute: typeof PersonalsIndexRoute
   ApiPublicVerifySelfieRoute: typeof ApiPublicVerifySelfieRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -325,6 +351,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListingsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/personals/': {
+      id: '/personals/'
+      path: '/personals'
+      fullPath: '/personals/'
+      preLoaderRoute: typeof PersonalsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personals/$city': {
+      id: '/personals/$city'
+      path: '/personals/$city'
+      fullPath: '/personals/$city'
+      preLoaderRoute: typeof PersonalsCityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/verify-selfie': {
       id: '/api/public/verify-selfie'
       path: '/api/public/verify-selfie'
@@ -373,6 +413,8 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
   ListingsIdRoute: ListingsIdRoute,
+  PersonalsCityRoute: PersonalsCityRoute,
+  PersonalsIndexRoute: PersonalsIndexRoute,
   ApiPublicVerifySelfieRoute: ApiPublicVerifySelfieRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
