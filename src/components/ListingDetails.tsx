@@ -1,4 +1,3 @@
-import { DeleteAdButton } from "@/components/DeleteAdButton";
 import { useState } from "react";
 import { BadgeCheck, ChevronLeft, ChevronRight, Calendar, Flag, MapPin, Phone, Play, Star } from "lucide-react";
 import { useIsOwnAd } from "@/lib/local-ads";
@@ -120,7 +119,7 @@ export function ListingInfo({ l }: { l: Listing }) {
           <p className="mt-2 text-xs text-muted-foreground">
             {`This is your ad. Boosting puts it first with a green glow for ${PRICING.boost.durationHours} hours.`}
           </p>
-          <DeleteAdButton id={l.id} after="home" className="mt-3 text-xs text-destructive underline" />
+          <p className="mt-2 text-[11px] text-muted-foreground">Delete your ad anytime from My ads.</p>
           <CheckoutDialog request={boosted ? { adId: l.id, kind: "boost", priceIds: [PRICE_IDS.boost] } : null} onClose={() => setBoosted(false)} />
         </div>
       )}
