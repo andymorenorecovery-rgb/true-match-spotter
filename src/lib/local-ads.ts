@@ -134,7 +134,8 @@ export function clearLocalAds() {
 export function useLocalAds() {
   const [ads, setAds] = useState<Listing[]>([]);
   useEffect(() => {
-    const sync = () => setAds(loadLocalAds());
+    // Ads whose photos haven't loaded yet are left out (no blank pictures).
+    const sync = () => setAds(loadLocalAds().filter((a) => a.img));
     if (loaded) sync();
     localAdsReady().then(sync);
     window.addEventListener(EVENT, sync);
