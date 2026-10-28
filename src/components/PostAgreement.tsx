@@ -7,8 +7,6 @@ const KEY = "rtm-post-agreed";
 
 const RULES: [string, string][] = [
   ["Adults only", `You must be ${MIN_AGE} or older to post or reply. Lying about your age gets your account removed with no refund and, where the law allows, reported to authorities.`],
-  ["Hookups and dating only", "Ads are for dating and casual meetups between consenting adults. No escorts, no paid companionship and no offering or asking for money, gifts or anything of value in exchange for sex or time."],
-  ["No nudity", "No nude or sexually explicit photos or videos. Photos must be of you and match your selfie video."],
   ["Be real", "No fake profiles, catfishing, scams, spam or using someone else's pictures."],
   ["Respect others", "No harassment, threats, hate or pressuring anyone. Stop contacting anyone who asks you to stop."],
   ["Trafficking and minors", "Any ad involving minors or trafficking is removed and reported to law enforcement and the National Center for Missing & Exploited Children."],
