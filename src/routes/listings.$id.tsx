@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
 import { SAMPLE_LISTINGS, isPubliclyVisible, type Listing } from "@/lib/listings";
