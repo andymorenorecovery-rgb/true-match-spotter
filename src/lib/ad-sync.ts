@@ -3,7 +3,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { getAdVideo } from "@/lib/ad-videos";
-import { loadLocalAds, updateLocalAd, usedSessions } from "@/lib/local-ads";
+import { loadLocalAds, localAdsReady, updateLocalAd, usedSessions } from "@/lib/local-ads";
 import { publishAd } from "@/utils/ads.functions";
 import type { Listing } from "@/lib/listings";
 
@@ -27,8 +27,9 @@ export async function syncAd(id: string): Promise<boolean> {
   if (busy.has(id)) return false;
   busy.add(id);
   try {
+    await localAdsReady();
     const ad = loadLocalAds().find((a) => a.id === id);
-    if (!ad) return false;
+    if (!ad || !ad.img) return false;
     const all = [ad.img, ...(ad.photos ?? [])];
     const sig = sigOf(all);
     let remote = ad.remote && ad.remote.sig === sig ? ad.remote : undefined;
@@ -72,6 +73,7 @@ export async function syncAd(id: string): Promise<boolean> {
 
 /** Shares any of this device's live ads that aren't on the server yet (older ads, failed tries). */
 export async function syncUnsharedAds() {
+  await localAdsReady();
   const now = Date.now();
   for (const a of loadLocalAds()) {
     if (!a.synced && !a.removed && Date.parse(a.expiresAt) > now) await syncAd(a.id);
@@ -98,6 +100,7 @@ export async function deleteAdEverywhere(id: string): Promise<boolean> {
 
 /** Puts a taken-down ad back up, same paid time as before. */
 export async function repostAd(id: string): Promise<boolean> {
+  await localAdsReady();
   const ad = loadLocalAds().find((a) => a.id === id);
   if (!ad) return false;
   const { removed: _r, ...rest } = ad;

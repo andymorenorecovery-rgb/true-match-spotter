@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { ListingInfo, PhotoGallery } from "@/components/ListingDetails";
 import { SAMPLE_LISTINGS, isPubliclyVisible, type Listing } from "@/lib/listings";
-import { useLocalAds } from "@/lib/local-ads";
+import { useLocalAds, useLocalAdsLoaded } from "@/lib/local-ads";
 import { getPublicAd } from "@/utils/ads.functions";
 
 export const Route = createFileRoute("/listings/$id")({
@@ -56,9 +56,8 @@ function AdView({ l }: { l: Listing }) {
 /** An ad posted on this phone or computer: it lives in this browser only. */
 function LocalAdPage() {
   const { id } = Route.useParams();
-  const [ready, setReady] = useState(false);
+  const ready = useLocalAdsLoaded();
   const ads = useLocalAds();
-  useEffect(() => setReady(true), []);
   const l = ads.find((a) => a.id === id && !a.removed);
   if (!l) {
     return (
