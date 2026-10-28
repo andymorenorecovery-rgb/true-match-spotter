@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { getAccount, redeemFreeWeek } from "@/utils/account.functions";
 import { accountQueryKey } from "@/components/NotificationBell";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 const DRAFT_KEY = "rtm-post-draft";
 function formatPhone(v: string) {
   const d = v.replace(/\D/g, "").replace(/^1/, "").slice(0, 10);
@@ -113,8 +113,22 @@ function PostAd() {
     setPhotos((p) => [...p, ...urls].slice(0, MAX_PHOTOS));
   };
 
+  // One submit at a time: a second tap while uploading used to post the same ad twice.
+  const submittingRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    setSubmitting(true);
+    try {
+      await submitOnce();
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
+    }
+  };
+  const submitOnce = async () => {
     const age = Number(f.age);
     if (!f.title.trim() || !f.name.trim()) return setError("Please add a headline and your first name.");
     if (!age || age < 18 || age > 99) return setError("You must be 18 or older to post.");
@@ -375,8 +389,8 @@ function PostAd() {
 
           {editId && missingEdit && <p className="text-sm text-destructive">We couldn't find that ad on this device. Ads are saved on the phone or browser they were posted from.</p>}
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <button type="submit" disabled={checking} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
-            {checking ? "Checking your video…" : editId ? "Save & repost my ad" : free || giveaway ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
+          <button type="submit" disabled={checking || submitting} className="w-full rounded-full bg-gradient-primary py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">
+            {checking ? "Checking your video…" : submitting ? "Posting your ad…" : editId ? "Save & repost my ad" : free || giveaway ? "Post my free week ad" : `Pay ${formatPrice(total)} and post my ad`}
           </button>
           {user === null && !editId && (
             <p className="text-center text-xs text-muted-foreground">
