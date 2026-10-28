@@ -18,13 +18,16 @@ export function PhotoGallery({ l }: { l: Listing }) {
   const [i, setI] = useState(0);
   const cur = media[Math.min(i, media.length - 1)]!;
   const go = (d: number) => setI((x) => (x + d + media.length) % media.length);
+  // Hold the photo's space until it loads so the page doesn't jump after posting.
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  const waiting = cur.kind === "photo" && !loaded[cur.src];
   return (
     <div>
-      <div className="relative overflow-hidden rounded-2xl bg-muted">
+      <div className={`relative overflow-hidden rounded-2xl bg-muted ${waiting ? "aspect-[3/4] animate-pulse" : ""}`}>
         {cur.kind === "video" ? (
           <SimpleVideo key={cur.src} src={cur.src} autoPlay natural />
         ) : (
-          <img src={cur.src} alt={`${l.name} photo ${i + 1}`} className="block h-auto w-full" />
+          <img src={cur.src} alt={`${l.name} photo ${i + 1}`} onLoad={() => setLoaded((m) => ({ ...m, [cur.src]: true }))} ref={(el) => { if (el?.complete && el.naturalWidth && !loaded[cur.src]) setLoaded((m) => ({ ...m, [cur.src]: true })); }} className={waiting ? "absolute inset-0 h-full w-full object-contain" : "block h-auto w-full"} />
         )}
         {videoUrl && (
           <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"><BadgeCheck className="h-3.5 w-3.5" /> Video verified</span>
