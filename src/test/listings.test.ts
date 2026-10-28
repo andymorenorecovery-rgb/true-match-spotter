@@ -32,7 +32,7 @@ describe("pricing", () => {
 
 describe("categories", () => {
   it("allows hookups, dating and eye candy, in that order", () => {
-    expect(CATEGORIES.map((c) => c.id)).toEqual(["hookups", "quick-dates", "dating", "eye-candy"]);
+    expect(CATEGORIES.map((c) => c.id)).toEqual(["hookups", "quick-dates", "dating", "eye-candy", "generous-dates"]);
   });
 });
 

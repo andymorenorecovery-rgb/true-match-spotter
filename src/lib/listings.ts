@@ -1,10 +1,11 @@
 
-export type Category = "hookups" | "quick-dates" | "dating" | "eye-candy";
+export type Category = "hookups" | "quick-dates" | "dating" | "eye-candy" | "generous-dates";
 export const CATEGORIES: { id: Category; label: string }[] = [
   { id: "hookups", label: "Hookups" },
   { id: "quick-dates", label: "Quick Dates" },
   { id: "dating", label: "Dating" },
   { id: "eye-candy", label: "Eye Candy" },
+  { id: "generous-dates", label: "Generous Dates" },
 ];
 
 export type Details = {
