@@ -5,6 +5,26 @@ import type { Listing } from "@/lib/listings";
 const KEY = "rtm-test-ads";
 const EVENT = "rtm-test-ads-changed";
 
+/** Saves to browser storage; if the phone's storage is full, clears leftovers (old drafts,
+ *  abandoned checkouts, expired ads) and tries again. */
+function safeSet(key: string, value: string, keepPending?: string) {
+  try { return localStorage.setItem(key, value); } catch { /* full — free space below */ }
+  try { localStorage.removeItem("rtm-post-draft"); } catch { /* */ }
+  try {
+    const pend = JSON.parse(localStorage.getItem(PENDING) ?? "{}");
+    const keep = keepPending && pend[keepPending] ? { [keepPending]: pend[keepPending] } : {};
+    if (key !== PENDING) localStorage.setItem(PENDING, JSON.stringify(keep));
+    else localStorage.removeItem(PENDING);
+  } catch { /* */ }
+  if (key !== KEY) {
+    try {
+      const now = Date.now();
+      localStorage.setItem(KEY, JSON.stringify(loadLocalAds().filter((a) => !a.expiresAt || new Date(a.expiresAt).getTime() > now)));
+    } catch { /* */ }
+  }
+  localStorage.setItem(key, value);
+}
+
 export function loadLocalAds(): Listing[] {
   try {
     return JSON.parse(localStorage.getItem(KEY) ?? "[]");
@@ -39,7 +59,7 @@ export function boostLocalAd(id: string, hours: number) {
 /** Saves edits to an ad that's already live (same id, plan and expiry). */
 export function updateLocalAd(ad: Listing) {
   const all = loadLocalAds().map((a) => (a.id === ad.id ? ad : a));
-  localStorage.setItem(KEY, JSON.stringify(all));
+  safeSet(KEY, JSON.stringify(all));
   window.dispatchEvent(new Event(EVENT));
 }
 
@@ -60,7 +80,7 @@ export function useLocalAds() {
 }
 
 /** Shrinks a photo so several fit in browser storage. */
-export function resizeImage(file: File, max = 800): Promise<string> {
+export function resizeImage(file: File, max = 900): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
@@ -70,7 +90,7 @@ export function resizeImage(file: File, max = 800): Promise<string> {
       c.height = img.height * s;
       c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
       URL.revokeObjectURL(img.src);
-      resolve(c.toDataURL("image/jpeg", 0.8));
+      resolve(c.toDataURL("image/jpeg", 0.72));
     };
     img.onerror = reject;
     img.src = URL.createObjectURL(file);
@@ -83,7 +103,11 @@ const USED = "rtm-used-sessions";
 
 export function savePendingAd(ad: Listing) {
   const all = { ...JSON.parse(localStorage.getItem(PENDING) ?? "{}"), [ad.id]: ad };
-  localStorage.setItem(PENDING, JSON.stringify(all));
+  try {
+    localStorage.setItem(PENDING, JSON.stringify(all));
+  } catch {
+    safeSet(PENDING, JSON.stringify({ [ad.id]: ad }));
+  }
 }
 
 /** Marks a paid checkout as used; returns false if it was already applied. */
