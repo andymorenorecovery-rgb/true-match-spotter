@@ -116,7 +116,7 @@ export const redeemFreeWeek = createServerFn({ method: "POST" })
     // Free credit first, otherwise a launch spot — decided atomically in the database.
     const { data: ok, error } = await context.supabase.rpc("redeem_free_week", {
       _ad_id: data.adId, _title: data.title, _launch_limit: LAUNCH.freeSpots,
-      _expires_at: hours(PRICING.weekAd.durationHours), _boost_until: hours(PRICING.weekAd.includedBoostHours),
+      _expires_at: hours(PRICING.weekAd.durationHours), _boost_until: null, // free week: boosting is paid
     });
     return { ok: !error && !!ok };
   });
