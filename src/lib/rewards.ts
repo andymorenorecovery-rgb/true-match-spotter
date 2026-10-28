@@ -15,7 +15,7 @@ export function remindersFor(ads: AdRecord[], now = Date.now()): Reminder[] {
     if (end <= now) {
       if (now - end > REMINDERS.keepEndedDays * 86400000) continue;
       out.push({ dedupe_key: `ended:${a.ad_id}:${a.expires_at}`, kind: "ad_ended", ad_id: a.ad_id,
-        message: `${name(a)} has ended. Repost it to show up again.` });
+        message: `${name(a)} has ended. Repost it for ${formatPrice(PRICING.weekAd.priceCents)} a week to show up again.` });
       continue;
     }
     if (end - now <= REMINDERS.endingSoonHours * 3600000) {

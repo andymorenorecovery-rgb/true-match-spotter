@@ -79,7 +79,7 @@ describe("Women filter", () => {
 import { giveawayWindow } from "@/lib/ad-window";
 import { GIVEAWAY } from "@/lib/pricing";
 describe("no-account giveaway", () => {
-  it("gives 10 spots", () => expect(GIVEAWAY.spots).toBe(10));
+  it("is closed (free ads now need an account)", () => expect(GIVEAWAY.spots).toBe(0));
   it("is a free week with 24h top boost", () => {
     const t = Date.parse("2026-10-28T00:00:00Z");
     const w = giveawayWindow(t);

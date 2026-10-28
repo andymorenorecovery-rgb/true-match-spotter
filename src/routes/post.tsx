@@ -188,7 +188,7 @@ function PostAd() {
       postedAt: new Date(now).toISOString(),
       expiresAt: new Date(now + PRICING[plan].durationHours * 3600000).toISOString(),
       plan: plan === "dayAd" ? "day" : plan === "monthAd" ? "month" : "week",
-      ...(plan !== "dayAd" || boost
+      ...(!free && (plan !== "dayAd" || boost)
         ? { featuredUntil: new Date(now + (plan !== "dayAd" ? PRICING[plan].includedBoostHours : PRICING.boost.durationHours) * 3600000).toISOString() }
         : {}),
     };
