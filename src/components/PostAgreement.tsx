@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ageFrom, MIN_AGE } from "@/lib/age";
-import { BUSINESS } from "@/lib/contact";
+import { BUSINESS_NAME } from "@/lib/contact";
 
 const KEY = "rtm-post-agreed";
 
@@ -53,7 +53,7 @@ export function PostAgreement({ children }: { children: React.ReactNode }) {
         <>
           <p className="text-center text-sm font-semibold uppercase tracking-wide text-primary">You must read and agree to the rules before you may post</p>
           <div ref={box} onScroll={onScroll} className="mt-4 h-[55vh] overflow-y-auto rounded-2xl border-2 bg-card p-5 text-sm leading-relaxed">
-            <h2 className="text-lg font-bold">{BUSINESS.legalName} — Posting rules</h2>
+            <h2 className="text-lg font-bold">{BUSINESS_NAME} — Posting rules</h2>
             {RULES.map(([t, b], i) => (
               <div key={t} className="mt-4">
                 <p className="font-semibold">{i + 1}. {t}</p>
